@@ -21,6 +21,7 @@ const logger = winston.createLogger({
 		}),
 		new winston.transports.File({
 			filename: __path.join(process.cwd(), '/logs', '/hydrogen.log'),
+			level: 'debug'
         }),
         new winston.transports.Console()
 	],

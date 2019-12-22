@@ -13,12 +13,12 @@ const { constructRegistry } = require('./utils/util.registry');
 /**
  * method to alter and construct registry configurations
  *
- * @param {*} workingDir path of the working directory
  * @param {*} registryConfs registry mount configuration arguments
  * @param {number} offset port offset
+ * @param {*} workingDir path of the working directory
  */
-async function alterRegistry(workingDir, registryConfs, offset) {
-	logger.debug('Starting to alter registry');
+async function alterRegistry(registryConfs, offset, workingDir = process.cwd()) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter registry');
 
 	try {
 		await parseXML(__path.join(workingDir, constants.path.registry)).then((parsed) => {

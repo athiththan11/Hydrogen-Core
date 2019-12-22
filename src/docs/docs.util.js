@@ -8,6 +8,8 @@ const { logger } = require('../utils/util.winston');
  * @param {('postgre'|'mysql'|'mssql'|'oracle')} databaseType type of the database is being used
  */
 function generateDBDriverDocs(databaseType) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Generating database driver docs');
+	
 	switch (databaseType.toLowerCase()) {
 		case 'postgres':
 			logger.info('Please download the Postgre JDBC Driver from https://jdbc.postgresql.org/');

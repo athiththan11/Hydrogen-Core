@@ -26,3 +26,15 @@ exports.Registry = {
 	Generic: require('./src/modules/registry/registry.util'),
 	Util: require('./src/modules/registry/utils/util.registry'),
 };
+
+exports.Utils = {
+	Scripts: require('./src/utils/util.scripts'),
+	Docs: require('./src/docs/docs.util'),
+}
+
+exports.DatasourceConfigs = {
+	Postgre: require('./src/configs/datasource/config.postgre'),
+	MySQL: require('./src/configs/datasource/config.mysql'),
+	MSSQL: require('./src/configs/datasource/config.mssql'),
+	Oracle: require('./src/configs/datasource/config.oracle'),
+}

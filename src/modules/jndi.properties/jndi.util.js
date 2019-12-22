@@ -12,8 +12,8 @@ const { logger } = require('../../utils/util.winston');
  * @param {*} workingDir path of the working directory
  * @param {number} tmOffset traffic manager offset if any
  */
-async function alterJNDIProperties(workingDir, tmOffset = 0) {
-    logger.debug('Starting to alter jndi.properties');
+async function alterJNDIProperties(workingDir = process.cwd(), tmOffset = 0) {
+    if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter jndi.properties');
     
 	try {
 		await fs.readFile(__path.join(workingDir, constants.path.jndiProperties), constants.utf8).then((parsed) => {

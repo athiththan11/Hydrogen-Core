@@ -4,7 +4,7 @@
  * method to retrieve Postgre datasource config strings
  *
  * @param {('apim'|'is')} platform wso2 platform
- * @param {*} options deployment setup options { options: { command: [setup || replace ]}}
+ * @param {('replace'|'setup')} options deployment setup options { options: { command: [setup || replace ]}}
  * @returns datasource configurations
  */
 function getDatasourceConfigs(platform, options) {
@@ -33,7 +33,7 @@ function getDatasourceConfigs(platform, options) {
 		args._name = 'WSO2AM_DB';
 	}
 
-	if (options.command === 'setup' && platform === 'apim') {
+	if (options.setup && platform === 'apim') {
 		let confs = {};
 		args._connectionUrl = 'jdbc:postgresql://localhost:5432/apimgtdb';
 		confs.am = { ...args };

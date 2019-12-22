@@ -1,5 +1,7 @@
 'use strict';
 
+const { logger } = require('../../../utils/util.winston');
+
 /**
  * method to construct JDBC User store configurations
  *
@@ -8,6 +10,8 @@
  * @returns constructed user store element
  */
 function constructJDBCUserStore(Element, xmlDoc) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Constructing JDBC User Store');
+
 	let JDBCElem = new Element(xmlDoc, 'UserStoreManager').attr({
 		class: 'org.wso2.carbon.user.core.jdbc.JDBCUserStoreManager',
 	});

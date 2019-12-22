@@ -1,6 +1,7 @@
 'use strict';
 
 const constants = require('../../../utils/constants');
+const { logger } = require('../../../utils/util.winston');
 
 /**
  * method to construct registry mounting configurations
@@ -12,6 +13,8 @@ const constants = require('../../../utils/constants');
  * @returns constructed registry mount configurations and elements [dbConfig, remoteInstance, mountGov, mountConf]
  */
 function constructRegistry(Element, xmlDoc, args, offset = 0) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Constructing registry configurations');
+
 	let dbConfig = new Element(xmlDoc, 'dbConfig').attr({ name: 'govregistry' });
     dbConfig.node('dataSource', args._jndiName);
     

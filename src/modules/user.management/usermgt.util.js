@@ -13,11 +13,11 @@ const { constructJDBCUserStore } = require('../user.management/utils/util.usermg
 /**
  * method to alter and construct user management and user store configurations
  *
- * @param {*} workingDir path of the working directory
  * @param {boolean} convertLDAPToJDBC boolean value representing to convert LDAP to JDBC
+ * @param {*} [workingDir=process.cwd()] path of the working directory
  */
-async function alterUserManagement(workingDir, convertLDAPToJDBC) {
-	logger.debug('Starting to alter user-management');
+async function alterUserManagement(convertLDAPToJDBC, workingDir = process.cwd()) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter user-management');
 
 	try {
 		await parseXML(__path.join(workingDir, constants.path.userManagement)).then((parsed) => {
@@ -50,9 +50,9 @@ async function alterUserManagement(workingDir, convertLDAPToJDBC) {
 				)
 				.addPrevSibling(commentElem);
 
-            if (convertLDAPToJDBC) {
-                logger.debug('Converting LDAP to JDBC User Store');
-                
+			if (convertLDAPToJDBC) {
+				if (process.env.HYDROGEN_DEBUG) logger.debug('Converting LDAP to JDBC User Store');
+
 				let jdbcElem = constructJDBCUserStore(XMLJS.Element, doc);
 
 				let ldapElem = parsed

@@ -34,7 +34,7 @@ function getDatasourceConfigs(platform, options) {
 		args._name = 'WSO2AM_DB';
 	}
 
-	if (options.command === 'setup' && platform === 'apim') {
+	if (options.setup && platform === 'apim') {
 		let confs = {};
 		args._connectionUrl =
 			'jdbc:mysql://localhost:3306/apimgtdb?autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true';

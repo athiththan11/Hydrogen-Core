@@ -11,8 +11,8 @@ const { logger } = require('../../../utils/util.winston');
  * @returns constructed datasource element
  */
 function constructDatasource(Element, xmlDoc, args) {
-    logger.debug('Starting to construct datasource element');
-    
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Constructing datasource element');
+
 	let datasourceElem = new Element(xmlDoc, 'datasource');
 	datasourceElem
 		.node('name', args._name)

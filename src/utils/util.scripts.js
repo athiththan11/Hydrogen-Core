@@ -12,19 +12,19 @@ const constants = require('./constants');
  * @param {*} workingDir path of the working directory
  * @returns combined SQL script
  */
-async function readPostgreSQLScripts(platform, workingDir) {
-    let scripts = [], i = 0;
+async function readPostgreSQLScripts(platform, workingDir = process.cwd()) {
+    let scripts = [];
 
     if (platform === 'is') {
-        scripts[i++] = fs.readFileSync(__path.join(workingDir, constants.sql.is.dbscripts, constants.dbscripts.postgre)).toString();
-        scripts[i++] = fs.readFileSync(__path.join(workingDir, constants.sql.is.identity, constants.dbscripts.postgre)).toString();
-        scripts[i++] = fs.readFileSync(__path.join(workingDir, constants.sql.is.storedProcedure, 'postgre', constants.dbscripts.postgre)).toString();
-        scripts[i++] = fs.readFileSync(__path.join(workingDir, constants.sql.is.uma, constants.dbscripts.postgre)).toString();
-        scripts[i++] = fs.readFileSync(__path.join(workingDir, constants.sql.is.consent, constants.dbscripts.postgre)).toString();
+        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.dbscripts, constants.dbscripts.postgre)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.identity, constants.dbscripts.postgre)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.storedProcedure, 'postgre', constants.dbscripts.postgre)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.uma, constants.dbscripts.postgre)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.consent, constants.dbscripts.postgre)).toString());
     }
 
     if (platform === 'apim') {
-        scripts[i++] = fs.readFileSync(__path.join(workingDir, constants.sql.apim.apimgt, constants.dbscripts.postgre)).toString();
+        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.apim.apimgt, constants.dbscripts.postgre)).toString());
     }
 
     return scripts.join('\n');
@@ -37,21 +37,21 @@ async function readPostgreSQLScripts(platform, workingDir) {
  * @param {*} workingDir path of the working directory
  * @returns combined SQL script
  */
-async function readMySQLScripts(platform, workingDir) {
-    let scripts = [], i = 0;
+async function readMySQLScripts(platform, workingDir = process.cwd()) {
+    let scripts = [];
 
     if (platform === 'is') {
-        scripts[i++] = "SET SQL_MODE='ALLOW_INVALID_DATES';";
-        scripts[i++] = fs.readFileSync(__path.join(workingDir, constants.sql.is.dbscripts, constants.dbscripts.mysql)).toString();
-        scripts[i++] = fs.readFileSync(__path.join(workingDir, constants.sql.is.identity, constants.dbscripts.mysql)).toString();
-        // scripts[i++] = fs.readFileSync(__path.join(workingDir, constants.sql.is.storedProcedure, 'mysql', constants.dbscripts.mysql)).toString();
-        scripts[i++] = fs.readFileSync(__path.join(workingDir, constants.sql.is.uma, constants.dbscripts.mysql)).toString();
-        scripts[i++] = fs.readFileSync(__path.join(workingDir, constants.sql.is.consent, constants.dbscripts.mysql)).toString();
+        scripts.push("SET SQL_MODE='ALLOW_INVALID_DATES';");
+        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.dbscripts, constants.dbscripts.mysql)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.identity, constants.dbscripts.mysql)).toString());
+        // scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.storedProcedure, 'mysql', constants.dbscripts.mysql)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.uma, constants.dbscripts.mysql)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.consent, constants.dbscripts.mysql)).toString());
     }
 
     if (platform === 'apim') {
-        scripts[i++] = "SET SQL_MODE='ALLOW_INVALID_DATES';";
-        scripts[i++] = fs.readFileSync(__path.join(workingDir, constants.sql.apim.apimgt, constants.dbscripts.mysql)).toString();
+        scripts.push("SET SQL_MODE='ALLOW_INVALID_DATES';");
+        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.apim.apimgt, constants.dbscripts.mysql)).toString());
     }
 
     return scripts.join('');
@@ -64,19 +64,19 @@ async function readMySQLScripts(platform, workingDir) {
  * @param {*} workingDir path of the working directory
  * @returns combined SQL script
  */
-async function readMSSQLScripts(platform, workingDir) {
-    let scripts = [], i = 0;
+async function readMSSQLScripts(platform, workingDir = process.cwd()) {
+    let scripts = [];
 
     if (platform === 'is') {
-        scripts[i++] = fs.readFileSync(__path.join(workingDir, constants.sql.is.dbscripts, constants.dbscripts.mssql)).toString();
-        scripts[i++] = fs.readFileSync(__path.join(workingDir, constants.sql.is.identity, constants.dbscripts.mssql)).toString();
-        // scripts[i++] = fs.readFileSync(__path.join(workingDir, constants.sql.is.storedProcedure, 'mssql', constants.dbscripts.mssql)).toString();
-        scripts[i++] = fs.readFileSync(__path.join(workingDir, constants.sql.is.uma, constants.dbscripts.mssql)).toString();
-        scripts[i++] = fs.readFileSync(__path.join(workingDir, constants.sql.is.consent, constants.dbscripts.mssql)).toString();
+        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.dbscripts, constants.dbscripts.mssql)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.identity, constants.dbscripts.mssql)).toString());
+        // scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.storedProcedure, 'mssql', constants.dbscripts.mssql)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.uma, constants.dbscripts.mssql)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.consent, constants.dbscripts.mssql)).toString());
     }
 
     if (platform === 'apim') {
-        scripts[i++] = fs.readFileSync(__path.join(workingDir, constants.sql.apim.apimgt, constants.dbscripts.mssql)).toString();
+        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.apim.apimgt, constants.dbscripts.mssql)).toString());
     }
 
     return scripts.join('');
