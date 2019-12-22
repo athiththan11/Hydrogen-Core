@@ -5,8 +5,8 @@ const constants = require('../../../utils/constants');
 /**
  * method to construct registry mounting configurations
  *
- * @param {*} Element libxmljs Element instance
- * @param {*} xmlDoc parsed libxmljs Document
+ * @param {Element} Element libxmljs Element instance
+ * @param {Document} xmlDoc parsed libxmljs Document
  * @param {*} args registry parameters and config strings
  * @param {number} [offset=0] port offset value
  * @returns constructed registry mount configurations and elements [dbConfig, remoteInstance, mountGov, mountConf]

@@ -14,16 +14,16 @@ const { constructRegistry } = require('./utils/util.registry');
  * method to alter and construct registry configurations
  *
  * @param {*} workingDir path of the working directory
- * @param {*} args registry mount configuration arguments
+ * @param {*} registryConfs registry mount configuration arguments
  * @param {number} offset port offset
  */
-async function alterRegistry(workingDir, args, offset) {
+async function alterRegistry(workingDir, registryConfs, offset) {
 	logger.debug('Starting to alter registry');
 
 	try {
 		await parseXML(__path.join(workingDir, constants.path.registry)).then((parsed) => {
 			let doc = new XMLJS.Document(parsed);
-			let registryElems = constructRegistry(XMLJS.Element, doc, args, offset);
+			let registryElems = constructRegistry(XMLJS.Element, doc, registryConfs, offset);
 
 			parsed
 				.root()

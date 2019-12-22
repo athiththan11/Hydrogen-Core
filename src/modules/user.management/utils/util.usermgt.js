@@ -3,8 +3,8 @@
 /**
  * method to construct JDBC User store configurations
  *
- * @param {*} Element libxmljs Element instance
- * @param {*} xmlDoc parsed libxmljs Document
+ * @param {Element} Element libxmljs Element instance
+ * @param {Document} xmlDoc parsed libxmljs Document
  * @returns constructed user store element
  */
 function constructJDBCUserStore(Element, xmlDoc) {

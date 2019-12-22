@@ -5,8 +5,8 @@ const { logger } = require('../../../utils/util.winston');
 /**
  * method to construct datasources
  *
- * @param {XML Element Lib} Element libxmljs.Element instance
- * @param {XML Document} xmlDoc parsed libxmljs Document
+ * @param {Element} Element libxmljs.Element instance
+ * @param {Document} xmlDoc parsed libxmljs Document
  * @param {any} args datasource parameters and connection strings
  * @returns constructed datasource element
  */

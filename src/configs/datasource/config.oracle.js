@@ -3,7 +3,7 @@
 /**
  * method to retrieve Oracle datasource config strings
  *
- * @param {*} platform wso2 platform ['apim', 'iam']
+ * @param {('apim'|'is')} platform wso2 platform
  * @returns datasource configurations
  */
 function getDatasourceConfigs(platform) {

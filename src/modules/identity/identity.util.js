@@ -13,7 +13,7 @@ const { parseXML } = require('../../utils/util.parser');
  * method to alter identity configurations
  *
  * @param {*} workingDir path of the working directory
- * @param {*} jndiName JNDI Datasource name
+ * @param {string} jndiName JNDI Datasource name
  */
 async function alterIdentity(workingDir, jndiName) {
 	logger.debug('Starting to alter identity');

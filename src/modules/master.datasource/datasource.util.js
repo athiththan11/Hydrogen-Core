@@ -14,15 +14,15 @@ const { constructDatasource } = require('./utils/util.datasource');
  * method to alter and construct datasource configurations of AM_DB
  *
  * @param {*} workingDir path of the working directory
- * @param {*} args datasource configuration arguments
+ * @param {*} datasourceConfs datasource configuration arguments
  */
-async function alterMasterDSofAM(workingDir, args) {
+async function alterMasterDSofAM(workingDir, datasourceConfs) {
 	logger.debug('Starting to alter AM_DB in master-datasource');
 
 	try {
 		await parseXML(__path.join(workingDir, constants.path.masterDatasource)).then((parsed) => {
 			let doc = new XMLJS.Document(parsed);
-			let datasourceElem = constructDatasource(XMLJS.Element, doc, args);
+			let datasourceElem = constructDatasource(XMLJS.Element, doc, datasourceConfs);
 
 			let amElem = parsed
 				.root()
@@ -67,15 +67,15 @@ async function alterMasterDSofAM(workingDir, args) {
  * method to alter and construct datasource configurations of UM_DB
  *
  * @param {*} workingDir path of the working directory
- * @param {*} args datasource configuration arguments
+ * @param {*} datasourceConfs datasource configuration arguments
  */
-async function alterMasterDSofUM(workingDir, args) {
+async function alterMasterDSofUM(workingDir, datasourceConfs) {
 	logger.debug('Starting to alter UM_DB in master-datasource');
 
 	try {
 		await parseXML(__path.join(workingDir, constants.path.masterDatasource)).then((parsed) => {
 			let doc = new XMLJS.Document(parsed);
-			let datasourceElem = constructDatasource(XMLJS.Element, doc, args);
+			let datasourceElem = constructDatasource(XMLJS.Element, doc, datasourceConfs);
 
 			parsed
 				.root()
@@ -83,10 +83,10 @@ async function alterMasterDSofUM(workingDir, args) {
 				.addNextSibling(datasourceElem);
 			let altered = removeDeclaration(parsed.toString());
 			let _altered =
-				altered.substring(0, altered.indexOf(`<datasource><name>${args._name}</name>`)) +
+				altered.substring(0, altered.indexOf(`<datasource><name>${datasourceConfs._name}</name>`)) +
 				`${constants.newLine}<!-- ${constants.comment}datasource added -->\n` +
 				altered.substring(
-					altered.indexOf(`<datasource><name>${args._name}</name>`),
+					altered.indexOf(`<datasource><name>${datasourceConfs._name}</name>`),
 					altered.indexOf('</definition></datasource>') + '</definition></datasource>'.length
 				) +
 				altered.substring(
@@ -108,15 +108,15 @@ async function alterMasterDSofUM(workingDir, args) {
  * method to alter and construct datasource configurations of REG_DB
  *
  * @param {*} workingDir path of the working directory
- * @param {*} args datasource configuration arguments
+ * @param {*} datasourceConfs datasource configuration arguments
  */
-async function alterMasterDSofREG(workingDir, args) {
+async function alterMasterDSofREG(workingDir, datasourceConfs) {
 	logger.debug('Starting to alter REG_DB in master-datasource');
 
 	try {
 		await parseXML(__path.join(workingDir, constants.path.masterDatasource)).then((parsed) => {
 			let doc = new XMLJS.Document(parsed);
-			let datasourceElem = constructDatasource(XMLJS.Element, doc, args);
+			let datasourceElem = constructDatasource(XMLJS.Element, doc, datasourceConfs);
 
 			parsed
 				.root()
@@ -125,10 +125,10 @@ async function alterMasterDSofREG(workingDir, args) {
 
 			let altered = removeDeclaration(parsed.toString());
 			let _altered =
-				altered.substring(0, altered.indexOf(`<datasource><name>${args._name}</name>`)) +
+				altered.substring(0, altered.indexOf(`<datasource><name>${datasourceConfs._name}</name>`)) +
 				`${constants.newLine}<!-- ${constants.comment}datasource added -->\n` +
 				altered.substring(
-					altered.indexOf(`<datasource><name>${args._name}</name>`),
+					altered.indexOf(`<datasource><name>${datasourceConfs._name}</name>`),
 					altered.indexOf('</definition></datasource>') + '</definition></datasource>'.length
 				) +
 				altered.substring(
@@ -151,17 +151,17 @@ async function alterMasterDSofREG(workingDir, args) {
  * method to alter and construct master datasource configurations (generic function)
  *
  * @param {*} workingDir path of the working directory
- * @param {*} args datasource configuration arguments
+ * @param {*} datasourceConfs datasource configuration arguments
  */
-async function alterMasterDS(workingDir, args) {
+async function alterMasterDS(workingDir, datasourceConfs) {
 	logger.debug('Starting to alter master datasource');
 
 	try {
 		await parseXML(__path.join(workingDir, constants.path.masterDatasource)).then((parsed) => {
 			let doc = new XMLJS.Document(parsed);
-			let elem = '<datasource><name>' + args._name;
+			let elem = '<datasource><name>' + datasourceConfs._name;
 
-			let datasourceElem = constructDatasource(XMLJS.Element, doc, args);
+			let datasourceElem = constructDatasource(XMLJS.Element, doc, datasourceConfs);
 			parsed
 				.root()
 				.get('//*[local-name()="datasources"]/*[local-name()="datasource"]')

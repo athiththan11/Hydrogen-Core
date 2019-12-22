@@ -9,7 +9,7 @@ const { logger } = require('./util.winston');
 /**
  * method to parse synapse xml
  *
- * @param {any} filePath synapse xml file path
+ * @param {*} filePath synapse xml file path
  * @returns parsed xml doc
  */
 async function parseXML(filePath) {
@@ -25,9 +25,9 @@ async function parseXML(filePath) {
 /**
  * method to alter an xml element and to append a comment with the provided descriptions
  *
- * @param {any} elem an xml element
- * @param {any} tag xml tag
- * @param {any} desc comment description
+ * @param {string} elem an xml element
+ * @param {string} tag xml tag
+ * @param {string} desc comment description
  * @returns altered xml element
  */
 function alterElem(elem, tag, desc) {
@@ -42,7 +42,7 @@ function alterElem(elem, tag, desc) {
 /**
  * method to comment an xml element
  *
- * @param {any} elem xml element to be commented
+ * @param {string} elem xml element to be commented
  * @returns commented element
  */
 function commentElem(elem) {
@@ -52,7 +52,7 @@ function commentElem(elem) {
 /**
  * method to remove declaration of xml version tags
  *
- * @param {*} xml xml document
+ * @param {string} xml xml document
  * @returns declaration removed xml document
  */
 function removeDeclaration(xml) {

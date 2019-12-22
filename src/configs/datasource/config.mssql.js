@@ -3,7 +3,7 @@
 /**
  * method to retrieve MSSQL datasource config strings
  *
- * @param {*} platform wso2 platform ['apim', 'iam']
+ * @param {('apim'|'is')} platform wso2 platform
  * @param {*} options deployment setup options { options: { command: [setup || replace ]}}
  * @returns datasource configurations
  */
