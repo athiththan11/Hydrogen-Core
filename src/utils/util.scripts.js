@@ -3,7 +3,7 @@
 const __path = require('path');
 const fs = require('fs');
 
-const constants = require('./constants');
+const HydrogenConfigMaps = require('../maps/map.hydrogen');
 
 /**
  * method to read and return postgre sql scripts
@@ -15,16 +15,16 @@ const constants = require('./constants');
 async function readPostgreSQLScripts(platform, workingDir = process.cwd()) {
     let scripts = [];
 
-    if (platform === 'is') {
-        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.dbscripts, constants.dbscripts.postgre)).toString());
-        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.identity, constants.dbscripts.postgre)).toString());
-        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.storedProcedure, 'postgre', constants.dbscripts.postgre)).toString());
-        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.uma, constants.dbscripts.postgre)).toString());
-        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.consent, constants.dbscripts.postgre)).toString());
+    if (platform === HydrogenConfigMaps.platform.is) {
+        scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.is.dbscripts, HydrogenConfigMaps.datasource.scripts.postgre)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.is.identity, HydrogenConfigMaps.datasource.scripts.postgre)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.is.storedProcedure, HydrogenConfigMaps.datasource.postgre, HydrogenConfigMaps.datasource.scripts.postgre)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.is.uma, HydrogenConfigMaps.datasource.scripts.postgre)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.is.consent, HydrogenConfigMaps.datasource.scripts.postgre)).toString());
     }
 
-    if (platform === 'apim') {
-        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.apim.apimgt, constants.dbscripts.postgre)).toString());
+    if (platform === HydrogenConfigMaps.platform.apim) {
+        scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.apim.apimgt, HydrogenConfigMaps.datasource.scripts.postgre)).toString());
     }
 
     return scripts.join('\n');
@@ -40,18 +40,18 @@ async function readPostgreSQLScripts(platform, workingDir = process.cwd()) {
 async function readMySQLScripts(platform, workingDir = process.cwd()) {
     let scripts = [];
 
-    if (platform === 'is') {
-        scripts.push("SET SQL_MODE='ALLOW_INVALID_DATES';");
-        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.dbscripts, constants.dbscripts.mysql)).toString());
-        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.identity, constants.dbscripts.mysql)).toString());
-        // scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.storedProcedure, 'mysql', constants.dbscripts.mysql)).toString());
-        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.uma, constants.dbscripts.mysql)).toString());
-        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.consent, constants.dbscripts.mysql)).toString());
+    if (platform === HydrogenConfigMaps.platform.is) {
+        scripts.push(HydrogenConfigMaps.scripts.mysql.allowInvalidDates);
+        scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.is.dbscripts, HydrogenConfigMaps.datasource.scripts.mysql)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.is.identity, HydrogenConfigMaps.datasource.scripts.mysql)).toString());
+        // scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.is.storedProcedure, HydrogenConfigMap.datasource.mysql, HydrogenConfigMaps.datasource.scripts.mysql)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.is.uma, HydrogenConfigMaps.datasource.scripts.mysql)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.is.consent, HydrogenConfigMaps.datasource.scripts.mysql)).toString());
     }
 
-    if (platform === 'apim') {
-        scripts.push("SET SQL_MODE='ALLOW_INVALID_DATES';");
-        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.apim.apimgt, constants.dbscripts.mysql)).toString());
+    if (platform === HydrogenConfigMaps.platform.apim) {
+        scripts.push(HydrogenConfigMaps.scripts.mysql.allowInvalidDates);
+        scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.apim.apimgt, HydrogenConfigMaps.datasource.scripts.mysql)).toString());
     }
 
     return scripts.join('');
@@ -67,21 +67,49 @@ async function readMySQLScripts(platform, workingDir = process.cwd()) {
 async function readMSSQLScripts(platform, workingDir = process.cwd()) {
     let scripts = [];
 
-    if (platform === 'is') {
-        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.dbscripts, constants.dbscripts.mssql)).toString());
-        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.identity, constants.dbscripts.mssql)).toString());
-        // scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.storedProcedure, 'mssql', constants.dbscripts.mssql)).toString());
-        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.uma, constants.dbscripts.mssql)).toString());
-        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.is.consent, constants.dbscripts.mssql)).toString());
+    if (platform === HydrogenConfigMaps.platform.is) {
+        scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.is.dbscripts, HydrogenConfigMaps.datasource.scripts.mssql)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.is.identity, HydrogenConfigMaps.datasource.scripts.mssql)).toString());
+        // scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.is.storedProcedure, HydrogenConfigMap.datasource.mssql, HydrogenConfigMaps.datasource.scripts.mssql)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.is.uma, HydrogenConfigMaps.datasource.scripts.mssql)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.is.consent, HydrogenConfigMaps.datasource.scripts.mssql)).toString());
     }
 
-    if (platform === 'apim') {
-        scripts.push(fs.readFileSync(__path.join(workingDir, constants.sql.apim.apimgt, constants.dbscripts.mssql)).toString());
+    if (platform === HydrogenConfigMaps.platform.apim) {
+        scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.apim.apimgt, HydrogenConfigMaps.datasource.scripts.mssql)).toString());
     }
 
     return scripts.join('');
 }
 
+/**
+ * method to read and return postgre sql scripts for api manager datasources including am, um, & reg db
+ *
+ * @param {*} options command options
+ * @param {*} [workingDir=process.cwd()] path of the working directory
+ * @returns a collection of scripts for am, um & reg dbs
+ */
+async function readAPIManagerPostgresSQLScripts(options, workingDir = process.cwd()) {
+    let scripts = [];
+
+    if (!options['is-km'] && !options.distributed) {
+        scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.apim.apimgt, HydrogenConfigMaps.datasource.scripts.postgre)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.apim.dbscripts, HydrogenConfigMaps.datasource.scripts.postgre)).toString());
+    }
+
+    // TODO: is-km script implementation
+
+    // keywords are matched to be in constants > apim.setup
+    let scriptCollection = {
+        apimgtdb: scripts[0],
+        userdb: scripts[1],
+        regdb: scripts[1]
+    }
+    return scriptCollection;
+}
+
+
 exports.readPostgreSQLScripts = readPostgreSQLScripts;
 exports.readMySQLScripts = readMySQLScripts;
 exports.readMSSQLScripts = readMSSQLScripts;
+exports.readAPIManagerPostgresSQLScripts = readAPIManagerPostgresSQLScripts;

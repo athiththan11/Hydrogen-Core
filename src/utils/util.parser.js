@@ -13,13 +13,13 @@ const { logger } = require('./util.winston');
  * @returns parsed xml doc
  */
 async function parseXML(filePath) {
-    try {
-        let parsed = fs.readFileSync(filePath, 'utf8');
-        parsed = XMLJS.parseXml(parsed);
-        return parsed;
-    } catch (err) {
-        logger.error(err);
-    }
+	try {
+		let parsed = fs.readFileSync(filePath, 'utf8');
+		parsed = XMLJS.parseXml(parsed);
+		return parsed;
+	} catch (err) {
+		logger.error(err);
+	}
 }
 
 /**
