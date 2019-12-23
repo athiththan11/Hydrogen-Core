@@ -15,7 +15,7 @@ const { parseXML, alterElem } = require('../../utils/util.parser');
  * @param {*} workingDir path of the working directory
  * @param {number} [offset=0] offset value as integer
  */
-async function configPortOffset(workingDir = process.cwd(), offset = 0) {
+async function configurePortOffset(workingDir = process.cwd(), offset = 0) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to configure port-offset in carbon with offset ' + offset);
 
 	if (offset > 0) {
@@ -39,4 +39,4 @@ async function configPortOffset(workingDir = process.cwd(), offset = 0) {
 	}
 }
 
-exports.configPortOffset = configPortOffset;
+exports.configurePortOffset = configurePortOffset;
