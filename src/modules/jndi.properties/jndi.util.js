@@ -4,6 +4,7 @@ const __path = require('path');
 const fs = require('fs');
 
 const constants = require('../../utils/constants');
+const HydrogenConfigMaps = require('../../maps/map.hydrogen');
 const { logger } = require('../../utils/util.winston');
 
 /**
