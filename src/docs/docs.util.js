@@ -1,6 +1,7 @@
 'use strict';
 
 const { logger } = require('../utils/util.winston');
+const HydrogenConfigMaps = require('../maps/map.hydrogen');
 
 /**
  * method to generate docs and logs for the database drivers based on given database type
@@ -9,23 +10,19 @@ const { logger } = require('../utils/util.winston');
  */
 function generateDBDriverDocs(databaseType) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Generating database driver docs');
-	
+
 	switch (databaseType.toLowerCase()) {
-		case 'postgres':
-			logger.info('Please download the Postgre JDBC Driver from https://jdbc.postgresql.org/');
+		case HydrogenConfigMaps.datasource.postgre:
+			logger.info('Please download the Postgre JDBC Driver from ' + HydrogenConfigMaps.jdbcDrivers.postgre);
 			break;
-		case 'mysql':
-			logger.info('Please download the MySQL JDBC Driver from https://www.mysql.com/products/connector/');
+		case HydrogenConfigMaps.datasource.mysql:
+			logger.info('Please download the MySQL JDBC Driver from ' + HydrogenConfigMaps.jdbcDrivers.mysql);
 			break;
-		case 'mssql':
-			logger.info(
-				'Please download the MSSQL JDBC Driver from https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server?view=sql-server-2017'
-			);
+		case HydrogenConfigMaps.datasource.mssql:
+			logger.info('Please download the MSSQL JDBC Driver from ' + HydrogenConfigMaps.jdbcDrivers.mssql);
 			break;
-		case 'oracle':
-			logger.info(
-				'Please download the ORacle JDBC Driver from https://www.oracle.com/technetwork/database/application-development/jdbc/downloads/index.html'
-			);
+		case HydrogenConfigMaps.datasource.oracle:
+			logger.info('Please download the ORacle JDBC Driver from ' + HydrogenConfigMaps.jdbcDrivers.oracle);
 			break;
 	}
 }
