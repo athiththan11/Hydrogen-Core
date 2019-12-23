@@ -1,0 +1,8 @@
+{
+    "Hydrogen Debug Log": {
+        "scope": "javascript,typescript",
+        "prefix": "hydebug",
+        "body": "if (process.env.HYDROGEN_DEBUG) logger.debug('$1');",
+        "description": "Debug log for Hydrogen Core"
+    }
+}
