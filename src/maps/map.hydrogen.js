@@ -100,9 +100,14 @@ module.exports = {
 			setup: ['apimgtdb', 'userdb', 'regdb'],
 		},
 		is: {
-			single: 'wso2postgres',
+			single: {
+				mssql: 'wso2mssql',
+				mysql: 'wso2mysql',
+				postgre: 'wso2postgres',
+			},
 		},
 		timeout: {
+			mssql: 10000,
 			mysql: 20000,
 			postgre: 5000,
 		},
