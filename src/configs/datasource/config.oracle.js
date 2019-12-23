@@ -1,5 +1,7 @@
 'use strict';
 
+const HydrogenConfigMaps = require('../../maps/map.hydrogen');
+
 /**
  * method to retrieve Oracle datasource config strings
  *
@@ -24,7 +26,7 @@ function getDatasourceConfigs(platform) {
 		_validationQuery: 'SELECT 1 FROM DUAL',
 	};
 
-	if (platform === 'apim') {
+	if (platform === HydrogenConfigMaps.platform.apim) {
 		args._connectionUrl = 'jdbc:oracle:thin:@localhost:1521/wso2oracle';
 		args._defaultAutoCommit = 'true';
 		args._description = 'The datasource used for API Manager database';

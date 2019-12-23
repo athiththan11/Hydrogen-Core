@@ -1,5 +1,7 @@
 'use strict';
 
+const HydrogenConfigMaps = require('../../maps/map.hydrogen');
+
 /**
  * method to retrieve Postgre datasource config strings
  *
@@ -25,7 +27,7 @@ function getDatasourceConfigs(platform, options) {
 		_validationQuery: 'SELECT 1; COMMIT',
 	};
 
-	if (platform === 'apim') {
+	if (platform === HydrogenConfigMaps.platform.apim) {
 		args._connectionUrl = 'jdbc:postgresql://localhost:5432/wso2amdb';
 		args._defaultAutoCommit = 'true';
 		args._description = 'The datasource used for API Manager database';
@@ -33,7 +35,7 @@ function getDatasourceConfigs(platform, options) {
 		args._name = 'WSO2AM_DB';
 	}
 
-	if (options.setup && platform === 'apim') {
+	if (options.setup && platform === HydrogenConfigMaps.platform.apim) {
 		let confs = {};
 		args._connectionUrl = 'jdbc:postgresql://localhost:5432/apimgtdb';
 		confs.am = { ...args };

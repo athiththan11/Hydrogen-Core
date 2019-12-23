@@ -1,5 +1,7 @@
 'use strict';
 
+const HydrogenConfigMaps = require('../../maps/map.hydrogen');
+
 /**
  * method to retrieve MySQL datasource config strings
  *
@@ -26,7 +28,7 @@ function getDatasourceConfigs(platform, options) {
 		_validationQuery: 'SELECT 1',
 	};
 
-	if (platform === 'apim') {
+	if (platform === HydrogenConfigMaps.platform.apim) {
 		args._connectionUrl =
 			'jdbc:mysql://localhost:3306/wso2amdb?autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true';
 		args._description = 'The datasource used for API Manager database';
@@ -34,7 +36,7 @@ function getDatasourceConfigs(platform, options) {
 		args._name = 'WSO2AM_DB';
 	}
 
-	if (options.setup && platform === 'apim') {
+	if (options.setup && platform === HydrogenConfigMaps.platform.apim) {
 		let confs = {};
 		args._connectionUrl =
 			'jdbc:mysql://localhost:3306/apimgtdb?autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true';

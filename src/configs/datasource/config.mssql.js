@@ -1,5 +1,7 @@
 'use strict';
 
+const HydrogenConfigMaps = require('../../maps/map.hydrogen');
+
 /**
  * method to retrieve MSSQL datasource config strings
  *
@@ -25,7 +27,7 @@ function getDatasourceConfigs(platform, options) {
 		_validationQuery: 'SELECT 1',
 	};
 
-	if (platform === 'apim') {
+	if (platform === HydrogenConfigMaps.platform.apim) {
 		args._connectionUrl =
 			'jdbc:sqlserver://localhost:1433;databaseName=wso2amdb;SendStringParametersAsUnicode=false';
 		args._defaultAutoCommit = 'true';
@@ -34,7 +36,7 @@ function getDatasourceConfigs(platform, options) {
 		args._name = 'WSO2AM_DB';
 	}
 
-	if (options.setup && platform === 'apim') {
+	if (options.setup && platform === HydrogenConfigMaps.platform.apim) {
 		let confs = {};
 		args._connectionUrl =
 			'jdbc:sqlserver://localhost:1433;databaseName=apimgtdb;SendStringParametersAsUnicode=false';
