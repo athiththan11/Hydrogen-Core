@@ -24,7 +24,7 @@ async function createPostgreDockerContainer(platform, options, workingDir = proc
 	let chance = generateRandomAnimalName();
 	instance.pull(`${postgreDockerConstants.postgre.image}:${postgreDockerConstants.postgre.tag}`, (err, stream) => {
 		if (!err) instance.modem.followProgress(stream, onFinished, onProgress);
-		else logger.error(err);
+		else return logger.error(err);
 
 		function onFinished(err) {
 			if (!err) {
@@ -45,7 +45,7 @@ async function createPostgreDockerContainer(platform, options, workingDir = proc
 							}
 						});
 					});
-			} else logger.error(err);
+			} else return logger.error(err);
 		}
 
 		function onProgress() {
@@ -73,27 +73,27 @@ async function executePostgreSQLScripts(platform, workingDir = process.cwd()) {
 					const client = new Client(config);
 					client.connect();
 					client.query(combinedSQLScript, (err) => {
-						if (err) logger.error(err);
+						if (err) return logger.error(err);
 						client.end();
 					});
 				})
 				.catch((err) => {
-					logger.error(err);
+					return logger.error(err);
 				});
 		}
 		if (platform === HydrogenConfigMaps.platform.is) {
-			createdb(config, HydrogenConfigMaps.docker.is.single)
+			createdb(config, HydrogenConfigMaps.docker.is.single.postgre)
 				.then(() => {
-					config.database = HydrogenConfigMaps.docker.is.single;
+					config.database = HydrogenConfigMaps.docker.is.single.postgre;
 					const client = new Client(config);
 					client.connect();
 					client.query(combinedSQLScript, (err) => {
-						if (err) logger.error(err);
+						if (err) return logger.error(err);
 						client.end();
 					});
 				})
 				.catch((err) => {
-					logger.error(err);
+					return logger.error(err);
 				});
 		}
 	}, HydrogenConfigMaps.docker.timeout.postgre);
@@ -133,12 +133,12 @@ async function loopAPIManagerDatasources(options, loopCount, workingDir = proces
 				const client = new Client(config);
 				client.connect();
 				client.query(combinedSQLScript[HydrogenConfigMaps.docker.apim.setup[loopCount]], (err) => {
-					if (err) logger.error(err);
+					if (err) return logger.error(err);
 					client.end();
 				});
 			})
 			.catch((err) => {
-				logger.error(err);
+				return logger.error(err);
 			});
 		await loopAPIManagerDatasources(options, ++loopCount, workingDir);
 	}

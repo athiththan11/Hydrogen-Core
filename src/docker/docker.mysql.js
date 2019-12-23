@@ -3,12 +3,11 @@
 const Docker = require('dockerode');
 const { Client } = require('mysql');
 
-const constants = require('../utils/constants');
 const HydrogenConfigMaps = require('../maps/map.hydrogen');
 const mysqlDockerConstants = require('./configs/config.mysql');
 const { logger } = require('../utils/util.winston');
 const { generateRandomAnimalName } = require('../utils/util');
-const { readMySQLScripts } = require('../utils/util.scripts');
+const { readMySQLScripts, readAPIManagerMySQLScripts } = require('../utils/util.scripts');
 
 /**
  * method to create a docker container for the mysql datasources
@@ -24,7 +23,7 @@ async function createMySQLDockerContainer(platform, options, workingDir = proces
 	let chance = generateRandomAnimalName();
 	instance.pull(`${mysqlDockerConstants.mysql.image}:${mysqlDockerConstants.mysql.tag}`, (err, stream) => {
 		if (!err) instance.modem.followProgress(stream, onFinished, onProgress);
-		else logger.error(err);
+		else return logger.error(err);
 
 		function onFinished(err) {
 			if (!err) {
@@ -41,12 +40,12 @@ async function createMySQLDockerContainer(platform, options, workingDir = proces
 						logger.info('Created MySQL Docker container : ' + chance);
 						container.start().then(() => {
 							if (options.generate) {
-								if (options.setup) executeSetupMySQLScripts(ocli, product, paths, opts);
+                                if (options.setup) executeAPIManagerMySQLScripts(options, workingDir);
 								else executeMySQLScripts(platform, workingDir);
 							}
 						});
 					});
-			} else logger.error(err);
+			} else return logger.error(err);
 		}
 		function onProgress() {
 			logger.info(`Pulling MySQL Docker Image`);
@@ -69,7 +68,7 @@ async function executeMySQLScripts(platform, workingDir = process.cwd()) {
 		let client = Client.createConnection(config);
 		if (platform === HydrogenConfigMaps.platform.apim) {
 			client.connect((err) => {
-				if (err) logger.error(err);
+				if (err) return logger.error(err);
 				client.query(
 					'create database ' +
 						HydrogenConfigMaps.docker.apim.single +
@@ -79,7 +78,7 @@ async function executeMySQLScripts(platform, workingDir = process.cwd()) {
 						config.database = HydrogenConfigMaps.docker.apim.single;
 						const newClient = Client.createConnection(config);
 						newClient.query(combinedSQLScript, (err) => {
-							if (err) logger.error(err);
+							if (err) return logger.error(err);
 							newClient.end();
 							client.end();
 						});
@@ -92,11 +91,95 @@ async function executeMySQLScripts(platform, workingDir = process.cwd()) {
 				);
 			});
 		}
+		if (platform === HydrogenConfigMaps.platform.is) {
+			client.connect((err) => {
+				if (err) return logger.error(err);
+				client.query(
+					'create database ' +
+						HydrogenConfigMaps.docker.is.single.mysql +
+						' charset latin1 collate latin1_swedish_ci',
+					(err) => {
+						if (err) return logger.error(err);
+						config.database = HydrogenConfigMaps.docker.is.single.mysql;
+						const newClient = Client.createConnection(config);
+						newClient.query(combinedSQLScript, (err) => {
+							if (err) return logger.error(err);
+							newClient.end();
+							client.end();
+						});
+					}
+				);
+				client.query(
+					`grant all on ` +
+						HydrogenConfigMaps.docker.is.single.mysql +
+						`.* to '${'mysql'}'@'%'; FLUSH PRIVILEGES;`,
+					(err) => {
+						if (err) return logger.error(err);
+					}
+				);
+			});
+		}
 	}, HydrogenConfigMaps.docker.timeout.mysql);
 }
 
-async function executeAPIManagerMySQLScripts() {
-	setTimeout(() => {}, 20000);
+/**
+ * method to execute mysql sql scripts for api manager datasources
+ *
+ * @param {*} options command options
+ * @param {*} [workingDir=process.cwd()] path of the working directory
+ */
+async function executeAPIManagerMySQLScripts(options, workingDir = process.cwd()) {
+    if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to execute MySQL scripts for API Manager datasources');
+
+    setTimeout(() => {
+        loopAPIManagerDatasources(options, 0, workingDir);
+    }, HydrogenConfigMaps.docker.timeout.mysql);
 }
 
-async function loopAPIManagerDatasources() {}
+/**
+ * method to loop through api manager datasources [am, um, reg] to execute sql scripts
+ *
+ * @param {*} options command options
+ * @param {number} loopCount loop count
+ * @param {*} [workingDir=process.cwd()] path of the working directory
+ */
+async function loopAPIManagerDatasources(options, loopCount, workingDir = process.cwd()) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Looping through API Manager datasources');
+
+	let config = mysqlDockerConstants.default;
+	let datasourceLength = HydrogenConfigMaps.docker.apim.setup.length;
+	if (loopCount < datasourceLength) {
+        let combinedSQLScript = await readAPIManagerMySQLScripts(options, workingDir);
+		let client = Client.createConnection(config);
+		client.connect((err) => {
+			if (err) return logger.error(err);
+			client.query(
+				`create database ` +
+					HydrogenConfigMaps.docker.apim.setup[loopCount] +
+					` charset latin1 collate latin1_swedish_ci;`,
+				(err) => {
+					if (err) return logger.error(err);
+					config.database = HydrogenConfigMaps.docker.apim.setup[loopCount];
+					const subclient = Client.createConnection(config);
+					subclient.query(combinedSQLScript[HydrogenConfigMaps.docker.apim.setup[loopCount]], (err) => {
+						if (err) return logger.error(err);
+						subclient.end();
+						client.end();
+					});
+				}
+			);
+
+			client.query(
+				`grant all on ` +
+					HydrogenConfigMaps.docker.apim.setup[loopCount] +
+					`.* to '${'mysql'}'@'%'; FLUSH PRIVILEGES;`,
+				(err) => {
+					if (err) return logger.error(err);
+                    loopAPIManagerDatasources(options, ++loopCount, workingDir);
+				}
+			);
+		});
+	}
+}
+
+exports.createMySQLDockerContainer = createMySQLDockerContainer;
