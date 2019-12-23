@@ -6,6 +6,7 @@ const XMLJS = require('libxmljs');
 const prettify = require('prettify-xml');
 
 const constants = require('../../utils/constants');
+const HydrogenConfigMap = require('../../maps/map.hydrogen');
 const { logger } = require('../../utils/util.winston');
 const { parseXML } = require('../../utils/util.parser');
 const { constructJDBCUserStore } = require('../user.management/utils/util.usermgt');
@@ -20,34 +21,28 @@ async function alterUserManagement(convertLDAPToJDBC, workingDir = process.cwd()
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter user-management');
 
 	try {
-		await parseXML(__path.join(workingDir, constants.path.userManagement)).then((parsed) => {
+		await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.userManagement)).then((parsed) => {
 			let doc = new XMLJS.Document(parsed);
-			let propertyElem = new XMLJS.Element(doc, 'Property', 'jdbc/WSO2UM_DB').attr({ name: 'dataSource' });
+			let propertyElem = new XMLJS.Element(doc, 'Property', HydrogenConfigMap.strings.jdbc_wso2um_db).attr({
+				name: 'dataSource',
+			});
 
 			let datasourceElem = parsed
 				.root()
-				.get(
-					'//*[local-name()="Realm"]/*[local-name()="Configuration"]/*[local-name()="Property"][@name="dataSource"]'
-				);
+				.get(HydrogenConfigMap.xmlPaths.usermgt.realm_configuration_property_datasource);
 			let commentElem = new XMLJS.Comment(doc, datasourceElem.toString());
 
 			parsed
 				.root()
-				.get(
-					'//*[local-name()="Realm"]/*[local-name()="Configuration"]/*[local-name()="Property"][@name="dataSource"]'
-				)
+				.get(HydrogenConfigMap.xmlPaths.usermgt.realm_configuration_property_datasource)
 				.addNextSibling(propertyElem);
 			parsed
 				.root()
-				.get(
-					'//*[local-name()="Realm"]/*[local-name()="Configuration"]/*[local-name()="Property"][@name="dataSource"][1]'
-				)
+				.get(HydrogenConfigMap.xmlPaths.usermgt.realm_configuration_property_datasource + '[1]')
 				.remove();
 			parsed
 				.root()
-				.get(
-					'//*[local-name()="Realm"]/*[local-name()="Configuration"]/*[local-name()="Property"][@name="dataSource"]'
-				)
+				.get(HydrogenConfigMap.xmlPaths.usermgt.realm_configuration_property_datasource)
 				.addPrevSibling(commentElem);
 
 			if (convertLDAPToJDBC) {
@@ -57,36 +52,34 @@ async function alterUserManagement(convertLDAPToJDBC, workingDir = process.cwd()
 
 				let ldapElem = parsed
 					.root()
-					.get(
-						'//*[local-name()="Realm"]/*[local-name()="UserStoreManager"][@class="org.wso2.carbon.user.core.ldap.ReadWriteLDAPUserStoreManager"]'
-					);
+					.get(HydrogenConfigMap.xmlPaths.usermgt.realm_userstoremanager_readwriteldapuserstoremanager);
 				commentElem = new XMLJS.Comment(doc, ldapElem.toString());
 				parsed
 					.root()
-					.get(
-						'//*[local-name()="Realm"]/*[local-name()="UserStoreManager"][@class="org.wso2.carbon.user.core.ldap.ReadWriteLDAPUserStoreManager"]'
-					)
+					.get(HydrogenConfigMap.xmlPaths.usermgt.realm_userstoremanager_readwriteldapuserstoremanager)
 					.addNextSibling(jdbcElem);
 				parsed
 					.root()
-					.get(
-						'//*[local-name()="Realm"]/*[local-name()="UserStoreManager"][@class="org.wso2.carbon.user.core.ldap.ReadWriteLDAPUserStoreManager"]'
-					)
+					.get(HydrogenConfigMap.xmlPaths.usermgt.realm_userstoremanager_readwriteldapuserstoremanager)
 					.remove();
 				parsed
 					.root()
-					.get(
-						'//*[local-name()="Realm"]/*[local-name()="UserStoreManager"][@class="org.wso2.carbon.user.core.jdbc.JDBCUserStoreManager"]'
-					)
+					.get(HydrogenConfigMap.xmlPaths.usermgt.realm_userstoremanager_jdbcuserstoremanager)
 					.addPrevSibling(commentElem);
 			}
 
 			let altered = parsed.toString();
 
 			let _altered =
-				altered.substring(0, altered.indexOf('<Property name="dataSource">jdbc/WSO2UM_DB')) +
+				altered.substring(
+					0,
+					altered.indexOf('<Property name="dataSource">' + HydrogenConfigMap.strings.jdbc_wso2um_db)
+				) +
 				`${constants.newLine}<!-- ${constants.comment}datasource changed -->\n` +
-				altered.substring(altered.indexOf('<Property name="dataSource">jdbc/WSO2UM_DB'), altered.length);
+				altered.substring(
+					altered.indexOf('<Property name="dataSource">' + HydrogenConfigMap.strings.jdbc_wso2um_db),
+					altered.length
+				);
 
 			if (convertLDAPToJDBC) {
 				_altered =
@@ -105,7 +98,7 @@ async function alterUserManagement(convertLDAPToJDBC, workingDir = process.cwd()
 			}
 
 			fs.writeFileSync(
-				__path.join(workingDir, constants.path.userManagement),
+				__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.userManagement),
 				prettify(_altered, { indent: 4 }) + '\n',
 				constants.utf8
 			);

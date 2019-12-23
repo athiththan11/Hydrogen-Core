@@ -5,6 +5,7 @@ const fs = require('fs');
 const XMLJS = require('libxmljs');
 
 const constants = require('../../utils/constants');
+const HydrogenConfigMaps = require('../../maps/map.hydrogen');
 const { logger } = require('../../utils/util.winston');
 const { parseXML, alterElem } = require('../../utils/util.parser');
 
@@ -19,18 +20,18 @@ async function configPortOffset(workingDir = process.cwd(), offset = 0) {
 
 	if (offset > 0) {
 		try {
-			await parseXML(__path.join(workingDir, constants.path.carbon)).then((parsed) => {
+			await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.carbon)).then((parsed) => {
 				let doc = new XMLJS.Document(parsed);
 				let offSetElem = new XMLJS.Element(doc, 'Offset', offset.toString());
 				parsed
 					.root()
-					.get('//*[local-name()="Ports"]/*[local-name()="Offset"]')
+					.get(HydrogenConfigMaps.xmlPaths.carbon.ports_offset)
 					.addNextSibling(offSetElem);
 
-				let _altered = parsed.toString().replace('encoding="UTF-8"', 'encoding="ISO-8859-1"');
+				let _altered = parsed.toString().replace(HydrogenConfigMaps.encodings.utf8, HydrogenConfigMaps.encodings.iso_8859_1);
 				_altered = alterElem(_altered, 'Offset', `port offset ${offset}`);
 
-				fs.writeFileSync(__path.join(workingDir, constants.path.carbon), _altered, constants.utf8);
+				fs.writeFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.carbon), _altered, constants.utf8);
 			});
 		} catch (err) {
 			logger.error(err);

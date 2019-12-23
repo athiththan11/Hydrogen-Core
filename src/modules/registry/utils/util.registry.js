@@ -1,6 +1,6 @@
 'use strict';
 
-const constants = require('../../../utils/constants');
+const HydrogenConfigMaps = require('../../../maps/map.hydrogen');
 const { logger } = require('../../../utils/util.winston');
 
 /**
@@ -18,7 +18,7 @@ function constructRegistry(Element, xmlDoc, args, offset = 0) {
 	let dbConfig = new Element(xmlDoc, 'dbConfig').attr({ name: 'govregistry' });
     dbConfig.node('dataSource', args._jndiName);
     
-    let remoteInstance = new Element(xmlDoc, 'remoteInstance').attr({ url: `https://localhost:${constants.ports._9443 + offset}/registry` });
+    let remoteInstance = new Element(xmlDoc, 'remoteInstance').attr({ url: `https://localhost:${HydrogenConfigMaps.ports._9443 + offset}/registry` });
 	remoteInstance
 		.node('id', 'gov')
 		.parent()

@@ -6,6 +6,7 @@ const XMLJS = require('libxmljs');
 const prettify = require('prettify-xml');
 
 const constants = require('../../utils/constants');
+const HydrogenConfigMaps = require('../../maps/map.hydrogen');
 const { logger } = require('../../utils/util.winston');
 const { parseXML } = require('../../utils/util.parser');
 const { constructRegistry } = require('./utils/util.registry');
@@ -21,29 +22,29 @@ async function alterRegistry(registryConfs, offset, workingDir = process.cwd()) 
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter registry');
 
 	try {
-		await parseXML(__path.join(workingDir, constants.path.registry)).then((parsed) => {
+		await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.registry)).then((parsed) => {
 			let doc = new XMLJS.Document(parsed);
 			let registryElems = constructRegistry(XMLJS.Element, doc, registryConfs, offset);
 
 			parsed
 				.root()
-				.get('//*[local-name()="dbConfig"][@name="wso2registry"]')
+				.get(HydrogenConfigMaps.xmlPaths.registry.dbconfig_wso2registry)
 				.addNextSibling(registryElems.shift());
 			parsed
 				.root()
-				.get('//*[local-name()="dbConfig"][2]')
+				.get(HydrogenConfigMaps.xmlPaths.registry.dbconfig + '[2]')
 				.addNextSibling(registryElems.shift());
 			parsed
 				.root()
-				.get('//*[local-name()="remoteInstance"]')
+				.get(HydrogenConfigMaps.xmlPaths.registry.remoteinstance)
 				.addNextSibling(registryElems.shift());
 			parsed
 				.root()
-				.get('//*[local-name()="mount"]')
+				.get(HydrogenConfigMaps.xmlPaths.registry.mount)
 				.addNextSibling(registryElems.shift());
 
 			let altered = parsed.toString();
-			altered = altered.replace('encoding="UTF-8"', 'encoding="ISO-8859-1"');
+			altered = altered.replace(HydrogenConfigMaps.encodings.utf8, HydrogenConfigMaps.encodings.iso_8859_1);
 
 			let _altered =
 				altered.substring(0, altered.indexOf('<dbConfig name="govregistry">')) +
@@ -51,7 +52,7 @@ async function alterRegistry(registryConfs, offset, workingDir = process.cwd()) 
 				altered.substring(altered.indexOf('<dbConfig name="govregistry">'));
 
 			fs.writeFileSync(
-				__path.join(workingDir, constants.path.registry),
+				__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.registry),
 				prettify(_altered, { indent: 4 }) + '\n',
 				constants.utf8
 			);

@@ -16,7 +16,7 @@ async function alterJNDIProperties(workingDir = process.cwd(), tmOffset = 0) {
     if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter jndi.properties');
     
 	try {
-		await fs.readFile(__path.join(workingDir, constants.path.jndiProperties), constants.utf8).then((parsed) => {
+		await fs.readFile(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.jndiProperties), constants.utf8).then((parsed) => {
 			let altered = parsed;
 
 			let _altered =
@@ -32,7 +32,7 @@ connectionfactory.TopicConnectionFactory = amqp://admin:admin@clientid/carbon?br
 ` +
 				altered.substring(altered.indexOf('connectionfactory.QueueConnectionFactory'));
 
-			fs.writeFileSync(__path.join(workingDir, constants.path.jndiProperties), _altered, constants.utf8);
+			fs.writeFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.jndiProperties), _altered, constants.utf8);
 		});
 	} catch (err) {
 		logger.error(err);
