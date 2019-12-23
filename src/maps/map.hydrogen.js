@@ -4,6 +4,12 @@ module.exports = {
 	platform: {
 		apim: 'apim',
 		is: 'is',
+		iskm: 'is-km',
+	},
+	servers: {
+		apim: 'wso2am',
+		is: 'wso2is',
+		iskm: 'wso2is-km',
 	},
 	datasource: {
 		mssql: 'mssql',
@@ -19,6 +25,8 @@ module.exports = {
 	ports: {
 		_9443: 9443,
 		_5672: 5672,
+		_8243: 8243,
+		_8280: 8280,
 	},
 	jdbcDrivers: {
 		mssql:
@@ -34,6 +42,7 @@ module.exports = {
 	},
 	artifactPaths: {
 		conf: {
+			apiManager: '/repository/conf/api-manager.xml',
 			carbon: '/repository/conf/carbon.xml',
 			identity: '/repository/conf/identity/identity.xml',
 			jndiProperties: '/repository/conf/jndi.properties',
@@ -84,6 +93,9 @@ module.exports = {
 		},
 		carbon: {
 			ports_offset: '//*[local-name()="Ports"]/*[local-name()="Offset"]',
+		},
+		apimanager: {
+			authmanager_serverurl: '//*[local-name()="AuthManager"]/*[local-name()="ServerURL"]',
 		},
 	},
 	strings: {
