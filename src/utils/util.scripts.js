@@ -99,7 +99,7 @@ async function readAPIManagerPostgresSQLScripts(options, workingDir = process.cw
 
     // TODO: is-km script implementation
 
-    // keywords are matched to be in constants > apim.setup
+    // keywords are matched to be in hydrogen config maps > docker > apim.setup
     let scriptCollection = {
         apimgtdb: scripts[0],
         userdb: scripts[1],
@@ -108,8 +108,62 @@ async function readAPIManagerPostgresSQLScripts(options, workingDir = process.cw
     return scriptCollection;
 }
 
+/**
+ * method to read and return mysql sql scripts for api manager datasources including am, um, & reg db
+ *
+ * @param {*} options command options
+ * @param {*} [workingDir=process.cwd()] path of the working directory
+ * @returns a collection of scripts for am, um & reg dbs
+ */
+async function readAPIManagerMySQLScripts(options, workingDir = process.cwd()) {
+    let scripts = [];
+
+    if (!options['is-km'] && !options.distributed) {
+        scripts.push(HydrogenConfigMaps.scripts.mysql.allowInvalidDates);
+        scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.apim.apimgt, HydrogenConfigMaps.datasource.scripts.mysql)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.apim.dbscripts, HydrogenConfigMaps.datasource.scripts.mysql)).toString());
+    }
+
+    // TODO: is-km script implementation
+
+    // keywords are matched to be in hydrogen config maps > docker > apim.setup
+    let scriptCollection = {
+        apimgtdb: scripts[0],
+        userdb: scripts[1],
+        regdb: scripts[1]
+    }
+    return scriptCollection;
+}
+
+/**
+ * method to read and return mssql sql scripts for api manager datasources including am, um, & reg db
+ *
+ * @param {*} options command options
+ * @param {*} [workingDir=process.cwd()] path of the working directory
+ * @returns a collection of scripts for am, um & reg dbs
+ */
+async function readAPIManagerMSSQLScripts(options, workingDir = process.cwd()) {
+    let scripts = [];
+
+    if (!options['is-km'] && !options.distributed) {
+        scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.apim.apimgt, HydrogenConfigMaps.datasource.scripts.mssql)).toString());
+        scripts.push(fs.readFileSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.scripts.apim.dbscripts, HydrogenConfigMaps.datasource.scripts.mssql)).toString());
+    }
+
+    // TODO: is-km script implementation
+
+    // keywords are matched to be in hydrogen config maps > docker > apim.setup
+    let scriptCollection = {
+        apimgtdb: scripts[0],
+        userdb: scripts[1],
+        regdb: scripts[1]
+    }
+    return scriptCollection;
+}
 
 exports.readPostgreSQLScripts = readPostgreSQLScripts;
 exports.readMySQLScripts = readMySQLScripts;
 exports.readMSSQLScripts = readMSSQLScripts;
 exports.readAPIManagerPostgresSQLScripts = readAPIManagerPostgresSQLScripts;
+exports.readAPIManagerMySQLScripts = readAPIManagerMySQLScripts;
+exports.readAPIManagerMSSQLScripts = readAPIManagerMSSQLScripts;
