@@ -1,19 +1,27 @@
 'use strict';
 
 const Docker = require('dockerode');
-const Chance = require('chance');
 const { Client } = require('pg');
 const { createdb } = require('pgtools');
 
+const HydrogenConfigMaps = require('../maps/map.hydrogen');
 const postgreDockerConstants = require('./configs/config.postgre');
 const { logger } = require('../utils/util.winston');
-const { readPostgreSQLScripts } = require('../utils/util.scripts');
+const { generateRandomAnimalName } = require('../utils/util');
+const { readPostgreSQLScripts, readAPIManagerPostgresSQLScripts } = require('../utils/util.scripts');
 
-async function createPostgreDockerContainer(platform, workingDir, options) {
-	logger.debug('Starting to create Docker container for Postgre');
+/**
+ * method to create a docker container for the postgre datasources
+ *
+ * @param {('apim'|'is')} platform wso2 platform
+ * @param {*} options command options
+ * @param {*} [workingDir=process.cwd()] path of the working directory
+ */
+async function createPostgreDockerContainer(platform, options, workingDir = process.cwd()) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create Docker container for Postgre');
 
 	let instance = new Docker();
-	let chance = new Chance().animal().replace(/[^a-zA-Z]/g, '');
+	let chance = generateRandomAnimalName();
 	instance.pull(`${postgreDockerConstants.postgre.image}:${postgreDockerConstants.postgre.tag}`, (err, stream) => {
 		if (!err) instance.modem.followProgress(stream, onFinished, onProgress);
 		else logger.error(err);
@@ -32,7 +40,7 @@ async function createPostgreDockerContainer(platform, workingDir, options) {
 						logger.info('Created Postgre Docker container : ' + chance);
 						container.start().then(() => {
 							if (options.generate) {
-								if (options.command === 'setup') executeSetupPostgresScripts(product, paths, opts); // FIXME:
+								if (options.setup) executeAPIManagerPostgreSQLScripts(options, workingDir);
 								else executePostgreSQLScripts(platform, workingDir);
 							}
 						});
@@ -46,14 +54,22 @@ async function createPostgreDockerContainer(platform, workingDir, options) {
 	});
 }
 
-async function executePostgreSQLScripts(platform, workingDir) {
+/**
+ * method to execute postgre sql scripts to replace datasources
+ *
+ * @param {('apim'|'is')} platform wso2 platform
+ * @param {*} [workingDir=process.cwd()] path of the working directory
+ */
+async function executePostgreSQLScripts(platform, workingDir = process.cwd()) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to execute Postgre scripts for datasource');
+
 	let config = postgreDockerConstants.default;
 	let combinedSQLScript = readPostgreSQLScripts(platform, workingDir);
 	setTimeout(() => {
-		if (platform === 'apim') {
-			createdb(config, 'wso2amdb')
+		if (platform === HydrogenConfigMaps.platform.apim) {
+			createdb(config, HydrogenConfigMaps.docker.apim.single)
 				.then(() => {
-					config.database = 'wso2amdb';
+					config.database = HydrogenConfigMaps.docker.apim.single;
 					const client = new Client(config);
 					client.connect();
 					client.query(combinedSQLScript, (err) => {
@@ -65,10 +81,10 @@ async function executePostgreSQLScripts(platform, workingDir) {
 					logger.error(err);
 				});
 		}
-		if (platform === 'is') {
-			createdb(config, 'wso2postgre')
+		if (platform === HydrogenConfigMaps.platform.is) {
+			createdb(config, HydrogenConfigMaps.docker.is.single)
 				.then(() => {
-					config.database = 'wso2postgre';
+					config.database = HydrogenConfigMaps.docker.is.single;
 					const client = new Client(config);
 					client.connect();
 					client.query(combinedSQLScript, (err) => {
@@ -80,7 +96,52 @@ async function executePostgreSQLScripts(platform, workingDir) {
 					logger.error(err);
 				});
 		}
-	}, 5000);
+	}, HydrogenConfigMaps.docker.timeout.postgre);
+}
+
+/**
+ * method to execute postgre sql scripts for api manager datasources
+ *
+ * @param {*} options command options
+ * @param {*} [workingDir=process.cwd()] path of the working directory
+ */
+async function executeAPIManagerPostgreSQLScripts(options, workingDir = process.cwd()) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to execute Postgre scripts for API Manager datasources');
+
+	setTimeout(() => {
+		loopAPIManagerDatasources(options, 0, workingDir);
+	}, HydrogenConfigMaps.docker.timeout.postgre);
+}
+
+/**
+ * method to loop through api manager datasources [am, um, reg] to execute sql scripts
+ *
+ * @param {*} options command options
+ * @param {number} loopCount loop count
+ * @param {*} [workingDir=process.cwd()] path of the working directory
+ */
+async function loopAPIManagerDatasources(options, loopCount, workingDir = process.cwd()) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Looping through API Manager datasources');
+
+	let config = postgreDockerConstants.default;
+	let datasourceLength = HydrogenConfigMaps.docker.apim.setup.length;
+	if (loopCount < datasourceLength) {
+		let combinedSQLScript = await readAPIManagerPostgresSQLScripts(options, workingDir);
+		createdb(config, HydrogenConfigMaps.docker.apim.setup[loopCount])
+			.then(() => {
+				config.database = HydrogenConfigMaps.docker.apim.setup[loopCount];
+				const client = new Client(config);
+				client.connect();
+				client.query(combinedSQLScript[HydrogenConfigMaps.docker.apim.setup[loopCount]], (err) => {
+					if (err) logger.error(err);
+					client.end();
+				});
+			})
+			.catch((err) => {
+				logger.error(err);
+			});
+		await loopAPIManagerDatasources(options, ++loopCount, workingDir);
+	}
 }
 
 exports.createPostgreDockerContainer = createPostgreDockerContainer;
