@@ -13,7 +13,7 @@ const { readMySQLScripts, readAPIManagerMySQLScripts } = require('../utils/util.
  * method to create a docker container for the mysql datasources
  *
  * @param {('apim'|'is')} platform wso2 platform
- * @param {*} options command options
+ * @param {*} options command options { options: { generate: true, setup: true }}
  * @param {*} [workingDir=process.cwd()] path of the working directory
  */
 async function createMySQLDockerContainer(platform, options, workingDir = process.cwd()) {
@@ -40,7 +40,7 @@ async function createMySQLDockerContainer(platform, options, workingDir = proces
 						logger.info('Created MySQL Docker container : ' + chance);
 						container.start().then(() => {
 							if (options.generate) {
-                                if (options.setup) executeAPIManagerMySQLScripts(options, workingDir);
+								if (options.setup) executeAPIManagerMySQLScripts(options, workingDir);
 								else executeMySQLScripts(platform, workingDir);
 							}
 						});
@@ -129,11 +129,11 @@ async function executeMySQLScripts(platform, workingDir = process.cwd()) {
  * @param {*} [workingDir=process.cwd()] path of the working directory
  */
 async function executeAPIManagerMySQLScripts(options, workingDir = process.cwd()) {
-    if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to execute MySQL scripts for API Manager datasources');
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to execute MySQL scripts for API Manager datasources');
 
-    setTimeout(() => {
-        loopAPIManagerDatasources(options, 0, workingDir);
-    }, HydrogenConfigMaps.docker.timeout.mysql);
+	setTimeout(() => {
+		loopAPIManagerDatasources(options, 0, workingDir);
+	}, HydrogenConfigMaps.docker.timeout.mysql);
 }
 
 /**
@@ -149,7 +149,7 @@ async function loopAPIManagerDatasources(options, loopCount, workingDir = proces
 	let config = mysqlDockerConstants.default;
 	let datasourceLength = HydrogenConfigMaps.docker.apim.setup.length;
 	if (loopCount < datasourceLength) {
-        let combinedSQLScript = await readAPIManagerMySQLScripts(options, workingDir);
+		let combinedSQLScript = await readAPIManagerMySQLScripts(options, workingDir);
 		let client = Client.createConnection(config);
 		client.connect((err) => {
 			if (err) return logger.error(err);
@@ -175,7 +175,7 @@ async function loopAPIManagerDatasources(options, loopCount, workingDir = proces
 					`.* to '${'mysql'}'@'%'; FLUSH PRIVILEGES;`,
 				(err) => {
 					if (err) return logger.error(err);
-                    loopAPIManagerDatasources(options, ++loopCount, workingDir);
+					loopAPIManagerDatasources(options, ++loopCount, workingDir);
 				}
 			);
 		});

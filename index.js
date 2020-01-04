@@ -30,11 +30,24 @@ exports.Registry = {
 exports.Utils = {
 	Scripts: require('./src/utils/util.scripts'),
 	Docs: require('./src/docs/docs.util'),
-}
+};
 
 exports.DatasourceConfigs = {
 	Postgre: require('./src/configs/datasource/config.postgre'),
 	MySQL: require('./src/configs/datasource/config.mysql'),
 	MSSQL: require('./src/configs/datasource/config.mssql'),
 	Oracle: require('./src/configs/datasource/config.oracle'),
-}
+};
+
+exports.ExecutionPlans = {
+	Datasource: require('./src/executions/execution.datasource'),
+};
+
+exports.DockerConfigs = {
+	MySQL: require('./src/docker/configs/config.mysql'),
+};
+
+exports.Docker = {
+	MySQL: require('./src/docker/docker.mysql'),
+};
+

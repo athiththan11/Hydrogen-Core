@@ -331,7 +331,7 @@ async function readAPIManagerPostgresSQLScripts(options, workingDir = process.cw
 async function readAPIManagerMySQLScripts(options, workingDir = process.cwd()) {
 	let scripts = [];
 
-	if (!options['is-km'] && !options.distributed) {
+	if (!options[HydrogenConfigMaps.platform.iskm] && !options.distributed) {
 		scripts.push(HydrogenConfigMaps.scripts.mysql.allowInvalidDates);
 		scripts.push(
 			fs
@@ -436,7 +436,7 @@ async function readAPIManagerMSSQLScripts(options, workingDir = process.cwd()) {
 		);
 	}
 
-    if (options[HydrogenConfigMaps.platform.iskm] || options.distributed) {
+	if (options[HydrogenConfigMaps.platform.iskm] || options.distributed) {
 		let rootDir = fs.readdirSync(workingDir);
 		while (rootDir.length >= 0) {
 			let apimPack = rootDir.shift();
