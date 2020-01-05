@@ -49,5 +49,10 @@ exports.DockerConfigs = {
 
 exports.Docker = {
 	MySQL: require('./src/docker/docker.mysql'),
+	Postgre: require('./src/docker/docker.postgre'),
+	MSSQL: require('./src/docker/docker.mssql'),
 };
 
+exports.ConfigMaps = {
+	Hydrogen: require('./src/maps/map.hydrogen'),
+};

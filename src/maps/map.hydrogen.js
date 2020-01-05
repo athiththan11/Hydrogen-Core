@@ -96,6 +96,7 @@ module.exports = {
 		},
 		apimanager: {
 			authmanager_serverurl: '//*[local-name()="AuthManager"]/*[local-name()="ServerURL"]',
+			apikeyvalidator_serverurl: '//*[local-name()="APIKeyValidator"]/*[local-name()="ServerURL"]',
 		},
 	},
 	strings: {
