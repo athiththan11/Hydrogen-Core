@@ -40,6 +40,22 @@ function alterElem(elem, tag, desc) {
 }
 
 /**
+ * method to append HYDROGENERATED: comment element before the changed configurations
+ *
+ * @param {string} elem an xml element
+ * @param {string} tag xml tag
+ * @param {string} desc comment description
+ * @returns altered xml element
+ */
+function addHydrogeneratedElem(elem, tag, desc) {
+	let altered =
+		elem.substring(0, elem.lastIndexOf(`<${tag}>`)) +
+		`${constants.newLine}<!-- ${constants.comment}${desc ? desc : ''} -->\n` +
+        elem.substring(elem.lastIndexOf(`<${tag}>`));
+	return altered;
+}
+
+/**
  * method to comment an xml element
  *
  * @param {string} elem xml element to be commented
@@ -61,5 +77,6 @@ function removeDeclaration(xml) {
 
 exports.parseXML = parseXML;
 exports.alterElem = alterElem;
+exports.addHydrogeneratedElem = addHydrogeneratedElem;
 exports.commentElem = commentElem;
 exports.removeDeclaration = removeDeclaration;
