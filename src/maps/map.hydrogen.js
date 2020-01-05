@@ -22,11 +22,17 @@ module.exports = {
 			postgre: 'postgresql.sql',
 		},
 	},
+	layout: {
+		apim: {
+			publishMultipleGateway: 'publish-multiple-gateway',
+		},
+	},
 	ports: {
 		_9443: 9443,
 		_5672: 5672,
 		_8243: 8243,
 		_8280: 8280,
+		_10397: 10397,
 	},
 	jdbcDrivers: {
 		mssql:
