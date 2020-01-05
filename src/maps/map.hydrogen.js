@@ -97,6 +97,11 @@ module.exports = {
 		apimanager: {
 			authmanager_serverurl: '//*[local-name()="AuthManager"]/*[local-name()="ServerURL"]',
 			apikeyvalidator_serverurl: '//*[local-name()="APIKeyValidator"]/*[local-name()="ServerURL"]',
+			oauthconfigurations_revokeapiurl: '//*[local-name()="OAuthConfigurations"]/*[local-name()="RevokeAPIURL"]',
+			apikeyvalidator_enablethriftserver:
+				'//*[local-name()="APIKeyValidator"]/*[local-name()="EnableThriftServer"]',
+			apikeyvalidator_thriftclientconnectiontimeout:
+				'//*[local-name()="APIKeyValidator"]/*[local-name()="ThriftClientConnectionTimeOut"]',
 		},
 	},
 	strings: {
