@@ -22,7 +22,7 @@ function generateDBDriverDocs(databaseType) {
 			logger.info('Please download the MSSQL JDBC Driver from ' + HydrogenConfigMaps.jdbcDrivers.mssql);
 			break;
 		case HydrogenConfigMaps.datasource.oracle:
-			logger.info('Please download the ORacle JDBC Driver from ' + HydrogenConfigMaps.jdbcDrivers.oracle);
+			logger.info('Please download the Oracle JDBC Driver from ' + HydrogenConfigMaps.jdbcDrivers.oracle);
 			break;
 	}
 }
