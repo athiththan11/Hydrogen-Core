@@ -8,6 +8,7 @@ const constants = require('../../utils/constants');
 const HydrogenConfigMaps = require('../../maps/map.hydrogen');
 const { logger } = require('../../utils/util.winston');
 const { parseXML, addHydrogeneratedElem, removeDeclaration } = require('../../utils/util.parser');
+const { constructGatewayEnvironment } = require('./utils/util.apimanager');
 
 /**
  * method to alter server of auth manager in api-manager.xml
@@ -281,8 +282,51 @@ async function alterAPIKeyValidatorThriftClientPort(args, workingDir = process.c
 	}
 }
 
+/**
+ * method to add new gateway environment in api-manager.xml
+ *
+ * @param {*} environmentConfs gateway environment configuration parameters
+ * @param {*} [workingDir=process.cwd()] path of the current working directory
+ */
+async function addGatewayEnvironment(environmentConfs, workingDir = process.cwd()) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to construct and add new Gateway Environment');
+
+	try {
+		await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager)).then((parsed) => {
+			let doc = new XMLJS.Document(parsed);
+			let environmentElem = constructGatewayEnvironment(XMLJS.Element, doc, environmentConfs);
+
+			parsed
+				.root()
+				.get(HydrogenConfigMaps.xmlPaths.apimanager.apigateway_environments)
+				.addChild(environmentElem);
+			let altered = removeDeclaration(parsed.toString());
+			let enviornmentsElem = altered.substring(
+				altered.indexOf('<Environments>'),
+				altered.indexOf('</Environments>')
+			);
+
+			// TESTME: check how addChild() works since the comment element has to be adjusted
+			let alteredElem = addHydrogeneratedElem(enviornmentsElem, 'Environment', 'environment added');
+			let _altered =
+				altered.substring(0, altered.indexOf('<Environments>')) +
+				alteredElem +
+				altered.substring(altered.indexOf('</Environments>'));
+
+			fs.writeFileSync(
+				__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager),
+				_altered,
+				constants.utf8
+			);
+		});
+	} catch (err) {
+		logger.error(err);
+	}
+}
+
 exports.alterAuthManagerServerURL = alterAuthManagerServerURL;
 exports.alterAPIKeyValidatorServerURL = alterAPIKeyValidatorServerURL;
 exports.alterOAuthConfigurationRevokeAPIURL = alterOAuthConfigurationRevokeAPIURL;
 exports.alterAPIKeyValidatorEnableThriftServer = alterAPIKeyValidatorEnableThriftServer;
 exports.alterAPIKeyValidatorThriftClientPort = alterAPIKeyValidatorThriftClientPort;
+exports.addGatewayEnvironment = addGatewayEnvironment;

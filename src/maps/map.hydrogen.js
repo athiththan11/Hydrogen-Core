@@ -108,6 +108,9 @@ module.exports = {
 				'//*[local-name()="APIKeyValidator"]/*[local-name()="EnableThriftServer"]',
 			apikeyvalidator_thriftclientconnectiontimeout:
 				'//*[local-name()="APIKeyValidator"]/*[local-name()="ThriftClientConnectionTimeOut"]',
+			apigateway_environments: '//*[local-name()="APIGateway"]/*[local-name()="Environments"]',
+			apigateway_environments_environment:
+				'//*[local-name()="APIGateway"]/*[local-name()="Environments"]/*[local-name()="Environment"]',
 		},
 	},
 	strings: {
