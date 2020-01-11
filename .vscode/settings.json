@@ -1,1 +1,26 @@
-{}
+{
+	"editor.tabSize": 4,
+	"editor.insertSpaces": true,
+	"editor.detectIndentation": false,
+	"prettier.arrowParens": "always",
+	"prettier.singleQuote": true,
+	"prettier.printWidth": 120,
+	"prettier.jsxBracketSameLine": true,
+	"prettier.tabWidth": 4,
+	"window.zoomLevel": 0,
+	"javascript.format.insertSpaceAfterConstructor": true,
+    "prettier.useTabs": true,
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "prettier.trailingComma": "es5",
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "todohighlight.keywords": [{
+        "text": "TESTME:",
+        "color": "#fff",
+        "backgroundColor": "green",
+    },]
+}
