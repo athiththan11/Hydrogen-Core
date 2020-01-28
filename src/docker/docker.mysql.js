@@ -1,7 +1,7 @@
 'use strict';
 
 const Docker = require('dockerode');
-const { Client } = require('mysql');
+const Client = require('mysql');
 
 const HydrogenConfigMaps = require('../maps/map.hydrogen');
 const mysqlDockerConstants = require('./configs/config.mysql');
@@ -65,8 +65,8 @@ async function executeMySQLScripts(platform, workingDir = process.cwd()) {
 	let config = mysqlDockerConstants.default;
 	let combinedSQLScript = readMySQLScripts(platform, workingDir);
 	setTimeout(() => {
-		let client = Client.createConnection(config);
-		if (platform === HydrogenConfigMaps.platform.apim) {
+        let client = Client.createConnection(config);
+        if (platform === HydrogenConfigMaps.platform.apim) {
 			client.connect((err) => {
 				if (err) return logger.error(err);
 				client.query(
