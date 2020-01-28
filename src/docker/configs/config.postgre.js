@@ -20,7 +20,7 @@ module.exports = {
 		},
 	},
 	default: {
-		user: 'postgre',
+		user: 'postgres',
 		password: 'hydrogen',
 		host: 'localhost',
 		port: '5432',
