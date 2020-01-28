@@ -66,6 +66,7 @@ async function executeMSSQLScripts(platform, workingDir = process.cwd()) {
 	let combinedSQLScript = await readMSSQLScripts(platform, workingDir);
 	setTimeout(() => {
 		if (platform === HydrogenConfigMaps.platform.apim) {
+            if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create databases for API Manager');
 			Client.connect(config, (err) => {
 				if (err) return logger.error(err);
 				new Client.Request().query('create database ' + HydrogenConfigMaps.docker.apim.single + ';', (err) => {
@@ -84,6 +85,7 @@ async function executeMSSQLScripts(platform, workingDir = process.cwd()) {
 			});
 		}
 		if (platform === HydrogenConfigMaps.platform.is) {
+            if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create database for Identity Server');
 			Client.connect(config, (err) => {
 				if (err) return logger.error(err);
 				new Client.Request().query(
