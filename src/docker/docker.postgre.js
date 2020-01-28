@@ -67,6 +67,7 @@ async function executePostgreSQLScripts(platform, workingDir = process.cwd()) {
 	let combinedSQLScript = await readPostgreSQLScripts(platform, workingDir);
 	setTimeout(() => {
 		if (platform === HydrogenConfigMaps.platform.apim) {
+            if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create databases for API Manager');
 			createdb(config, HydrogenConfigMaps.docker.apim.single)
 				.then(() => {
 					config.database = HydrogenConfigMaps.docker.apim.single;
@@ -82,6 +83,7 @@ async function executePostgreSQLScripts(platform, workingDir = process.cwd()) {
 				});
 		}
 		if (platform === HydrogenConfigMaps.platform.is) {
+            if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create databases for Identity Server');
 			createdb(config, HydrogenConfigMaps.docker.is.single.postgre)
 				.then(() => {
 					config.database = HydrogenConfigMaps.docker.is.single.postgre;
