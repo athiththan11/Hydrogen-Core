@@ -63,7 +63,7 @@ async function executeMySQLScripts(platform, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to execute MySQL scripts for datasource');
 
 	let config = mysqlDockerConstants.default;
-	let combinedSQLScript = readMySQLScripts(platform, workingDir);
+	let combinedSQLScript = await readMySQLScripts(platform, workingDir);
 	setTimeout(() => {
         let client = Client.createConnection(config);
         if (platform === HydrogenConfigMaps.platform.apim) {
