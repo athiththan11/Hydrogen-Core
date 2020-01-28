@@ -63,7 +63,7 @@ async function executeMSSQLScripts(platform, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to execute MSSQL scripts for datasource');
 
 	let config = mssqlDockerConstants.default;
-	let combinedSQLScript = readMSSQLScripts(platform, workingDir);
+	let combinedSQLScript = await readMSSQLScripts(platform, workingDir);
 	setTimeout(() => {
 		if (platform === HydrogenConfigMaps.platform.apim) {
 			Client.connect(config, (err) => {
