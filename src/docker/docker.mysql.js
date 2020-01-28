@@ -67,6 +67,7 @@ async function executeMySQLScripts(platform, workingDir = process.cwd()) {
 	setTimeout(() => {
         let client = Client.createConnection(config);
         if (platform === HydrogenConfigMaps.platform.apim) {
+            if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create databases for API Manager');
 			client.connect((err) => {
 				if (err) return logger.error(err);
 				client.query(
@@ -92,6 +93,7 @@ async function executeMySQLScripts(platform, workingDir = process.cwd()) {
 			});
 		}
 		if (platform === HydrogenConfigMaps.platform.is) {
+            if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create databases for Identity Server');
 			client.connect((err) => {
 				if (err) return logger.error(err);
 				client.query(
