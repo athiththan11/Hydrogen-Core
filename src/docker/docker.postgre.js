@@ -64,7 +64,7 @@ async function executePostgreSQLScripts(platform, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to execute Postgre scripts for datasource');
 
 	let config = postgreDockerConstants.default;
-	let combinedSQLScript = readPostgreSQLScripts(platform, workingDir);
+	let combinedSQLScript = await readPostgreSQLScripts(platform, workingDir);
 	setTimeout(() => {
 		if (platform === HydrogenConfigMaps.platform.apim) {
 			createdb(config, HydrogenConfigMaps.docker.apim.single)
