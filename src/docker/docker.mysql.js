@@ -151,6 +151,10 @@ async function loopAPIManagerDatasources(options, loopCount, workingDir = proces
 	let config = mysqlDockerConstants.default;
 	let datasourceLength = HydrogenConfigMaps.docker.apim.setup.length;
 	if (loopCount < datasourceLength) {
+		if (process.env.HYDROGEN_DEBUG)
+			logger.debug(
+				'Starting to create ' + HydrogenConfigMaps.docker.apim.setup[loopCount] + ' database for API Manager'
+			);
 		let combinedSQLScript = await readAPIManagerMySQLScripts(options, workingDir);
 		let client = Client.createConnection(config);
 		client.connect((err) => {

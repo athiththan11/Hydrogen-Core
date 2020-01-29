@@ -136,6 +136,10 @@ async function loopAPIManagerDatasources(options, loopCount, workingDir = proces
 	let config = mssqlDockerConstants.default;
 	let datasourceLength = HydrogenConfigMaps.docker.apim.setup.length;
 	if (loopCount < datasourceLength) {
+		if (process.env.HYDROGEN_DEBUG)
+			logger.debug(
+				'Starting to create ' + HydrogenConfigMaps.docker.apim.setup[loopCount] + ' database for API Manager'
+			);
 		let combinedSQLScript = await readAPIManagerMSSQLScripts(options, workingDir);
 		Client.connect(config, (err) => {
 			if (err) return logger.error(err);
