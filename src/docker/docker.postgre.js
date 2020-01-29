@@ -143,10 +143,12 @@ async function loopAPIManagerDatasources(options, loopCount, workingDir = proces
 					client.end();
 				});
 			})
+			.then(() => {
+				loopAPIManagerDatasources(options, ++loopCount, workingDir);
+			})
 			.catch((err) => {
 				return logger.error(err);
 			});
-		await loopAPIManagerDatasources(options, ++loopCount, workingDir);
 	}
 }
 
