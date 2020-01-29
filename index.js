@@ -40,7 +40,8 @@ exports.DatasourceConfigs = {
 };
 
 exports.ExecutionPlans = {
-	Datasource: require('./src/executions/execution.datasource'),
+    Datasource: require('./src/executions/execution.datasource'),
+    Deployment: require('./src/executions/execution.deployment'),
 };
 
 exports.DockerConfigs = {
