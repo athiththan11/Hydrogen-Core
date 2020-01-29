@@ -40,16 +40,17 @@ async function replaceAPIManagerAMDatasource(workingDir, datasourceConfs) {
 
 /**
  * method to alter and configure datasources for api manager including AM, UM & REG DB
- * 
+ *
  * @param {*} workingDir path of the working directory
  * @param {*} datasourceConfs datasource configuration arguments
  */
 async function configureAPIManagerDatasources(workingDir, datasourceConfs) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring API Manager Datasources');
-	
+
 	await alterMasterDSofAM(datasourceConfs.am, workingDir);
 	await alterMasterDSofUM(datasourceConfs.um, workingDir);
 	await alterMasterDSofREG(datasourceConfs.reg, workingDir);
+	await alterRegistry(datasourceConfs.reg, 0, workingDir);
 	await alterUserManagement(false, workingDir);
 }
 
