@@ -49,9 +49,9 @@ function alterElem(elem, tag, desc) {
  */
 function addHydrogeneratedElem(elem, tag, desc) {
 	let altered =
-		elem.substring(0, elem.lastIndexOf(`<${tag}>`)) +
+		elem.substring(0, elem.lastIndexOf(`${tag}`)) +
 		`${constants.newLine}<!-- ${constants.comment}${desc ? desc : ''} -->\n` +
-        elem.substring(elem.lastIndexOf(`<${tag}>`));
+        elem.substring(elem.lastIndexOf(`${tag}`));
 	return altered;
 }
 

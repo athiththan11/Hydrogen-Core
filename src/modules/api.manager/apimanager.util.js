@@ -48,7 +48,7 @@ async function alterAuthManagerServerURL(args, workingDir = process.cwd()) {
 				altered.indexOf('</AuthManager>')
 			);
 
-			let alteredElem = addHydrogeneratedElem(authManagerElem, 'ServerURL', 'server url changed');
+			let alteredElem = addHydrogeneratedElem(authManagerElem, '<ServerURL>', 'server url changed');
 			let _altered =
 				altered.substring(0, altered.indexOf('<AuthManager>')) +
 				alteredElem +
@@ -103,7 +103,7 @@ async function alterAPIKeyValidatorServerURL(args, workingDir = process.cwd()) {
 				altered.indexOf('</APIKeyValidator>')
 			);
 
-			let alteredElem = addHydrogeneratedElem(apiKeyValidatorElem, 'ServerURL', 'server url changed');
+			let alteredElem = addHydrogeneratedElem(apiKeyValidatorElem, '<ServerURL>', 'server url changed');
 			let _altered =
 				altered.substring(0, altered.indexOf('<APIKeyValidator>')) +
 				alteredElem +
@@ -160,7 +160,7 @@ async function alterOAuthConfigurationRevokeAPIURL(args, workingDir = process.cw
 				altered.indexOf('</OAuthConfigurations>')
 			);
 
-			let alteredElem = addHydrogeneratedElem(oauthConfigurationsElem, 'RevokeAPIURL', 'revoke api url changed');
+			let alteredElem = addHydrogeneratedElem(oauthConfigurationsElem, '<RevokeAPIURL>', 'revoke api url changed');
 			let _altered =
 				altered.substring(0, altered.indexOf('<OAuthConfigurations>')) +
 				alteredElem +
@@ -213,7 +213,7 @@ async function alterAPIKeyValidatorEnableThriftServer(args, workingDir = process
 				altered.indexOf('</APIKeyValidator>')
 			);
 
-			let alteredElem = addHydrogeneratedElem(authManagerElem, 'EnableThriftServer', 'thrift server changed');
+			let alteredElem = addHydrogeneratedElem(authManagerElem, '<EnableThriftServer>', 'thrift server changed');
 			let _altered =
 				altered.substring(0, altered.indexOf('<APIKeyValidator>')) +
 				alteredElem +
@@ -265,7 +265,7 @@ async function alterAPIKeyValidatorThriftClientPort(args, workingDir = process.c
 				altered.indexOf('</APIKeyValidator>')
 			);
 
-			let alteredElem = addHydrogeneratedElem(authManagerElem, 'ThriftClientPort', 'port changed');
+			let alteredElem = addHydrogeneratedElem(authManagerElem, '<ThriftClientPort>', 'port changed');
 			let _altered =
 				altered.substring(0, altered.indexOf('<APIKeyValidator>')) +
 				alteredElem +
@@ -307,7 +307,7 @@ async function addGatewayEnvironment(environmentConfs, workingDir = process.cwd(
 			);
 
 			// TESTME: check how addChild() works since the comment element has to be adjusted
-			let alteredElem = addHydrogeneratedElem(enviornmentsElem, 'Environment', 'environment added');
+			let alteredElem = addHydrogeneratedElem(enviornmentsElem, '<Environment ', 'environment added');
 			let _altered =
 				altered.substring(0, altered.indexOf('<Environments>')) +
 				alteredElem +
