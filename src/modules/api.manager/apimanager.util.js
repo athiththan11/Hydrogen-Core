@@ -306,7 +306,6 @@ async function addGatewayEnvironment(environmentConfs, workingDir = process.cwd(
 				altered.indexOf('</Environments>')
 			);
 
-			// TESTME: check how addChild() works since the comment element has to be adjusted
 			let alteredElem = addHydrogeneratedElem(enviornmentsElem, '<Environment ', 'environment added');
 			let _altered =
 				altered.substring(0, altered.indexOf('<Environments>')) +
