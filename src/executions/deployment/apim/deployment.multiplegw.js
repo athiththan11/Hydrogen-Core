@@ -13,10 +13,10 @@ const { configurePortOffset } = require('../../../modules/carbon/carbon.util');
 const { logger } = require('../../../utils/util.winston');
 
 /**
- * method to configure apim gateway pack for multiple-gateway layout
+ * method to configure apim gateway pack for publish-multiple-gateway layout
  *
  * @param {*} workingDir path of the working directory
- * @param {*} layoutConfs layout configuration arguments
+ * @param {{}} layoutConfs layout configuration arguments
  */
 async function configureGateway(
 	workingDir,
@@ -33,6 +33,12 @@ async function configureGateway(
 	await configurePortOffset(workingDir, layoutConfs.offset);
 }
 
+/**
+ * method to configure apim gateway aio pack for publish-multiple-gateway layout
+ *
+ * @param {*} workingDir path of the working directory
+ * @param {[]} environmentConfsArray gateway environment configuration arguments
+ */
 async function configureGatewayAIO(workingDir, environmentConfsArray = []) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring API Manager for Multiple Gateway Setup');
 
