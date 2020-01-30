@@ -42,19 +42,30 @@ async function configureGateway(
 async function configureGatewayAIO(workingDir, environmentConfsArray = []) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring API Manager for Multiple Gateway Setup');
 
-	// TODO: configurations
-	// remove default : optional
-	// add many gateway environments
-
 	// loop through environmentConfsArray and configure AIO pack
-	// TESTME: check the loop function
-	environmentConfsArray.forEach((envConfs) => {
-		let index = environmentConfsArray.indexOf(envConfs);
-		((index) => {
-			if (process.env.HYDROGEN_DEBUG) logger.debug('Add environment ' + index);
-			addGatewayEnvironment(envConfs, workingDir);
-		})(index);
-	});
+	await loopGatewayEnvConfs(workingDir, environmentConfsArray, 0);
+}
+
+/**
+ * method to loop through the gateway environment configurations and to configure api-manager.xml
+ *
+ * @param {*} workingDir path of the working directory
+ * @param {[]} environmentConfs gateway environment configurations
+ * @param {number} loopCount loop count
+ */
+async function loopGatewayEnvConfs(workingDir, environmentConfs, loopCount) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Looping through Gateway Environment Configurations');
+
+	if (loopCount < environmentConfs.length) {
+		if (process.env.HYDROGEN_DEBUG) logger.debug('Adding environment ' + loopCount);
+		addGatewayEnvironment(environmentConfs[loopCount], workingDir)
+			.then(() => {
+				loopGatewayEnvConfs(workingDir, environmentConfs, ++loopCount);
+			})
+			.catch((err) => {
+				return logger.error(err);
+			});
+	}
 }
 
 exports.configureGateway = configureGateway;

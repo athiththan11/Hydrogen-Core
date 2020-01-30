@@ -2,7 +2,7 @@
 
 const __path = require('path');
 const fs = require('fs-extra');
-// const { configureGateway, configureGatewayAIO } = require('./deployment/apim/deployment.multiplegw');
+const { configureGatewayAIO, configureGateway } = require('./deployment/apim/deployment.multiplegw');
 
 const { logger } = require('../utils/util.winston');
 
@@ -11,12 +11,10 @@ const { logger } = require('../utils/util.winston');
  *
  * @param {*} workingDir path of the working directory
  * @param {number} gwCount number of gateway nodes
+ * @param {{}} layoutConfs layout configurations
+ * @param {[]} environmentConfs gateway environment configurations
  */
-async function configurePublishMultipleGateway(workingDir, gwCount) {
-	// TODO:
-	// * make several copies of apim pack
-	// * loop through the packs and configure (aio & gateway)
-
+async function configurePublishMultipleGateway(workingDir, gwCount, layoutConfs, environmentConfs) {
 	try {
 		// remove .DS_STORE on mac
 		if (fs.existsSync(__path.join(workingDir, '.DS_STORE'))) {
@@ -33,7 +31,7 @@ async function configurePublishMultipleGateway(workingDir, gwCount) {
 
 		fs.mkdirSync(deploymentDir);
 		// gateway count increased by 1 to include the aio pack on the loops
-		await loopGatewayNodes(apimPackDir, deploymentDir, ++gwCount, 0);
+		await loopGatewayNodes(apimPackDir, deploymentDir, ++gwCount, 0, layoutConfs, environmentConfs);
 	} catch (err) {
 		logger.error(err);
 	}
@@ -49,19 +47,23 @@ async function configurePublishMultipleGateway(workingDir, gwCount) {
  * @param {{}} layoutConfs layout configurations
  * @param {[]} environmentConfs gateway environment configurations
  */
-async function loopGatewayNodes(apimPackDir, deploymentDir, gwCount, loopCount) {
-	// TODO: configure gateway nodes and AIO nodes
+async function loopGatewayNodes(apimPackDir, deploymentDir, gwCount, loopCount, layoutConfs, environmentConfs) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Looping through Gateway nodes');
 
 	if (loopCount < gwCount) {
-		let packName = loopCount == 0 ? `gateway-aio` : `gateway-${loopCount}`;
-		if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring ' + packName);
+		let packName = loopCount == 0 ? `gateway_aio` : `gateway_0${loopCount}`;
+		if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to configure ' + packName);
 		fs.copy(apimPackDir, __path.join(deploymentDir, packName))
-			// .then(() => {
-			//     let workingDir = __path.join(deploymentDir, packName);
-			//     packName === 'gateway-aio' ? configureGatewayAIO(workingDir) : configureGateway(workingDir);
-			// })
 			.then(() => {
-				loopGatewayNodes(apimPackDir, deploymentDir, gwCount, ++loopCount);
+				let workingDir = __path.join(deploymentDir, packName);
+				if (packName === 'gateway_aio') {
+					configureGatewayAIO(workingDir, environmentConfs);
+				} else {
+					configureGateway(workingDir, layoutConfs);
+				}
+			})
+			.then(() => {
+				loopGatewayNodes(apimPackDir, deploymentDir, gwCount, ++loopCount, layoutConfs);
 			})
 			.catch((err) => {
 				return logger.error(err);
