@@ -14,7 +14,7 @@ const { ports } = require('../../../maps/map.hydrogen');
 function constructGatewayEnvironment(Element, xmlDoc, args) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Constructing Gateway Environment');
 
-	let environmentElem = new Element(xmlDoc, 'Environment').attributes({
+	let environmentElem = new Element(xmlDoc, 'Environment').attr({
 		type: args.type,
 		'api-console': args['api-console'],
 	});
