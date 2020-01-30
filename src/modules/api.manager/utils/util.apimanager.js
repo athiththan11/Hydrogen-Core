@@ -25,9 +25,9 @@ function constructGatewayEnvironment(Element, xmlDoc, args) {
 		.parent()
 		.node('ServerURL', 'https://' + args._hostname + ':' + (ports._9443 + args.offset) + '/services/')
 		.parent()
-		.node('Username', 'admin')
+		.node('Username', args.username ? args.username : 'admin')
 		.parent()
-		.node('Password', 'admin')
+		.node('Password', args.password ? args.password : 'admin')
 		.parent()
 		.node(
 			'GatewayEndpoint',
