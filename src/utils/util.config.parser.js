@@ -32,11 +32,11 @@ async function configParser(configPath) {
 async function validateConfigs(schema, confs) {
 	let ajv = new Ajv();
 	let valid = false,
-		errorMessage = null;
+		message = null;
 	try {
 		valid = ajv.validate(schema, confs);
 	} catch (err) {
-		errorMessage = (ajv.errors || [])
+		message = (ajv.errors || [])
 			.map((error) => {
 				try {
 					const [, index, fieldName] = /\[(.*)\].(.*)/.exec(error.dataPath);
@@ -47,7 +47,7 @@ async function validateConfigs(schema, confs) {
 			})
 			.join('\n');
 	}
-	return { valid, errorMessage };
+	return { valid, message };
 }
 
 exports.configParser = configParser;
