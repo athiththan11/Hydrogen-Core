@@ -60,14 +60,24 @@ async function loopGatewayNodes(apimPackDir, deploymentDir, gwCount, loopCount, 
 		fs.copy(apimPackDir, __path.join(deploymentDir, packName))
 			.then(() => {
 				let workingDir = __path.join(deploymentDir, packName);
-				if (packName === 'gateway_aio') {
-					configureGatewayAIO(workingDir, environmentConfs);
+				if (packName === HydrogenConfigMaps.layoutNamePatterns.apim.publishMultipleGateway.aio) {
+					configureGatewayAIO(workingDir, environmentConfs)
+						.then(() => {
+							loopGatewayNodes(apimPackDir, deploymentDir, gwCount, ++loopCount, layoutConfs);
+						})
+						.catch((err) => {
+							return logger.error(err);
+						});
 				} else {
-					configureGateway(workingDir, layoutConfs);
+					layoutConfs.offset += 1;
+					configureGateway(workingDir, layoutConfs)
+						.then(() => {
+							loopGatewayNodes(apimPackDir, deploymentDir, gwCount, ++loopCount, layoutConfs);
+						})
+						.catch((err) => {
+							return logger.error(err);
+						});
 				}
-			})
-			.then(() => {
-				loopGatewayNodes(apimPackDir, deploymentDir, gwCount, ++loopCount, layoutConfs);
 			})
 			.catch((err) => {
 				return logger.error(err);
