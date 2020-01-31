@@ -4,6 +4,7 @@ const __path = require('path');
 const fs = require('fs-extra');
 const { configureGatewayAIO, configureGateway } = require('./deployment/apim/deployment.multiplegw');
 
+const HydrogenConfigMaps = require('../maps/map.hydrogen');
 const { logger } = require('../utils/util.winston');
 
 /**
@@ -24,10 +25,10 @@ async function configurePublishMultipleGateway(workingDir, gwCount, layoutConfs,
 		let apimPackDir = __path.join(
 			workingDir,
 			fs.readdirSync(workingDir).filter((name) => {
-				return name.startsWith('wso2am');
+				return name.startsWith(HydrogenConfigMaps.servers.apim);
 			})[0]
 		);
-		let deploymentDir = __path.join(workingDir, 'deployment');
+		let deploymentDir = __path.join(workingDir, HydrogenConfigMaps.layoutNamePatterns.deployment);
 
 		fs.mkdirSync(deploymentDir);
 		// gateway count increased by 1 to include the aio pack on the loops
@@ -51,7 +52,10 @@ async function loopGatewayNodes(apimPackDir, deploymentDir, gwCount, loopCount, 
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Looping through Gateway nodes');
 
 	if (loopCount < gwCount) {
-		let packName = loopCount == 0 ? `gateway_aio` : `gateway_0${loopCount}`;
+		let packName =
+			loopCount == 0
+				? HydrogenConfigMaps.layoutNamePatterns.apim.publishMultipleGateway.aio
+				: `${HydrogenConfigMaps.layoutNamePatterns.apim.publishMultipleGateway.gw_node}${loopCount}`;
 		if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to configure ' + packName);
 		fs.copy(apimPackDir, __path.join(deploymentDir, packName))
 			.then(() => {
