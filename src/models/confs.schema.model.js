@@ -13,7 +13,7 @@ let publishMultipleGatewaySchema = {
 						type: 'string',
 					},
 					'api-console': {
-						type: 'string ',
+						type: 'boolean',
 					},
 					_name: {
 						type: 'string',
