@@ -18,7 +18,8 @@ async function parseXML(filePath) {
 		parsed = XMLJS.parseXml(parsed);
 		return parsed;
 	} catch (err) {
-		return logger.error(err);
+		logger.error(err);
+		return null;
 	}
 }
 
