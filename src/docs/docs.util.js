@@ -1,5 +1,7 @@
 'use strict';
 
+const EasyTable = require('easy-table');
+
 const { logger } = require('../utils/util.winston');
 const HydrogenConfigMaps = require('../maps/map.hydrogen');
 
@@ -27,4 +29,29 @@ function generateDBDriverDocs(databaseType) {
 	}
 }
 
+/**
+ * method to generate docs for publish-multiple-gateway deployment layout
+ *
+ * @param {number} gwCount number of gateway nodes
+ * @param {{}} layoutConfs layout configurations
+ */
+function generatePublishMultipleGatewayDocs(gwCount, layoutConfs) {
+	if (process.env.HYDROGEN_DEBUG)
+		logger.debug('Generating docs for deployment layout Publish through Multiple Gateways');
+
+	let table = new EasyTable();
+	table.cell('node', HydrogenConfigMaps.layoutNamePatterns.apim.publishMultipleGateway.aio);
+	table.cell('port offset', 0);
+	table.cell('port', HydrogenConfigMaps.ports._9443);
+	table.newRow();
+	for (let index = 0; index < gwCount; index++) {
+		table.cell('node', HydrogenConfigMaps.layoutNamePatterns.apim.publishMultipleGateway.gw_node + index + 1);
+		table.cell('port offset', layoutConfs.offset + index + 1);
+		table.cell('port', HydrogenConfigMaps.ports._9443 + index + 1);
+		table.newRow();
+	}
+	logger.info('\n\n' + table.toString() + '\n');
+}
+
 exports.generateDBDriverDocs = generateDBDriverDocs;
+exports.generatePublishMultipleGatewayDocs = generatePublishMultipleGatewayDocs;
