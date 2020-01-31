@@ -30,6 +30,7 @@ exports.Registry = {
 exports.Utils = {
 	Scripts: require('./src/utils/util.scripts'),
 	Docs: require('./src/docs/docs.util'),
+	Parser: require('./src/utils/util.config.parser'),
 };
 
 exports.DatasourceConfigs = {
@@ -40,8 +41,8 @@ exports.DatasourceConfigs = {
 };
 
 exports.ExecutionPlans = {
-    Datasource: require('./src/executions/execution.datasource'),
-    Deployment: require('./src/executions/execution.deployment'),
+	Datasource: require('./src/executions/execution.datasource'),
+	Deployment: require('./src/executions/execution.deployment'),
 };
 
 exports.DockerConfigs = {
@@ -56,4 +57,12 @@ exports.Docker = {
 
 exports.ConfigMaps = {
 	Hydrogen: require('./src/maps/map.hydrogen'),
+};
+
+exports.Schemas = {
+	LayoutConfs: require('./src/models/confs.schema.model'),
+};
+
+exports.Samples = {
+	Models: require('./src/models/confs.sample.model'),
 };
