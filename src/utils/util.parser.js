@@ -9,8 +9,8 @@ const { logger } = require('./util.winston');
 /**
  * method to parse synapse xml
  *
- * @param {*} filePath synapse xml file path
- * @returns parsed xml doc
+ * @param {string} filePath synapse xml file path
+ * @returns {Document} parsed xml doc
  */
 async function parseXML(filePath) {
 	try {
@@ -28,7 +28,7 @@ async function parseXML(filePath) {
  * @param {string} elem an xml element
  * @param {string} tag xml tag
  * @param {string} desc comment description
- * @returns altered xml element
+ * @returns {string} altered xml element
  */
 function alterElem(elem, tag, desc) {
 	let altered =
@@ -45,7 +45,7 @@ function alterElem(elem, tag, desc) {
  * @param {string} elem an xml element
  * @param {string} tag xml tag
  * @param {string} desc comment description
- * @returns altered xml element
+ * @returns {string} altered xml element
  */
 function addHydrogeneratedElem(elem, tag, desc) {
 	let altered =
@@ -59,7 +59,7 @@ function addHydrogeneratedElem(elem, tag, desc) {
  * method to comment an xml element
  *
  * @param {string} elem xml element to be commented
- * @returns commented element
+ * @returns {string} commented element
  */
 function commentElem(elem) {
 	return '<!-- ' + elem + ` -->${constants.newLine}`;
@@ -69,7 +69,7 @@ function commentElem(elem) {
  * method to remove declaration of xml version tags
  *
  * @param {string} xml xml document
- * @returns declaration removed xml document
+ * @returns {string} declaration removed xml document
  */
 function removeDeclaration(xml) {
 	return xml.split('<?xml version="1.0" encoding="UTF-8"?>\n')[1];

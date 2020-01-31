@@ -6,10 +6,10 @@ const { ports } = require('../../../maps/map.hydrogen');
 /**
  * method to construct gateway environment configurations
  *
- * @param {*} Element Element libxmljs.Element instance
- * @param {*} xmlDoc parsed libxmljs Document
- * @param {*} args environment parameters and connection strings
- * @returns constructed envrionment element
+ * @param {Element} Element Element libxmljs.Element instance
+ * @param {Document} xmlDoc parsed libxmljs Document
+ * @param {{}} args environment parameters and connection strings
+ * @returns {Element} constructed envrionment element
  */
 function constructGatewayEnvironment(Element, xmlDoc, args) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Constructing Gateway Environment');

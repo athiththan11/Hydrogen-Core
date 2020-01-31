@@ -15,7 +15,7 @@ const { constructJDBCUserStore } = require('../user.management/utils/util.usermg
  * method to alter and construct user management and user store configurations
  *
  * @param {boolean} convertLDAPToJDBC boolean value representing to convert LDAP to JDBC
- * @param {*} [workingDir=process.cwd()] path of the working directory
+ * @param {string} [workingDir=process.cwd()] path of the working directory
  */
 async function alterUserManagement(convertLDAPToJDBC, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter user-management');

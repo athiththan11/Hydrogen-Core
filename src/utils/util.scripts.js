@@ -9,8 +9,8 @@ const HydrogenConfigMaps = require('../maps/map.hydrogen');
  * method to read and return postgre sql scripts
  *
  * @param {('apim'|'is')} platform wso2 platform
- * @param {*} workingDir path of the working directory
- * @returns combined SQL script
+ * @param {string} workingDir path of the working directory
+ * @returns {string} combined SQL script
  */
 async function readPostgreSQLScripts(platform, workingDir = process.cwd()) {
 	let scripts = [];
@@ -95,8 +95,8 @@ async function readPostgreSQLScripts(platform, workingDir = process.cwd()) {
  * method to read and return mysql sql scripts
  *
  * @param {('apim'|'is')} platform wso2 platform
- * @param {*} workingDir path of the working directory
- * @returns combined SQL script
+ * @param {string} workingDir path of the working directory
+ * @returns {string} combined SQL script
  */
 async function readMySQLScripts(platform, workingDir = process.cwd()) {
 	let scripts = [];
@@ -172,8 +172,8 @@ async function readMySQLScripts(platform, workingDir = process.cwd()) {
  * method to read and return mssql sql scripts
  *
  * @param {('apim'|'is')} platform wso2 platform
- * @param {*} workingDir path of the working directory
- * @returns combined SQL script
+ * @param {string} workingDir path of the working directory
+ * @returns {string} combined SQL script
  */
 async function readMSSQLScripts(platform, workingDir = process.cwd()) {
 	let scripts = [];
@@ -246,9 +246,9 @@ async function readMSSQLScripts(platform, workingDir = process.cwd()) {
 /**
  * method to read and return postgre sql scripts for api manager datasources including am, um, & reg db
  *
- * @param {*} options command options
- * @param {*} [workingDir=process.cwd()] path of the working directory
- * @returns a collection of scripts for am, um & reg dbs
+ * @param {{}} options command options
+ * @param {string} [workingDir=process.cwd()] path of the working directory
+ * @returns {{apimgtdb: string, userdb: string, regdb: string}} a collection of scripts for am, um & reg dbs
  */
 async function readAPIManagerPostgresSQLScripts(options, workingDir = process.cwd()) {
 	let scripts = [];
@@ -324,9 +324,9 @@ async function readAPIManagerPostgresSQLScripts(options, workingDir = process.cw
 /**
  * method to read and return mysql sql scripts for api manager datasources including am, um, & reg db
  *
- * @param {*} options command options
- * @param {*} [workingDir=process.cwd()] path of the working directory
- * @returns a collection of scripts for am, um & reg dbs
+ * @param {{}} options command options
+ * @param {string} [workingDir=process.cwd()] path of the working directory
+ * @returns {{apimgtdb: string, userdb: string, regdb: string}} a collection of scripts for am, um & reg dbs
  */
 async function readAPIManagerMySQLScripts(options, workingDir = process.cwd()) {
 	let scripts = [];
@@ -404,9 +404,9 @@ async function readAPIManagerMySQLScripts(options, workingDir = process.cwd()) {
 /**
  * method to read and return mssql sql scripts for api manager datasources including am, um, & reg db
  *
- * @param {*} options command options
- * @param {*} [workingDir=process.cwd()] path of the working directory
- * @returns a collection of scripts for am, um & reg dbs
+ * @param {{}} options command options
+ * @param {string} [workingDir=process.cwd()] path of the working directory
+ * @returns {{apimgtdb: string, userdb: string, regdb: string}} a collection of scripts for am, um & reg dbs
  */
 async function readAPIManagerMSSQLScripts(options, workingDir = process.cwd()) {
 	let scripts = [];

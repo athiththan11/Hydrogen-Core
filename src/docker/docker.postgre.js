@@ -14,8 +14,8 @@ const { readPostgreSQLScripts, readAPIManagerPostgresSQLScripts } = require('../
  * method to create a docker container for the postgre datasources
  *
  * @param {('apim'|'is')} platform wso2 platform
- * @param {*} options command options
- * @param {*} [workingDir=process.cwd()] path of the working directory
+ * @param {{}} options command options
+ * @param {string} [workingDir=process.cwd()] path of the working directory
  */
 async function createPostgreDockerContainer(platform, options, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create Docker container for Postgre');
@@ -58,7 +58,7 @@ async function createPostgreDockerContainer(platform, options, workingDir = proc
  * method to execute postgre sql scripts to replace datasources
  *
  * @param {('apim'|'is')} platform wso2 platform
- * @param {*} [workingDir=process.cwd()] path of the working directory
+ * @param {string} [workingDir=process.cwd()] path of the working directory
  */
 async function executePostgreSQLScripts(platform, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to execute Postgre scripts for datasource');
@@ -104,8 +104,8 @@ async function executePostgreSQLScripts(platform, workingDir = process.cwd()) {
 /**
  * method to execute postgre sql scripts for api manager datasources
  *
- * @param {*} options command options
- * @param {*} [workingDir=process.cwd()] path of the working directory
+ * @param {{}} options command options
+ * @param {string} [workingDir=process.cwd()] path of the working directory
  */
 async function executeAPIManagerPostgreSQLScripts(options, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to execute Postgre scripts for API Manager datasources');
@@ -118,9 +118,9 @@ async function executeAPIManagerPostgreSQLScripts(options, workingDir = process.
 /**
  * method to loop through api manager datasources [am, um, reg] to execute sql scripts
  *
- * @param {*} options command options
+ * @param {{}} options command options
  * @param {number} loopCount loop count
- * @param {*} [workingDir=process.cwd()] path of the working directory
+ * @param {string} [workingDir=process.cwd()] path of the working directory
  */
 async function loopAPIManagerDatasources(options, loopCount, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Looping through API Manager datasources');

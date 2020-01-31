@@ -14,7 +14,7 @@ const { parseXML } = require('../../utils/util.parser');
  * method to alter identity configurations
  *
  * @param {string} jndiName JNDI Datasource name
- * @param {*} workingDir path of the working directory
+ * @param {string} workingDir path of the working directory
  */
 async function alterIdentity(jndiName, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter identity');

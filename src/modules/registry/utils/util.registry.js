@@ -8,9 +8,9 @@ const { logger } = require('../../../utils/util.winston');
  *
  * @param {Element} Element libxmljs Element instance
  * @param {Document} xmlDoc parsed libxmljs Document
- * @param {*} args registry parameters and config strings
+ * @param {{}} args registry parameters and config strings
  * @param {number} [offset=0] port offset value
- * @returns constructed registry mount configurations and elements [dbConfig, remoteInstance, mountGov, mountConf]
+ * @returns {[Element, Element, Element, Element]} constructed registry mount configurations and elements [dbConfig, remoteInstance, mountGov, mountConf]
  */
 function constructRegistry(Element, xmlDoc, args, offset = 0) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Constructing registry configurations');

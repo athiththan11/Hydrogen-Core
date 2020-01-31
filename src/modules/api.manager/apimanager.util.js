@@ -13,8 +13,8 @@ const { constructGatewayEnvironment } = require('./utils/util.apimanager');
 /**
  * method to alter server of auth manager in api-manager.xml
  *
- * @param {*} args configuration parameters and arguments
- * @param {*} workingDir path of the current working directory
+ * @param {{}} args configuration parameters and arguments
+ * @param {string} workingDir path of the current working directory
  */
 async function alterAuthManagerServerURL(args, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter Server URL of AuthManager');
@@ -68,14 +68,14 @@ async function alterAuthManagerServerURL(args, workingDir = process.cwd()) {
 /**
  * method to alter server url of api-key-validator in api-manager.xml
  *
- * @param {*} args configuration parameters and arguments
- * @param {*} [workingDir=process.cwd()] path of the current working directory
+ * @param {{}} args configuration parameters and arguments
+ * @param {string} [workingDir=process.cwd()] path of the current working directory
  */
 async function alterAPIKeyValidatorServerURL(args, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter Server URL of APIKeyValidator');
 
 	try {
-		await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager)).then((parsed) => {
+        await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager)).then((parsed) => {
 			let doc = new XMLJS.Document(parsed);
 			let serverUrlElem = new XMLJS.Element(
 				doc,
@@ -123,8 +123,8 @@ async function alterAPIKeyValidatorServerURL(args, workingDir = process.cwd()) {
 /**
  * method to alter revoke api url of oauth-configurations in api-manager.xml
  *
- * @param {*} args configuration parameters and arguments
- * @param {*} [workingDir=process.cwd()] path of the current working directory
+ * @param {{}} args configuration parameters and arguments
+ * @param {string} [workingDir=process.cwd()] path of the current working directory
  */
 async function alterOAuthConfigurationRevokeAPIURL(args, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter Revoke API URL of OAuthConfigurations');
@@ -180,8 +180,8 @@ async function alterOAuthConfigurationRevokeAPIURL(args, workingDir = process.cw
 /**
  * method to alter enable-thrift-server of api-key-validator in api-manager.xml
  *
- * @param {*} args configuration parameters and arguments
- * @param {*} [workingDir=process.cwd()] path of the current working directory
+ * @param {{}} args configuration parameters and arguments
+ * @param {string} [workingDir=process.cwd()] path of the current working directory
  */
 async function alterAPIKeyValidatorEnableThriftServer(args, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter EnableThriftServer of APIKeyValidator');
@@ -233,8 +233,8 @@ async function alterAPIKeyValidatorEnableThriftServer(args, workingDir = process
 /**
  * method to alter thrift-client-port of api-key-validator in api-manager.xml
  *
- * @param {*} args configuration parameters and arguments
- * @param {*} [workingDir=process.cwd()] path of the current working directory
+ * @param {{}} args configuration parameters and arguments
+ * @param {string} [workingDir=process.cwd()] path of the current working directory
  */
 async function alterAPIKeyValidatorThriftClientPort(args, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter Thrift Client Port of APIKeyValidator');
@@ -285,8 +285,8 @@ async function alterAPIKeyValidatorThriftClientPort(args, workingDir = process.c
 /**
  * method to add new gateway environment in api-manager.xml
  *
- * @param {*} environmentConfs gateway environment configuration parameters
- * @param {*} [workingDir=process.cwd()] path of the current working directory
+ * @param {{}} environmentConfs gateway environment configuration parameters
+ * @param {string} [workingDir=process.cwd()] path of the current working directory
  */
 async function addGatewayEnvironment(environmentConfs, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to construct and add new Gateway Environment');

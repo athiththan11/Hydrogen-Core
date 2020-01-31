@@ -15,8 +15,8 @@ const { logger } = require('../utils/util.winston');
 /**
  * method to alter and replace the H2 carbon datasource with other database types
  *
- * @param {*} workingDir path of the working directory
- * @param {*} datasourceConfs datasource configuration arguments
+ * @param {string} workingDir path of the working directory
+ * @param {{}} datasourceConfs datasource configuration arguments
  */
 async function replaceISCarbonDatasource(workingDir, datasourceConfs) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Replacing IS H2 Carbon Datasource');
@@ -29,8 +29,8 @@ async function replaceISCarbonDatasource(workingDir, datasourceConfs) {
 /**
  * method to alter and replace the H2 AM datasource with other database types
  *
- * @param {*} workingDir path of the working directory
- * @param {*} datasourceConfs datasource configuration arguments
+ * @param {string} workingDir path of the working directory
+ * @param {{}} datasourceConfs datasource configuration arguments
  */
 async function replaceAPIManagerAMDatasource(workingDir, datasourceConfs) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Replacing API Manager AM Datasource');
@@ -41,8 +41,8 @@ async function replaceAPIManagerAMDatasource(workingDir, datasourceConfs) {
 /**
  * method to alter and configure datasources for api manager including AM, UM & REG DB
  *
- * @param {*} workingDir path of the working directory
- * @param {*} datasourceConfs datasource configuration arguments
+ * @param {string} workingDir path of the working directory
+ * @param {{am: {}, um: {}, reg: {}}} datasourceConfs datasource configuration arguments
  */
 async function configureAPIManagerDatasources(workingDir, datasourceConfs) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring API Manager Datasources');

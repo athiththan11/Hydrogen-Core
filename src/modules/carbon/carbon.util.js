@@ -12,7 +12,7 @@ const { parseXML, alterElem } = require('../../utils/util.parser');
 /**
  * method to configure port-offset in carbon
  *
- * @param {*} workingDir path of the working directory
+ * @param {string} workingDir path of the working directory
  * @param {number} [offset=0] offset value as integer
  */
 async function configurePortOffset(workingDir = process.cwd(), offset = 0) {

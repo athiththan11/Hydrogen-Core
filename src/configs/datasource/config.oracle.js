@@ -6,7 +6,7 @@ const HydrogenConfigMaps = require('../../maps/map.hydrogen');
  * method to retrieve Oracle datasource config strings
  *
  * @param {('apim'|'is')} platform wso2 platform
- * @returns datasource configurations
+ * @returns {{}} datasource configurations
  */
 function getDatasourceConfigs(platform) {
 	let args = {

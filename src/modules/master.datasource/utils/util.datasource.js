@@ -8,7 +8,7 @@ const { logger } = require('../../../utils/util.winston');
  * @param {Element} Element libxmljs.Element instance
  * @param {Document} xmlDoc parsed libxmljs Document
  * @param {any} args datasource parameters and connection strings
- * @returns constructed datasource element
+ * @returns {Element} constructed datasource element
  */
 function constructDatasource(Element, xmlDoc, args) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Constructing datasource element');

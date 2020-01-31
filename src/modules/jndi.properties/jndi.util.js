@@ -10,7 +10,7 @@ const { logger } = require('../../utils/util.winston');
 /**
  * method to alter and construct jndi.properties
  *
- * @param {*} workingDir path of the working directory
+ * @param {string} workingDir path of the working directory
  * @param {number} tmOffset traffic manager offset if any
  */
 async function alterJNDIProperties(workingDir = process.cwd(), tmOffset = 0) {

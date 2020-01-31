@@ -14,8 +14,8 @@ const { constructDatasource } = require('./utils/util.datasource');
 /**
  * method to alter and construct datasource configurations of AM_DB
  *
- * @param {*} datasourceConfs datasource configuration arguments
- * @param {*} workingDir path of the working directory
+ * @param {{}} datasourceConfs datasource configuration arguments
+ * @param {string} workingDir path of the working directory
  */
 async function alterMasterDSofAM(datasourceConfs, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter AM_DB in master-datasource');
@@ -67,8 +67,8 @@ async function alterMasterDSofAM(datasourceConfs, workingDir = process.cwd()) {
 /**
  * method to alter and construct datasource configurations of UM_DB
  *
- * @param {*} datasourceConfs datasource configuration arguments
- * @param {*} workingDir path of the working directory
+ * @param {{}} datasourceConfs datasource configuration arguments
+ * @param {string} workingDir path of the working directory
  */
 async function alterMasterDSofUM(datasourceConfs, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter UM_DB in master-datasource');
@@ -108,8 +108,8 @@ async function alterMasterDSofUM(datasourceConfs, workingDir = process.cwd()) {
 /**
  * method to alter and construct datasource configurations of REG_DB
  *
- * @param {*} datasourceConfs datasource configuration arguments
- * @param {*} workingDir path of the working directory
+ * @param {{}} datasourceConfs datasource configuration arguments
+ * @param {string} workingDir path of the working directory
  */
 async function alterMasterDSofREG(datasourceConfs, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter REG_DB in master-datasource');
@@ -151,8 +151,8 @@ async function alterMasterDSofREG(datasourceConfs, workingDir = process.cwd()) {
 /**
  * method to alter and construct master datasource configurations (generic function)
  *
- * @param {*} datasourceConfs datasource configuration arguments
- * @param {*} workingDir path of the working directory
+ * @param {{}} datasourceConfs datasource configuration arguments
+ * @param {string} workingDir path of the working directory
  */
 async function alterMasterDS(datasourceConfs, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter master datasource');

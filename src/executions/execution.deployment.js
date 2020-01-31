@@ -10,7 +10,7 @@ const { logger } = require('../utils/util.winston');
 /**
  * method to configure deployment setup for publish-through-multiple-gateway
  *
- * @param {*} workingDir path of the working directory
+ * @param {string} workingDir path of the working directory
  * @param {number} gwCount number of gateway nodes
  * @param {{}} layoutConfs layout configurations
  * @param {[]} environmentConfs gateway environment configurations
@@ -41,8 +41,8 @@ async function configurePublishMultipleGateway(workingDir, gwCount, layoutConfs,
 /**
  * method to make copies and to loop through gateway nodes to configure AIO and Gateway node servers
  *
- * @param {*} apimPackDir path of the wso2am pack directory (source)
- * @param {*} deploymentDir path of the deployment directory (deployment | target directory)
+ * @param {string} apimPackDir path of the wso2am pack directory (source)
+ * @param {string} deploymentDir path of the deployment directory (deployment | target directory)
  * @param {number} gwCount number of gateway nodes
  * @param {number} loopCount loop count
  * @param {{}} layoutConfs layout configurations

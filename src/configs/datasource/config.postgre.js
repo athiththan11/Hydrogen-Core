@@ -7,7 +7,7 @@ const HydrogenConfigMaps = require('../../maps/map.hydrogen');
  *
  * @param {('apim'|'is')} platform wso2 platform
  * @param {('replace'|'setup')} options deployment setup options { options: { command: [setup || replace ]}}
- * @returns datasource configurations
+ * @returns {{}} datasource configurations
  */
 function getDatasourceConfigs(platform, options) {
 	let args = {
