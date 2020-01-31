@@ -7,7 +7,7 @@ const { logger } = require('../../../utils/util.winston');
  *
  * @param {Element} Element libxmljs Element instance
  * @param {Document} xmlDoc parsed libxmljs Document
- * @returns constructed user store element
+ * @returns {Element} constructed user store element
  */
 function constructJDBCUserStore(Element, xmlDoc) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Constructing JDBC User Store');

@@ -15,7 +15,7 @@ const { logger } = require('../../../utils/util.winston');
 /**
  * method to configure apim gateway pack for publish-multiple-gateway layout
  *
- * @param {*} workingDir path of the working directory
+ * @param {string} workingDir path of the working directory
  * @param {{}} layoutConfs layout configuration arguments
  */
 async function configureGateway(
@@ -36,7 +36,7 @@ async function configureGateway(
 /**
  * method to configure apim gateway aio pack for publish-multiple-gateway layout
  *
- * @param {*} workingDir path of the working directory
+ * @param {string} workingDir path of the working directory
  * @param {[]} environmentConfsArray gateway environment configuration arguments
  */
 async function configureGatewayAIO(workingDir, environmentConfsArray = []) {
@@ -49,7 +49,7 @@ async function configureGatewayAIO(workingDir, environmentConfsArray = []) {
 /**
  * method to loop through the gateway environment configurations and to configure api-manager.xml
  *
- * @param {*} workingDir path of the working directory
+ * @param {string} workingDir path of the working directory
  * @param {[]} environmentConfs gateway environment configurations
  * @param {number} loopCount loop count
  */
