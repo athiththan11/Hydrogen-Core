@@ -27,6 +27,15 @@ module.exports = {
 			publishMultipleGateway: 'publish-multiple-gateway',
 		},
 	},
+	layoutNamePatterns: {
+		deployment: 'deployment',
+		apim: {
+			publishMultipleGateway: {
+				aio: 'gateway_aio',
+				gw_node: 'gateway_0',
+			},
+		},
+	},
 	ports: {
 		_9443: 9443,
 		_5672: 5672,
@@ -114,7 +123,9 @@ module.exports = {
 		},
 	},
 	strings: {
+		jdbc_wso2am_db: 'jdbc/WSO2AM_DB',
 		jdbc_wso2um_db: 'jdbc/WSO2UM_DB',
+		jdbc_wso2reg_db: 'jdbc/WSO2REG_DB',
 		jdbc_wso2carbondb: 'jdbc/WSO2CarbonDB',
 	},
 	encodings: {
