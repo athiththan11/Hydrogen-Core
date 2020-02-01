@@ -15,8 +15,9 @@ const { constructGatewayEnvironment } = require('./utils/util.apimanager');
  *
  * @param {{}} args configuration parameters and arguments
  * @param {string} workingDir path of the current working directory
+ * @param {number} [offset=0] offset value
  */
-async function alterAuthManagerServerURL(args, workingDir = process.cwd()) {
+async function alterAuthManagerServerURL(args, workingDir = process.cwd(), offset = 0) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter Server URL of AuthManager');
 
 	try {
@@ -25,7 +26,7 @@ async function alterAuthManagerServerURL(args, workingDir = process.cwd()) {
 			let serverUrlElem = new XMLJS.Element(
 				doc,
 				'ServerURL',
-				args._hostname + ':' + HydrogenConfigMaps.ports._9443 + '/services/'
+				args._hostname + ':' + (HydrogenConfigMaps.ports._9443 + offset) + '/services/'
 			);
 
 			let defaultElem = parsed.root().get(HydrogenConfigMaps.xmlPaths.apimanager.authmanager_serverurl);
@@ -70,8 +71,9 @@ async function alterAuthManagerServerURL(args, workingDir = process.cwd()) {
  *
  * @param {{}} args configuration parameters and arguments
  * @param {string} [workingDir=process.cwd()] path of the current working directory
+ * @param {number} [offset=0] offset value
  */
-async function alterAPIKeyValidatorServerURL(args, workingDir = process.cwd()) {
+async function alterAPIKeyValidatorServerURL(args, workingDir = process.cwd(), offset = 0) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter Server URL of APIKeyValidator');
 
 	try {
@@ -80,7 +82,7 @@ async function alterAPIKeyValidatorServerURL(args, workingDir = process.cwd()) {
 			let serverUrlElem = new XMLJS.Element(
 				doc,
 				'ServerURL',
-				args._hostname + ':' + HydrogenConfigMaps.ports._9443 + '/services/'
+				args._hostname + ':' + (HydrogenConfigMaps.ports._9443 + offset) + '/services/'
 			);
 
 			let defaultElem = parsed.root().get(HydrogenConfigMaps.xmlPaths.apimanager.apikeyvalidator_serverurl);
