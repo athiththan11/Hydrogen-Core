@@ -113,6 +113,8 @@ module.exports = {
 			authmanager_serverurl: '//*[local-name()="AuthManager"]/*[local-name()="ServerURL"]',
 			apikeyvalidator_serverurl: '//*[local-name()="APIKeyValidator"]/*[local-name()="ServerURL"]',
 			oauthconfigurations_revokeapiurl: '//*[local-name()="OAuthConfigurations"]/*[local-name()="RevokeAPIURL"]',
+			apikeyvalidator_keyvalidatorclienttype:
+				'//*[local-name()="APIKeyValidator"]/*[local-name()="KeyValidatorClientType"]',
 			apikeyvalidator_enablethriftserver:
 				'//*[local-name()="APIKeyValidator"]/*[local-name()="EnableThriftServer"]',
 			apikeyvalidator_thriftclientconnectiontimeout:
@@ -120,6 +122,8 @@ module.exports = {
 			apigateway_environments: '//*[local-name()="APIGateway"]/*[local-name()="Environments"]',
 			apigateway_environments_environment:
 				'//*[local-name()="APIGateway"]/*[local-name()="Environments"]/*[local-name()="Environment"]',
+			apigateway_environments_environment_serverurl:
+				'//*[local-name()="APIGateway"]/*[local-name()="Environments"]/*[local-name()="Environment"]/*[local-name()="ServerURL"]',
 		},
 	},
 	strings: {

@@ -180,6 +180,59 @@ async function alterOAuthConfigurationRevokeAPIURL(args, workingDir = process.cw
 }
 
 /**
+ * method to alter key-validator-client-type of api-keyvalidator in api-manager.xml
+ *
+ * @param {{}} args configuration parameters and arguments
+ * @param {string} [workingDir=process.cwd()] path of the current working directory
+ */
+async function alterAPIKeyValidatorKeyValidatorClientType(args, workingDir = process.cwd()) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter Key Validator Client Type of APIKeyValidator');
+
+	try {
+		await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager)).then((parsed) => {
+			let doc = new XMLJS.Document(parsed);
+			let clientTypeElem = new XMLJS.Element(doc, 'KeyValidatorClientType', args.keyValidatorClientType);
+
+			let defaultElem = parsed
+				.root()
+				.get(HydrogenConfigMaps.xmlPaths.apimanager.apikeyvalidator_keyvalidatorclienttype);
+			let commentElem = new XMLJS.Comment(doc, defaultElem.toString());
+			parsed
+				.root()
+				.get(HydrogenConfigMaps.xmlPaths.apimanager.apikeyvalidator_keyvalidatorclienttype)
+				.addNextSibling(clientTypeElem);
+			parsed
+				.root()
+				.get(HydrogenConfigMaps.xmlPaths.apimanager.apikeyvalidator_keyvalidatorclienttype)
+				.addPrevSibling(commentElem);
+			parsed
+				.root()
+				.get(HydrogenConfigMaps.xmlPaths.apimanager.apikeyvalidator_keyvalidatorclienttype + '[1]')
+				.remove();
+			let altered = removeDeclaration(parsed.toString());
+			let apiKeyValidatorElem = altered.substring(
+				altered.indexOf('<APIKeyValidator>'),
+				altered.indexOf('</APIKeyValidator>')
+			);
+
+			let alteredElem = addHydrogeneratedElem(apiKeyValidatorElem, '<KeyValidatorClientType>', 'client changed');
+			let _altered =
+				altered.substring(0, altered.indexOf('<APIKeyValidator>')) +
+				alteredElem +
+				altered.substring(altered.indexOf('</APIKeyValidator>'));
+
+			fs.writeFileSync(
+				__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager),
+				_altered,
+				constants.utf8
+			);
+		});
+	} catch (err) {
+		logger.error(err);
+	}
+}
+
+/**
  * method to alter enable-thrift-server of api-key-validator in api-manager.xml
  *
  * @param {{}} args configuration parameters and arguments
@@ -285,6 +338,60 @@ async function alterAPIKeyValidatorThriftClientPort(args, workingDir = process.c
 }
 
 /**
+ * method to alter server url of api-gateway environment in api-manager.xml
+ *
+ * @param {{}} args configuration parameters and arguments
+ * @param {string} [workingDir=process.cwd()] path of the current working directory
+ */
+async function alterGatewayEnvironmentServerURL(args, workingDir = process.cwd()) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter Server URL of Gateway Environment');
+
+	try {
+		await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager)).then((parsed) => {
+			let doc = new XMLJS.Document(parsed);
+			let serverUrlElem = new XMLJS.Element(
+				doc,
+				'ServerURL',
+				args._hostname + ':' + HydrogenConfigMaps.ports._9443 + '/services/'
+			);
+
+			let defaultElem = parsed
+				.root()
+				.get(HydrogenConfigMaps.xmlPaths.apimanager.apigateway_environments_environment_serverurl);
+			let commentElem = new XMLJS.Comment(doc, defaultElem.toString());
+			parsed
+				.root()
+				.get(HydrogenConfigMaps.xmlPaths.apimanager.apigateway_environments_environment_serverurl)
+				.addNextSibling(serverUrlElem);
+			parsed
+				.root()
+				.get(HydrogenConfigMaps.xmlPaths.apimanager.apigateway_environments_environment_serverurl)
+				.addPrevSibling(commentElem);
+			parsed
+				.root()
+				.get(HydrogenConfigMaps.xmlPaths.apimanager.apigateway_environments_environment_serverurl + '[1]')
+				.remove();
+			let altered = removeDeclaration(parsed.toString());
+			let apiGatewayElem = altered.substring(altered.indexOf('<APIGateway>'), altered.indexOf('</APIGateway>'));
+
+			let alteredElem = addHydrogeneratedElem(apiGatewayElem, '<ServerURL>', 'server url changed');
+			let _altered =
+				altered.substring(0, altered.indexOf('<APIGateway>')) +
+				alteredElem +
+				altered.substring(altered.indexOf('</APIGateway>'));
+
+			fs.writeFileSync(
+				__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager),
+				_altered,
+				constants.utf8
+			);
+		});
+	} catch (err) {
+		logger.error(err);
+	}
+}
+
+/**
  * method to add new gateway environment in api-manager.xml
  *
  * @param {{}} environmentConfs gateway environment configuration parameters
@@ -328,6 +435,8 @@ async function addGatewayEnvironment(environmentConfs, workingDir = process.cwd(
 exports.alterAuthManagerServerURL = alterAuthManagerServerURL;
 exports.alterAPIKeyValidatorServerURL = alterAPIKeyValidatorServerURL;
 exports.alterOAuthConfigurationRevokeAPIURL = alterOAuthConfigurationRevokeAPIURL;
+exports.alterAPIKeyValidatorKeyValidatorClientType = alterAPIKeyValidatorKeyValidatorClientType;
 exports.alterAPIKeyValidatorEnableThriftServer = alterAPIKeyValidatorEnableThriftServer;
 exports.alterAPIKeyValidatorThriftClientPort = alterAPIKeyValidatorThriftClientPort;
+exports.alterGatewayEnvironmentServerURL = alterGatewayEnvironmentServerURL;
 exports.addGatewayEnvironment = addGatewayEnvironment;
