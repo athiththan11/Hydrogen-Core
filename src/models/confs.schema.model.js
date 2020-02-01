@@ -45,15 +45,14 @@ let publishMultipleGatewaySchema = {
 					type: 'string',
 				},
 				thriftClientPort: {
-					type: 'number',
-					minimum: 10397,
+					type: 'string',
 				},
 				enableThriftServer: {
-					type: 'boolean',
+					type: 'string',
 				},
 				offset: {
 					type: 'number',
-					minimum: 0,
+					minimum: 1,
 				},
 			},
 		},
@@ -104,15 +103,14 @@ let layoutConfsSchema = {
 			type: 'string',
 		},
 		thriftClientPort: {
-			type: 'number',
-			minimum: 10397,
+			type: 'string',
 		},
 		enableThriftServer: {
-			type: 'boolean',
+			type: 'string',
 		},
 		offset: {
 			type: 'number',
-			minimum: 0,
+			minimum: 1,
 		},
 	},
 };
