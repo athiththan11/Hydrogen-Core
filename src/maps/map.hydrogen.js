@@ -35,6 +35,10 @@ module.exports = {
 				aio: 'gateway_aio',
 				gw_node: 'gateway_0',
 			},
+			iskm: {
+				apim: 'api-manager',
+				iskm: 'is-km',
+			},
 		},
 	},
 	ports: {
