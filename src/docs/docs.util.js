@@ -46,12 +46,34 @@ function generatePublishMultipleGatewayDocs(gwCount, layoutConfs) {
 	table.newRow();
 	for (let index = 0; index < gwCount; index++) {
 		table.cell('node', HydrogenConfigMaps.layoutNamePatterns.apim.publishMultipleGateway.gw_node + (index + 1));
-		table.cell('port offset', layoutConfs.offset + (index));
+		table.cell('port offset', layoutConfs.offset + index);
 		table.cell('port', HydrogenConfigMaps.ports._9443 + (index + 1));
 		table.newRow();
 	}
 	logger.info('\n\n' + table.toString() + '\n');
 }
 
+/**
+ * method to generate docs for identity-server-as-key-manager deployment layout
+ *
+ * @param {{}} iskmlayoutConfs is-km layout configurations
+ */
+function generateIdentityServerasKMDocs(iskmlayoutConfs) {
+	if (process.env.HYDROGEN_DEBUG)
+		logger.debug('Generating docs for deployment layout Identity Server as Key Manager');
+
+	let table = new EasyTable();
+	table.cell('node', HydrogenConfigMaps.layoutNamePatterns.apim.iskm.apim);
+	table.cell('port offset', 0);
+	table.cell('port', HydrogenConfigMaps.ports._9443);
+	table.newRow();
+	table.cell('node', HydrogenConfigMaps.layoutNamePatterns.apim.iskm.iskm);
+	table.cell('port offset', iskmlayoutConfs.offset);
+	table.cell('port', HydrogenConfigMaps.ports._9443 + iskmlayoutConfs.offset);
+	table.newRow();
+	logger.info('\n\n' + table.toString() + '\n');
+}
+
 exports.generateDBDriverDocs = generateDBDriverDocs;
 exports.generatePublishMultipleGatewayDocs = generatePublishMultipleGatewayDocs;
+exports.generateIdentityServerasKMDocs = generateIdentityServerasKMDocs;
