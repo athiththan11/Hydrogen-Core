@@ -3,6 +3,7 @@
 const __path = require('path');
 const fs = require('fs-extra');
 const { configureGatewayAIO, configureGateway } = require('./deployment/apim/deployment.multiplegw');
+const { configureAPIManagerwithISKM, configureIdentityServerKM } = require('./deployment/apim/deployment.iskm');
 
 const HydrogenConfigMaps = require('../maps/map.hydrogen');
 const { logger } = require('../utils/util.winston');
@@ -85,4 +86,42 @@ async function loopGatewayNodes(apimPackDir, deploymentDir, gwCount, loopCount, 
 	}
 }
 
+/**
+ * method to configure deployment setup for identity-server-as-key-manager
+ *
+ * @param {string} workingDir path of the working directory
+ * @param {{}} datasourceConfs datasource configurations
+ * @param {{}} apimlayoutConfs apim related layout configurations
+ * @param {{}} iskmlayoutConfs is-km related layout configurations
+ */
+async function configureIdentityServerasKeyManager(workingDir, datasourceConfs, apimlayoutConfs, iskmlayoutConfs) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to configure Identity Server as Key Manager layout');
+
+	try {
+		// remove .DS_STORE on mac
+		if (fs.existsSync(__path.join(workingDir, '.DS_STORE'))) {
+			fs.removeSync(__path.join(workingDir, '.DS_STORE'));
+		}
+
+		let apimPackDir = __path.join(
+			workingDir,
+			fs.readdirSync(workingDir).filter((name) => {
+				return name.startsWith(HydrogenConfigMaps.servers.apim);
+			})[0]
+		);
+		let iskmPackDir = __path.join(
+			workingDir,
+			fs.readdirSync(workingDir).filter((name) => {
+				return name.startsWith(HydrogenConfigMaps.servers.iskm);
+			})[0]
+		);
+
+		await configureIdentityServerKM(iskmPackDir, datasourceConfs, iskmlayoutConfs);
+		await configureAPIManagerwithISKM(apimPackDir, datasourceConfs, apimlayoutConfs);
+	} catch (err) {
+		logger.error(err);
+	}
+}
+
 exports.configurePublishMultipleGateway = configurePublishMultipleGateway;
+exports.configureIdentityServerasKeyManager = configureIdentityServerasKeyManager;

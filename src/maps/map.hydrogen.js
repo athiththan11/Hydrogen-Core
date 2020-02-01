@@ -25,6 +25,7 @@ module.exports = {
 	layout: {
 		apim: {
 			publishMultipleGateway: 'publish-multiple-gateway',
+			iskm: 'is-km',
 		},
 	},
 	layoutNamePatterns: {

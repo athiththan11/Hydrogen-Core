@@ -28,5 +28,19 @@ let layoutConfs = {
 	offset: 1,
 };
 
+let apimlayoutConfs = {
+	_hostname: 'https://localhost',
+	keyValidatorClientType: 'WSClient',
+	enableThriftServer: 'false',
+	iskmoffset: 1,
+};
+
+let iskmlayoutConfs = {
+	_hostname: 'https://localhost',
+	offset: 1,
+};
+
 exports.environmentConfs = environmentConfs;
 exports.layoutConfs = layoutConfs;
+exports.apimlayoutConfs = apimlayoutConfs;
+exports.iskmlayoutConfs = iskmlayoutConfs;
