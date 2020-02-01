@@ -17,6 +17,8 @@ const { logger } = require('../utils/util.winston');
  * @param {[]} environmentConfs gateway environment configurations
  */
 async function configurePublishMultipleGateway(workingDir, gwCount, layoutConfs, environmentConfs) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to configure Publish-through-Multiple-Gateway layout');
+
 	try {
 		// remove .DS_STORE on mac
 		if (fs.existsSync(__path.join(workingDir, '.DS_STORE'))) {
