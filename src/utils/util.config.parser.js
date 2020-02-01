@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const Ajv = require('ajv');
+const toml = require('toml');
 
 const { logger } = require('./util.winston');
 
@@ -12,9 +13,16 @@ const { logger } = require('./util.winston');
  * @returns {{}} parsed configuration string
  */
 async function configParser(configPath) {
-	try {
-		let parsed = fs.readFileSync(configPath, 'utf8');
-		parsed = JSON.parse(parsed);
+    try {
+        let parsed = null;
+        if (configPath.endsWith('.json')) {
+            parsed = fs.readFileSync(configPath, 'utf8');
+            parsed = JSON.parse(parsed);
+        }
+        if (configPath.endsWith('.toml')) {
+            parsed = fs.readFileSync(configPath, 'utf8');
+			parsed = toml.parse(parsed);
+        }
 		return parsed;
 	} catch (err) {
 		logger.error(err);

@@ -24,6 +24,7 @@
 		"pg": "^7.15.1",
 		"pgtools": "^0.3.0",
 		"prettify-xml": "^1.2.0",
+		"toml": "^3.0.0",
 		"winston": "^3.2.1"
 	},
 	"devDependencies": {
