@@ -45,9 +45,9 @@ function generatePublishMultipleGatewayDocs(gwCount, layoutConfs) {
 	table.cell('port', HydrogenConfigMaps.ports._9443);
 	table.newRow();
 	for (let index = 0; index < gwCount; index++) {
-		table.cell('node', HydrogenConfigMaps.layoutNamePatterns.apim.publishMultipleGateway.gw_node + index + 1);
-		table.cell('port offset', layoutConfs.offset + index + 1);
-		table.cell('port', HydrogenConfigMaps.ports._9443 + index + 1);
+		table.cell('node', HydrogenConfigMaps.layoutNamePatterns.apim.publishMultipleGateway.gw_node + (index + 1));
+		table.cell('port offset', layoutConfs.offset + (index));
+		table.cell('port', HydrogenConfigMaps.ports._9443 + (index + 1));
 		table.newRow();
 	}
 	logger.info('\n\n' + table.toString() + '\n');
