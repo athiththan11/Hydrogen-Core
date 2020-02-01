@@ -279,36 +279,34 @@ async function readAPIManagerPostgresSQLScripts(options, workingDir = process.cw
 	}
 
 	if (options[HydrogenConfigMaps.platform.iskm] || options.distributed) {
-		let rootDir = fs.readdirSync(workingDir);
-		while (rootDir.length >= 0) {
-			let apimPack = rootDir.shift();
-			if (apimPack.startsWith(HydrogenConfigMaps.servers.apim)) {
-				scripts.push(
-					fs
-						.readFileSync(
-							__path.join(
-								workingDir,
-								apimPack,
-								HydrogenConfigMaps.artifactPaths.scripts.apim.apimgt,
-								HydrogenConfigMaps.datasource.scripts.postgre
-							)
+		let apimPack = fs.readdirSync(workingDir).filter((name) => {
+			return name.startsWith(HydrogenConfigMaps.servers.apim);
+		})[0];
+		if (apimPack) {
+			scripts.push(
+				fs
+					.readFileSync(
+						__path.join(
+							workingDir,
+							apimPack,
+							HydrogenConfigMaps.artifactPaths.scripts.apim.apimgt,
+							HydrogenConfigMaps.datasource.scripts.postgre
 						)
-						.toString()
-				);
-				scripts.push(
-					fs
-						.readFileSync(
-							__path.join(
-								workingDir,
-								apimPack,
-								HydrogenConfigMaps.artifactPaths.scripts.apim.dbscripts,
-								HydrogenConfigMaps.datasource.scripts.postgre
-							)
+					)
+					.toString()
+			);
+			scripts.push(
+				fs
+					.readFileSync(
+						__path.join(
+							workingDir,
+							apimPack,
+							HydrogenConfigMaps.artifactPaths.scripts.apim.dbscripts,
+							HydrogenConfigMaps.datasource.scripts.postgre
 						)
-						.toString()
-				);
-				break;
-			}
+					)
+					.toString()
+			);
 		}
 	}
 
@@ -358,37 +356,35 @@ async function readAPIManagerMySQLScripts(options, workingDir = process.cwd()) {
 	}
 
 	if (options[HydrogenConfigMaps.platform.iskm] || options.distributed) {
-		let rootDir = fs.readdirSync(workingDir);
-		while (rootDir.length >= 0) {
-			let apimPack = rootDir.shift();
-			if (apimPack.startsWith(HydrogenConfigMaps.servers.apim)) {
-				scripts.push(HydrogenConfigMaps.scripts.mysql.allowInvalidDates);
-				scripts.push(
-					fs
-						.readFileSync(
-							__path.join(
-								workingDir,
-								apimPack,
-								HydrogenConfigMaps.artifactPaths.scripts.apim.apimgt,
-								HydrogenConfigMaps.datasource.scripts.mysql
-							)
+		let apimPack = fs.readdirSync(workingDir).filter((name) => {
+			return name.startsWith(HydrogenConfigMaps.servers.apim);
+		})[0];
+		if (apimPack) {
+			scripts.push(HydrogenConfigMaps.scripts.mysql.allowInvalidDates);
+			scripts.push(
+				fs
+					.readFileSync(
+						__path.join(
+							workingDir,
+							apimPack,
+							HydrogenConfigMaps.artifactPaths.scripts.apim.apimgt,
+							HydrogenConfigMaps.datasource.scripts.mysql
 						)
-						.toString()
-				);
-				scripts.push(
-					fs
-						.readFileSync(
-							__path.join(
-								workingDir,
-								apimPack,
-								HydrogenConfigMaps.artifactPaths.scripts.apim.dbscripts,
-								HydrogenConfigMaps.datasource.scripts.mysql
-							)
+					)
+					.toString()
+			);
+			scripts.push(
+				fs
+					.readFileSync(
+						__path.join(
+							workingDir,
+							apimPack,
+							HydrogenConfigMaps.artifactPaths.scripts.apim.dbscripts,
+							HydrogenConfigMaps.datasource.scripts.mysql
 						)
-						.toString()
-				);
-				break;
-			}
+					)
+					.toString()
+			);
 		}
 	}
 
@@ -437,36 +433,34 @@ async function readAPIManagerMSSQLScripts(options, workingDir = process.cwd()) {
 	}
 
 	if (options[HydrogenConfigMaps.platform.iskm] || options.distributed) {
-		let rootDir = fs.readdirSync(workingDir);
-		while (rootDir.length >= 0) {
-			let apimPack = rootDir.shift();
-			if (apimPack.startsWith(HydrogenConfigMaps.servers.apim)) {
-				scripts.push(
-					fs
-						.readFileSync(
-							__path.join(
-								workingDir,
-								apimPack,
-								HydrogenConfigMaps.artifactPaths.scripts.apim.apimgt,
-								HydrogenConfigMaps.datasource.scripts.mssql
-							)
+		let apimPack = fs.readdirSync(workingDir).filter((name) => {
+			return name.startsWith(HydrogenConfigMaps.servers.apim);
+		})[0];
+		if (apimPack) {
+			scripts.push(
+				fs
+					.readFileSync(
+						__path.join(
+							workingDir,
+							apimPack,
+							HydrogenConfigMaps.artifactPaths.scripts.apim.apimgt,
+							HydrogenConfigMaps.datasource.scripts.mssql
 						)
-						.toString()
-				);
-				scripts.push(
-					fs
-						.readFileSync(
-							__path.join(
-								workingDir,
-								apimPack,
-								HydrogenConfigMaps.artifactPaths.scripts.apim.dbscripts,
-								HydrogenConfigMaps.datasource.scripts.mssql
-							)
+					)
+					.toString()
+			);
+			scripts.push(
+				fs
+					.readFileSync(
+						__path.join(
+							workingDir,
+							apimPack,
+							HydrogenConfigMaps.artifactPaths.scripts.apim.dbscripts,
+							HydrogenConfigMaps.datasource.scripts.mssql
 						)
-						.toString()
-				);
-				break;
-			}
+					)
+					.toString()
+			);
 		}
 	}
 
