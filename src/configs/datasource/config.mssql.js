@@ -6,7 +6,7 @@ const HydrogenConfigMaps = require('../../maps/map.hydrogen');
  * method to retrieve MSSQL datasource config strings
  *
  * @param {('apim'|'is')} platform wso2 platform
- * @param {('replace'|'setup')} options deployment setup options { options: { command: [setup || replace ]}}
+ * @param {{}}} options deployment setup options { options: { command: [setup || replace ]}}
  * @returns {{}} datasource configurations
  */
 function getDatasourceConfigs(platform, options) {
