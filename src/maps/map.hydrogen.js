@@ -43,6 +43,8 @@ module.exports = {
 	},
 	ports: {
 		_9443: 9443,
+		_9611: 9611,
+		_9711: 9711,
 		_5672: 5672,
 		_8243: 8243,
 		_8280: 8280,
@@ -62,12 +64,15 @@ module.exports = {
 	},
 	artifactPaths: {
 		conf: {
+			axis2: '/repository/conf/axis2/axis2.xml',
+			axis2TM: '/repository/conf/axis2/axis2_TM.xml',
 			apiManager: '/repository/conf/api-manager.xml',
 			carbon: '/repository/conf/carbon.xml',
 			identity: '/repository/conf/identity/identity.xml',
 			jndiProperties: '/repository/conf/jndi.properties',
 			masterDatasource: '/repository/conf/datasources/master-datasources.xml',
 			registry: '/repository/conf/registry.xml',
+			registryTM: '/repository/conf/registry_TM.xml',
 			userManagement: '/repository/conf/user-mgt.xml',
 		},
 		scripts: {
@@ -129,6 +134,24 @@ module.exports = {
 				'//*[local-name()="APIGateway"]/*[local-name()="Environments"]/*[local-name()="Environment"]',
 			apigateway_environments_environment_serverurl:
 				'//*[local-name()="APIGateway"]/*[local-name()="Environments"]/*[local-name()="Environment"]/*[local-name()="ServerURL"]',
+			apigateway_environments_environment_gatewayendpoint:
+				'//*[local-name()="APIGateway"]/*[local-name()="Environments"]/*[local-name()="Environment"]/*[local-name()="GatewayEndpoint"]',
+			throttlingconfigurations_datapublisher_enabled:
+				'//*[local-name()="ThrottlingConfigurations"]/*[local-name()="DataPublisher"]/*[local-name()="Enabled"]',
+			throttlingconfigurations_policydeployer_enabled:
+				'//*[local-name()="ThrottlingConfigurations"]/*[local-name()="PolicyDeployer"]/*[local-name()="Enabled"]',
+			throttlingconfigurations_blockcondition_enabled:
+				'//*[local-name()="ThrottlingConfigurations"]/*[local-name()="BlockCondition"]/*[local-name()="Enabled"]',
+			throttlingconfigurations_jmsconnectiondetails_enabled:
+				'//*[local-name()="ThrottlingConfigurations"]/*[local-name()="JMSConnectionDetails"]/*[local-name()="Enabled"]',
+			apistore_displayurl: '//*[local-name()="APIStore"]/*[local-name()="DisplayURL"]',
+			apistore_url: '//*[local-name()="APIStore"]/*[local-name()="URL"]',
+			throttlingconfigurations_trafficmanager_receiverurlgroup:
+				'//*[local-name()="ThrottlingConfigurations"]/*[local-name()="TrafficManager"]/*[local-name()="ReceiverUrlGroup"]',
+			throttlingconfigurations_trafficmanager_authurlgroup:
+				'//*[local-name()="ThrottlingConfigurations"]/*[local-name()="TrafficManager"]/*[local-name()="AuthUrlGroup"]',
+			throttlingconfigurations_policydeployer_serviceurl:
+				'//*[local-name()="ThrottlingConfigurations"]/*[local-name()="PolicyDeployer"]/*[local-name()="ServiceURL"]',
 		},
 	},
 	strings: {
