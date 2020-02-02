@@ -77,7 +77,7 @@ async function alterAPIKeyValidatorServerURL(args, workingDir = process.cwd(), o
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter Server URL of APIKeyValidator');
 
 	try {
-        await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager)).then((parsed) => {
+		await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager)).then((parsed) => {
 			let doc = new XMLJS.Document(parsed);
 			let serverUrlElem = new XMLJS.Element(
 				doc,
@@ -127,8 +127,9 @@ async function alterAPIKeyValidatorServerURL(args, workingDir = process.cwd(), o
  *
  * @param {{}} args configuration parameters and arguments
  * @param {string} [workingDir=process.cwd()] path of the current working directory
+ * @param {number} [offset=0] offset value
  */
-async function alterOAuthConfigurationRevokeAPIURL(args, workingDir = process.cwd()) {
+async function alterOAuthConfigurationRevokeAPIURL(args, workingDir = process.cwd(), offset = 0) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter Revoke API URL of OAuthConfigurations');
 
 	try {
@@ -137,7 +138,7 @@ async function alterOAuthConfigurationRevokeAPIURL(args, workingDir = process.cw
 			let revokeAPIUrlElem = new XMLJS.Element(
 				doc,
 				'RevokeAPIURL',
-				args._hostname + ':' + HydrogenConfigMaps.ports._8243 + '/revoke'
+				args._hostname + ':' + (HydrogenConfigMaps.ports._8243 + offset) + '/revoke'
 			);
 
 			let defaultElem = parsed
@@ -162,7 +163,11 @@ async function alterOAuthConfigurationRevokeAPIURL(args, workingDir = process.cw
 				altered.indexOf('</OAuthConfigurations>')
 			);
 
-			let alteredElem = addHydrogeneratedElem(oauthConfigurationsElem, '<RevokeAPIURL>', 'revoke api url changed');
+			let alteredElem = addHydrogeneratedElem(
+				oauthConfigurationsElem,
+				'<RevokeAPIURL>',
+				'revoke api url changed'
+			);
 			let _altered =
 				altered.substring(0, altered.indexOf('<OAuthConfigurations>')) +
 				alteredElem +
@@ -342,8 +347,9 @@ async function alterAPIKeyValidatorThriftClientPort(args, workingDir = process.c
  *
  * @param {{}} args configuration parameters and arguments
  * @param {string} [workingDir=process.cwd()] path of the current working directory
+ * @param {number} [offset=0] offset value
  */
-async function alterGatewayEnvironmentServerURL(args, workingDir = process.cwd()) {
+async function alterGatewayEnvironmentServerURL(args, workingDir = process.cwd(), offset = 0) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter Server URL of Gateway Environment');
 
 	try {
@@ -352,7 +358,7 @@ async function alterGatewayEnvironmentServerURL(args, workingDir = process.cwd()
 			let serverUrlElem = new XMLJS.Element(
 				doc,
 				'ServerURL',
-				args._hostname + ':' + HydrogenConfigMaps.ports._9443 + '/services/'
+				args._hostname + ':' + (HydrogenConfigMaps.ports._9443 + offset) + '/services/'
 			);
 
 			let defaultElem = parsed
