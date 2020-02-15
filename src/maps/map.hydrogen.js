@@ -26,6 +26,7 @@ module.exports = {
 		apim: {
 			publishMultipleGateway: 'publish-multiple-gateway',
 			iskm: 'is-km',
+			distributed: 'distributed',
 		},
 	},
 	layoutNamePatterns: {
@@ -38,6 +39,14 @@ module.exports = {
 			iskm: {
 				apim: 'api-manager',
 				iskm: 'is-km',
+			},
+			distributed: {
+				gateway: 'gateway',
+				keymanager: 'keymanager',
+				publisher: 'publisher',
+				store: 'store',
+				trafficmanager: 'trafficmanager',
+				names: ['gateway', 'keymanager', 'publisher', 'store', 'trafficmanager'],
 			},
 		},
 	},

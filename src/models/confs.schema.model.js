@@ -188,6 +188,255 @@ let iskmlayoutConfs = {
 	required: ['_hostname', 'offset'],
 };
 
+let distributedSchema = {
+	$id: 'distributed.schema',
+	type: 'object',
+	properties: {
+		tmlayoutConfs: {
+			type: 'object',
+			properties: {
+				enableThriftServer: {
+					type: 'string',
+				},
+				offset: {
+					type: 'number',
+				},
+			},
+			required: ['enableThriftServer', 'offset'],
+		},
+		storelayoutConfs: {
+			type: 'object',
+			properties: {
+				_hostname: {
+					type: 'string',
+				},
+				keyValidatorClientType: {
+					type: 'string',
+				},
+				enableThriftServer: {
+					type: 'string',
+				},
+				enableDataPublisher: {
+					type: 'string',
+				},
+				enablePolicyDeployer: {
+					type: 'string',
+				},
+				enableBlockCondition: {
+					type: 'string',
+				},
+				enableJMSConnectionDetails: {
+					type: 'string',
+				},
+				gwoffset: {
+					type: 'number',
+				},
+				kmoffset: {
+					type: 'number',
+				},
+				offset: {
+					type: 'number',
+				},
+			},
+			required: [
+				'_hostname',
+				'keyValidatorClientType',
+				'enableThriftServer',
+				'enableDataPublisher',
+				'enablePolicyDeployer',
+				'enableBlockCondition',
+				'enableJMSConnectionDetails',
+				'gwoffset',
+				'kmoffset',
+				'offset',
+			],
+		},
+		publisherlayoutConfs: {
+			type: 'object',
+			properties: {
+				_hostname: {
+					type: 'string',
+				},
+				_tcpHostname: {
+					type: 'string',
+				},
+				_sslHostname: {
+					type: 'string',
+				},
+				enableThriftServer: {
+					type: 'string',
+				},
+				enableDataPublisher: {
+					type: 'string',
+				},
+				enableBlockCondition: {
+					type: 'string',
+				},
+				enableJMSConnectionDetails: {
+					type: 'string',
+				},
+				displayURL: {
+					type: 'string',
+				},
+				gwoffset: {
+					type: 'number',
+				},
+				kmoffset: {
+					type: 'number',
+				},
+				storeoffset: {
+					type: 'number',
+				},
+				tmoffset: {
+					type: 'number',
+				},
+				offset: {
+					type: 'number',
+				},
+			},
+			required: [
+				'_hostname',
+				'_tcpHostname',
+				'_sslHostname',
+				'enableThriftServer',
+				'enableDataPublisher',
+				'enableBlockCondition',
+				'enableJMSConnectionDetails',
+				'displayURL',
+				'gwoffset',
+				'kmoffset',
+				'storeoffset',
+				'tmoffset',
+				'offset',
+			],
+		},
+	},
+};
+
+let tmlayoutConfs = {
+	$id: 'tm.confs.schema',
+	type: 'object',
+	properties: {
+		enableThriftServer: {
+			type: 'string',
+		},
+		offset: {
+			type: 'number',
+		},
+	},
+	required: ['enableThriftServer', 'offset'],
+};
+
+let storelayoutConfs = {
+	$id: 'store.conf.schema',
+	type: 'object',
+	properties: {
+		_hostname: {
+			type: 'string',
+		},
+		keyValidatorClientType: {
+			type: 'string',
+		},
+		enableThriftServer: {
+			type: 'string',
+		},
+		enableDataPublisher: {
+			type: 'string',
+		},
+		enablePolicyDeployer: {
+			type: 'string',
+		},
+		enableBlockCondition: {
+			type: 'string',
+		},
+		enableJMSConnectionDetails: {
+			type: 'string',
+		},
+		gwoffset: {
+			type: 'number',
+		},
+		kmoffset: {
+			type: 'number',
+		},
+		offset: {
+			type: 'number',
+		},
+	},
+	required: [
+		'_hostname',
+		'keyValidatorClientType',
+		'enableThriftServer',
+		'enableDataPublisher',
+		'enablePolicyDeployer',
+		'enableBlockCondition',
+		'enableJMSConnectionDetails',
+		'gwoffset',
+		'kmoffset',
+		'offset',
+	],
+};
+
+let publisherlayoutConfs = {
+	$id: 'publisher.confs.schema',
+	type: 'object',
+	properties: {
+		_hostname: {
+			type: 'string',
+		},
+		_tcpHostname: {
+			type: 'string',
+		},
+		_sslHostname: {
+			type: 'string',
+		},
+		enableThriftServer: {
+			type: 'string',
+		},
+		enableDataPublisher: {
+			type: 'string',
+		},
+		enableBlockCondition: {
+			type: 'string',
+		},
+		enableJMSConnectionDetails: {
+			type: 'string',
+		},
+		displayURL: {
+			type: 'string',
+		},
+		gwoffset: {
+			type: 'number',
+		},
+		kmoffset: {
+			type: 'number',
+		},
+		storeoffset: {
+			type: 'number',
+		},
+		tmoffset: {
+			type: 'number',
+		},
+		offset: {
+			type: 'number',
+		},
+	},
+	required: [
+		'_hostname',
+		'_tcpHostname',
+		'_sslHostname',
+		'enableThriftServer',
+		'enableDataPublisher',
+		'enableBlockCondition',
+		'enableJMSConnectionDetails',
+		'displayURL',
+		'gwoffset',
+		'kmoffset',
+		'storeoffset',
+		'tmoffset',
+		'offset',
+	],
+};
+
 exports.publishMultipleGatewaySchema = publishMultipleGatewaySchema;
 exports.environmentConfsSchema = environmentConfsSchema;
 exports.layoutConfsSchema = layoutConfsSchema;
@@ -195,3 +444,8 @@ exports.layoutConfsSchema = layoutConfsSchema;
 exports.iskmSchema = iskmSchema;
 exports.apimlayoutConfs = apimlayoutConfs;
 exports.iskmlayoutConfs = iskmlayoutConfs;
+
+exports.distributedSchema = distributedSchema;
+exports.tmlayoutConfs = tmlayoutConfs;
+exports.storelayoutConfs = storelayoutConfs;
+exports.publisherlayoutConfs = publisherlayoutConfs;

@@ -43,22 +43,19 @@ const { logger } = require('../../../utils/util.winston');
 async function configureTrafficManager(workingDir, tmlayoutConfs = { enableThriftServer: 'false', offset: 4 }) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring Traffic Manager for Distributed deployment layout');
 
-	// TESTME: Registry
 	fs.removeSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.registry));
 	fs.renameSync(
 		__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.registryTM),
 		__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.registry)
 	);
-	// TESTME: axis2
+
 	fs.removeSync(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.axis2));
 	fs.renameSync(
 		__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.axis2TM),
 		__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.axis2)
 	);
 
-	// TESTME: alter enable thrift server
 	await alterAPIKeyValidatorEnableThriftServer(tmlayoutConfs, workingDir);
-	// TESTME: offset
 	await configurePortOffset(workingDir, tmlayoutConfs.offset);
 
 	// TODO: profile optimization
@@ -90,39 +87,24 @@ async function configureStore(
 ) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring Store for Distributed deployment layout');
 
-	// TESTME: auth manager server url : offset value
 	await alterAuthManagerServerURL(storelayoutConfs, workingDir, storelayoutConfs.kmoffset);
-	// TESTME: environment server url
 	await alterGatewayEnvironmentServerURL(storelayoutConfs, workingDir, storelayoutConfs.gwoffset);
-	// TESTME: gateway endpoint
 	await alterGatewayEnvironmentGatewayEndpoint(storelayoutConfs, workingDir, storelayoutConfs.gwoffset);
-	// TESTME: key validator server url
 	await alterAPIKeyValidatorServerURL(storelayoutConfs, workingDir, storelayoutConfs.kmoffset);
-	// TESTME: key validator client type
 	await alterAPIKeyValidatorKeyValidatorClientType(storelayoutConfs, workingDir);
-	// TESTME: enable thrift server
 	await alterAPIKeyValidatorEnableThriftServer(storelayoutConfs, workingDir);
-	// TESTME: revoke api url
 	await alterOAuthConfigurationRevokeAPIURL(storelayoutConfs, workingDir, storelayoutConfs.gwoffset);
-	// TESTME: data publisher
 	await alterDataPublisherEnabled(storelayoutConfs, workingDir);
-	// TESTME: policy deployer
 	await alterPolicyDeployerEnabled(storelayoutConfs, workingDir);
-	// TESTME: block condition enabled
 	await alterBlockConditionEnabled(storelayoutConfs, workingDir);
-	// TESTME: jms connection enabled
 	await alterJMSConnectionDetailsEnabled(storelayoutConfs, workingDir);
 
-	// TESTME: datasource
 	await alterMasterDSofAM(datasourceConfs.am, workingDir);
 	await alterMasterDSofUM(datasourceConfs.um, workingDir);
 	await alterMasterDSofREG(datasourceConfs.reg, workingDir);
-	// TESTME: user-mgt
 	await alterUserManagement(false, workingDir);
-	// TESTME: registry
 	await alterRegistry(datasourceConfs.reg, storelayoutConfs.offset, workingDir);
 
-	// TESTME: carbon offset 3
 	await configurePortOffset(workingDir, storelayoutConfs.offset);
 
 	// TODO: profile optimization
@@ -157,42 +139,26 @@ async function configurePublisher(
 ) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring Publisher for Distributed deployment layout');
 
-	// TESTME: authmanager server url : offset value
 	await alterAuthManagerServerURL(publisherlayoutConfs, workingDir, publisherlayoutConfs.kmoffset);
-	// TESTME: environment server url
 	await alterGatewayEnvironmentServerURL(publisherlayoutConfs, workingDir, publisherlayoutConfs.gwoffset);
-	// TESTME: gateway endpoint
 	await alterGatewayEnvironmentGatewayEndpoint(publisherlayoutConfs, workingDir, publisherlayoutConfs.gwoffset);
-	// TESTME: enable thrift server
 	await alterAPIKeyValidatorEnableThriftServer(publisherlayoutConfs, workingDir);
-	// TESTME: display URL
 	await alterAPIStoreDisplayURL(publisherlayoutConfs, workingDir);
-	// TESTME: API Store URL
 	await alterAPIStoreURL(publisherlayoutConfs, workingDir, publisherlayoutConfs.storeoffset);
-	// TESTME: receiver url
 	await alterTrafficManagerReceiverURLGroup(publisherlayoutConfs, workingDir, publisherlayoutConfs.tmoffset);
-	// TESTME: auth url group
 	await alterTrafficManagerAuthURLGroup(publisherlayoutConfs, workingDir, publisherlayoutConfs.tmoffset);
-	// TESTME: data publisher enabled
 	await alterDataPublisherEnabled(publisherlayoutConfs, workingDir);
-	// TESTME: policy deployer service url
 	await alterPolicyDeployerServiceURL(publisherlayoutConfs, workingDir, publisherlayoutConfs.tmoffset);
-	// TESTME: block condition
 	await alterBlockConditionEnabled(publisherlayoutConfs, workingDir);
-	// TESTME: jms connection
 	await alterJMSConnectionDetailsEnabled(publisherlayoutConfs, workingDir);
 
-	// TESTME: datasource
 	await alterMasterDSofAM(datasourceConfs.am, workingDir);
 	await alterMasterDSofUM(datasourceConfs.um, workingDir);
-	await alterMasterDSofREG(datasourceConfs.reg, workingDir);
-	// TESTME: user mgt
+    await alterMasterDSofREG(datasourceConfs.reg, workingDir);
 	await alterUserManagement(false, workingDir);
-	// TESTME: registry
 	await alterRegistry(datasourceConfs.reg, publisherlayoutConfs.offset, workingDir);
 	// TODO: jndi properties
 
-	// TESTME: carbon offset
 	await configurePortOffset(workingDir, publisherlayoutConfs.offset);
 
 	// TODO: profile optimization
