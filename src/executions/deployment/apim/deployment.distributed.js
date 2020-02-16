@@ -23,6 +23,7 @@ const {
 	addJMSConnectionDetailsServiceURL,
 	alterJMSConnectionParametersTopicConnectionFactory,
 } = require('../../../modules/api.manager/apimanager.util');
+const { alterJNDIProperties } = require('../../../modules/jndi.properties/jndi.util');
 const { configurePortOffset } = require('../../../modules/carbon/carbon.util');
 const { alterUserManagement } = require('../../../modules/user.management/usermgt.util');
 const { alterRegistry } = require('../../../modules/registry/registry.util');
@@ -159,7 +160,8 @@ async function configurePublisher(
 	await alterMasterDSofREG(datasourceConfs.reg, workingDir);
 	await alterUserManagement(false, workingDir);
 	await alterRegistry(datasourceConfs.reg, publisherlayoutConfs.offset, workingDir);
-	// TODO: jndi properties
+
+	await alterJNDIProperties(publisherlayoutConfs, workingDir, publisherlayoutConfs.tmoffset);
 
 	await configurePortOffset(workingDir, publisherlayoutConfs.offset);
 
