@@ -52,8 +52,17 @@ function addHydrogeneratedElem(elem, tag, desc) {
 	let altered =
 		elem.substring(0, elem.lastIndexOf(`${tag}`)) +
 		`${constants.newLine}<!-- ${constants.comment}${desc ? desc : ''} -->\n` +
-        elem.substring(elem.lastIndexOf(`${tag}`));
+		elem.substring(elem.lastIndexOf(`${tag}`));
 	return altered;
+}
+
+/**
+ * method to add HYDROGENERATED: comment element
+ *
+ * @param {string} desc comment description
+ */
+function addHydrogeneratedComment(desc) {
+	return `${constants.newLine}<!-- ${constants.comment}${desc ? desc : ''} -->\n`;
 }
 
 /**
@@ -81,3 +90,4 @@ exports.alterElem = alterElem;
 exports.addHydrogeneratedElem = addHydrogeneratedElem;
 exports.commentElem = commentElem;
 exports.removeDeclaration = removeDeclaration;
+exports.addHydrogeneratedComment = addHydrogeneratedComment;
