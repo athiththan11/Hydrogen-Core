@@ -20,6 +20,8 @@ const {
 	alterTrafficManagerReceiverURLGroup,
 	alterTrafficManagerAuthURLGroup,
 	alterPolicyDeployerServiceURL,
+	addJMSConnectionDetailsServiceURL,
+	alterJMSConnectionParametersTopicConnectionFactory,
 } = require('../../../modules/api.manager/apimanager.util');
 const { configurePortOffset } = require('../../../modules/carbon/carbon.util');
 const { alterUserManagement } = require('../../../modules/user.management/usermgt.util');
@@ -154,7 +156,7 @@ async function configurePublisher(
 
 	await alterMasterDSofAM(datasourceConfs.am, workingDir);
 	await alterMasterDSofUM(datasourceConfs.um, workingDir);
-    await alterMasterDSofREG(datasourceConfs.reg, workingDir);
+	await alterMasterDSofREG(datasourceConfs.reg, workingDir);
 	await alterUserManagement(false, workingDir);
 	await alterRegistry(datasourceConfs.reg, publisherlayoutConfs.offset, workingDir);
 	// TODO: jndi properties
@@ -164,9 +166,85 @@ async function configurePublisher(
 	// TODO: profile optimization
 }
 
-// TODO: configure key manager
-// TODO: configure gateway
+/**
+ * metho to configure keymanager for distributed deployment layout
+ *
+ * @param {string} workingDir path of the working directory
+ * @param {{}} datasourceConfs datasource configurations
+ * @param {{}} kmlayoutConfs keymanager layout configurations
+ */
+// TESTME: offset configurations
+async function configureKeyManager(
+	workingDir,
+	datasourceConfs,
+	kmlayoutConfs = {
+		_hostname: 'https://localhost',
+		keyValidatorClientType: 'WSCLient',
+		enableThriftServer: 'false',
+		enablePolicyDeployer: 'false',
+		gwoffset: 0,
+		offset: 1,
+	}
+) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring Key Manager for Distributed deployment layout');
+
+	await alterGatewayEnvironmentServerURL(kmlayoutConfs, workingDir, kmlayoutConfs.gwoffset);
+	await alterAPIKeyValidatorKeyValidatorClientType(kmlayoutConfs, workingDir);
+	await alterAPIKeyValidatorEnableThriftServer(kmlayoutConfs, workingDir);
+	await alterPolicyDeployerEnabled(kmlayoutConfs, workingDir);
+
+	await alterMasterDSofAM(datasourceConfs.am, workingDir);
+	await alterMasterDSofUM(datasourceConfs.um, workingDir);
+	await alterMasterDSofREG(datasourceConfs.reg, workingDir);
+	await alterUserManagement(false, workingDir);
+	await alterRegistry(datasourceConfs.reg, kmlayoutConfs.offset, workingDir);
+
+	await configurePortOffset(workingDir, kmlayoutConfs.offset);
+
+	// TODO: profile optimization
+}
+
+/**
+ * method to configure gateway for distributed deployment layout
+ *
+ * @param {string} workingDir path of the current working directory
+ * @param {{}} gatewaylayoutConfs gateway layout configurations
+ */
+// TESTME: configure gateway
+async function configureDistributedGateway(
+	workingDir,
+	gatewaylayoutConfs = {
+		_hostname: 'https://localhost',
+		_tcpHostname: 'tcp://localhost',
+		_sslHostname: 'ssl://localhost',
+		keyValidatorClientType: 'WSCLient',
+		enableThriftServer: 'false',
+		enablePolicyDeployer: 'false',
+		topicConnectionFactoryQuery: "?retries='5'%26connectdelay='50''",
+		kmoffset: 1,
+		tmoffset: 4,
+		offset: 0,
+	}
+) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring Gateway for Distributed deployment layout');
+
+	await alterAPIKeyValidatorServerURL(gatewaylayoutConfs, workingDir, gatewaylayoutConfs.kmoffset);
+	await alterAPIKeyValidatorKeyValidatorClientType(gatewaylayoutConfs, workingDir);
+	await alterAPIKeyValidatorEnableThriftServer(gatewaylayoutConfs, workingDir);
+	await alterTrafficManagerReceiverURLGroup(gatewaylayoutConfs, workingDir, gatewaylayoutConfs.tmoffset);
+	await alterTrafficManagerAuthURLGroup(gatewaylayoutConfs, workingDir, gatewaylayoutConfs.tmoffset);
+	await alterPolicyDeployerEnabled(gatewaylayoutConfs, workingDir);
+	await alterPolicyDeployerServiceURL(gatewaylayoutConfs, workingDir, gatewaylayoutConfs.tmoffset);
+	await addJMSConnectionDetailsServiceURL(gatewaylayoutConfs, workingDir, gatewaylayoutConfs.tmoffset);
+	await alterJMSConnectionParametersTopicConnectionFactory(gatewaylayoutConfs, workingDir);
+
+	await configurePortOffset(workingDir, gatewaylayoutConfs.offset);
+
+	// TODO: profile optimization
+}
 
 exports.configureTrafficManager = configureTrafficManager;
 exports.configureStore = configureStore;
 exports.configurePublisher = configurePublisher;
+exports.configureKeyManager = configureKeyManager;
+exports.configureDistributedGateway = configureDistributedGateway;

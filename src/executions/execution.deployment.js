@@ -8,6 +8,8 @@ const {
 	configureTrafficManager,
 	configureStore,
 	configurePublisher,
+	configureKeyManager,
+	configureDistributedGateway,
 } = require('./deployment/apim/deployment.distributed');
 
 const HydrogenConfigMaps = require('../maps/map.hydrogen');
@@ -168,7 +170,7 @@ async function configureDistributedDeployment(workingDir, datasourceConfs, distr
  * @param {string} deploymentDir path of the deployment directory
  * @param {number} loopCount loop count
  * @param {{}} datasourceConfs datasource configurations
- * @param {{publisherlayoutConfs: {}, storelayoutConfs: {}, tmlayoutConfs: {}}} distributedLayoutConfs distributed layout configurations
+ * @param {{gatewaylayoutConfs: {}, kmlayoutConfs: {}, publisherlayoutConfs: {}, storelayoutConfs: {}, tmlayoutConfs: {}}} distributedLayoutConfs distributed layout configurations
  */
 async function loopDistributedNodes(apimPackDir, deploymentDir, loopCount, datasourceConfs, distributedLayoutConfs) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Looping through Distributed nodes');
@@ -179,11 +181,37 @@ async function loopDistributedNodes(apimPackDir, deploymentDir, loopCount, datas
 		fs.copy(apimPackDir, __path.join(deploymentDir, packName))
 			.then(() => {
 				let workingDir = __path.join(deploymentDir, packName);
-				if (packName === HydrogenConfigMaps.layoutNamePatterns.apim.distributed.gateway) {
-					// TODO: configure gateway
+                if (packName === HydrogenConfigMaps.layoutNamePatterns.apim.distributed.gateway) {
+					// TESTME: configure gateway
+					configureDistributedGateway(workingDir, distributedLayoutConfs.gatewaylayoutConfs)
+						.then(() => {
+							loopDistributedNodes(
+								apimPackDir,
+								deploymentDir,
+								++loopCount,
+								datasourceConfs,
+								distributedLayoutConfs
+							);
+						})
+						.catch((err) => {
+							logger.error(err);
+						});
 				}
 				if (packName === HydrogenConfigMaps.layoutNamePatterns.apim.distributed.keymanager) {
-					// TODO: configure key manager
+					// TESTME: configure key manager
+					configureKeyManager(workingDir, datasourceConfs, distributedLayoutConfs.kmlayoutConfs)
+						.then(() => {
+							loopDistributedNodes(
+								apimPackDir,
+								deploymentDir,
+								++loopCount,
+								datasourceConfs,
+								distributedLayoutConfs
+							);
+						})
+						.catch((err) => {
+							logger.error(err);
+						});
 				}
 				if (packName === HydrogenConfigMaps.layoutNamePatterns.apim.distributed.publisher) {
 					// TESTME: configure publisher
