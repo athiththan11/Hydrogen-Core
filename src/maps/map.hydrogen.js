@@ -161,6 +161,10 @@ module.exports = {
 				'//*[local-name()="ThrottlingConfigurations"]/*[local-name()="TrafficManager"]/*[local-name()="AuthUrlGroup"]',
 			throttlingconfigurations_policydeployer_serviceurl:
 				'//*[local-name()="ThrottlingConfigurations"]/*[local-name()="PolicyDeployer"]/*[local-name()="ServiceURL"]',
+			throttlingconfigurations_jmsconnectiondetails_destination:
+				'//*[local-name()="ThrottlingConfigurations"]/*[local-name()="JMSConnectionDetails"]/*[local-name()="Destination"]',
+			throttlingconfigurations_jmsconnectiondetails_jmsconnectionparameters_connectionfactorytopicconnectionfactory:
+				'//*[local-name()="ThrottlingConfigurations"]/*[local-name()="JMSConnectionDetails"]/*[local-name()="JMSConnectionParameters"]/*[local-name()="connectionfactory.TopicConnectionFactory"]',
 		},
 	},
 	strings: {

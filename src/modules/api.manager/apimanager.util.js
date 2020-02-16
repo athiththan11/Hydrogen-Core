@@ -997,6 +997,129 @@ async function alterPolicyDeployerServiceURL(args, workingDir = process.cwd(), o
 	}
 }
 
+/**
+ * method to add service url to the jms connection details in api-manager.xml
+ *
+ * @param {{}} args configuration parameters and arguments
+ * @param {string} workingDir path of the current working directory
+ * @param {number} offset offset value
+ */
+async function addJMSConnectionDetailsServiceURL(args, workingDir = process.cwd(), offset = 0) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to add ServiceURL for JMSConnectionDetails');
+
+	try {
+		await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager)).then((parsed) => {
+			let doc = new XMLJS.Document(parsed);
+			let serviceURLElem = new XMLJS.Element(
+				doc,
+				'ServiceURL',
+				args._tcpHostname + ':' + (HydrogenConfigMaps.ports._5672 + offset)
+			);
+
+			parsed
+				.root()
+				.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_jmsconnectiondetails_destination)
+				.addNextSibling(serviceURLElem);
+			let altered = removeDeclaration(parsed.toString());
+			let jmsConnectionDetailsElem = altered.substring(
+				altered.indexOf('<JMSConnectionDetails>'),
+				altered.indexOf('</JMSConnectionDetails>')
+			);
+
+			let alteredElem = addHydrogeneratedElem(jmsConnectionDetailsElem, '<ServiceURL>', 'service url added');
+			let _altered =
+				altered.substring(0, altered.indexOf('<JMSConnectionDetails>')) +
+				alteredElem +
+				altered.substring(altered.indexOf('</JMSConnectionDetails>'));
+
+			fs.writeFileSync(
+				__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager),
+				_altered,
+				constants.utf8
+			);
+		});
+	} catch (err) {
+		logger.error(err);
+	}
+}
+
+/**
+ * method to alter topic connection factory of jms connection parameters in api-manager.xml
+ *
+ * @param {{}} args configuration parameters and arguments
+ * @param {string} workingDir path of the current working directory
+ */
+async function alterJMSConnectionParametersTopicConnectionFactory(args, workingDir = process.cwd()) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter TopicConnectionFactory of JMSConnectionParameters');
+
+	try {
+		await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager)).then((parsed) => {
+			let doc = new XMLJS.Document(parsed);
+			let topicConnectionFactoryElem = new XMLJS.Element(
+				doc,
+				'connectionfactory.TopicConnectionFactory',
+				"amqp://${admin.username}:${admin.password}@clientid/carbon?brokerlist='" +
+					args._tcpHostname +
+					':${jms.port}' +
+					args.topicConnectionFactoryQuery
+			);
+
+			let defaultElemt = parsed
+				.root()
+				.get(
+					HydrogenConfigMaps.xmlPaths.apimanager
+						.throttlingconfigurations_jmsconnectiondetails_jmsconnectionparameters_connectionfactorytopicconnectionfactory
+				);
+			let commentElem = new XMLJS.Comment(doc, defaultElemt.toString());
+			parsed
+				.root()
+				.get(
+					HydrogenConfigMaps.xmlPaths.apimanager
+						.throttlingconfigurations_jmsconnectiondetails_jmsconnectionparameters_connectionfactorytopicconnectionfactory
+				)
+				.addNextSibling(topicConnectionFactoryElem);
+			parsed
+				.root()
+				.get(
+					HydrogenConfigMaps.xmlPaths.apimanager
+						.throttlingconfigurations_jmsconnectiondetails_jmsconnectionparameters_connectionfactorytopicconnectionfactory
+				)
+				.addPrevSibling(commentElem);
+			parsed
+				.root()
+				.get(
+					HydrogenConfigMaps.xmlPaths.apimanager
+						.throttlingconfigurations_jmsconnectiondetails_jmsconnectionparameters_connectionfactorytopicconnectionfactory +
+						'[1]'
+				)
+				.remove();
+			let altered = removeDeclaration(parsed.toString());
+			let jmsConnectionDetailsElem = altered.substring(
+				altered.indexOf('<JMSConnectionParameters>'),
+				altered.indexOf('</JMSConnectionParameters>')
+			);
+
+			let alteredElem = addHydrogeneratedElem(
+				jmsConnectionDetailsElem,
+				'<connectionfactory.TopicConnectionFactory>',
+				'connection factory changed'
+			);
+			let _altered =
+				altered.substring(0, altered.indexOf('<JMSConnectionParameters>')) +
+				alteredElem +
+				altered.substring(altered.indexOf('</JMSConnectionParameters>'));
+
+			fs.writeFileSync(
+				__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager),
+				_altered,
+				constants.utf8
+			);
+		});
+	} catch (err) {
+		logger.error(err);
+	}
+}
+
 exports.addGatewayEnvironment = addGatewayEnvironment;
 exports.alterAPIKeyValidatorEnableThriftServer = alterAPIKeyValidatorEnableThriftServer;
 exports.alterAPIKeyValidatorKeyValidatorClientType = alterAPIKeyValidatorKeyValidatorClientType;
@@ -1015,3 +1138,5 @@ exports.alterPolicyDeployerEnabled = alterPolicyDeployerEnabled;
 exports.alterPolicyDeployerServiceURL = alterPolicyDeployerServiceURL;
 exports.alterTrafficManagerAuthURLGroup = alterTrafficManagerAuthURLGroup;
 exports.alterTrafficManagerReceiverURLGroup = alterTrafficManagerReceiverURLGroup;
+exports.addJMSConnectionDetailsServiceURL = addJMSConnectionDetailsServiceURL;
+exports.alterJMSConnectionParametersTopicConnectionFactory = alterJMSConnectionParametersTopicConnectionFactory;
