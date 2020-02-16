@@ -310,6 +310,83 @@ let distributedSchema = {
 				'offset',
 			],
 		},
+		kmlayoutConfs: {
+			type: 'object',
+			properties: {
+				_hostname: {
+					type: 'string',
+				},
+				keyValidatorClientType: {
+					type: 'string',
+				},
+				enableThriftServer: {
+					type: 'string',
+				},
+				enablePolicyDeployer: {
+					type: 'string',
+				},
+				gwoffset: {
+					type: 'number',
+				},
+				offset: {
+					type: 'number',
+				},
+			},
+			required: [
+				'_hostname',
+				'keyValidatorClientType',
+				'enableThriftServer',
+				'enablePolicyDeployer',
+				'gwoffset',
+				'offset',
+			],
+		},
+		gatewaylayoutConfs: {
+			type: 'object',
+			properties: {
+				_hostname: {
+					type: 'string',
+				},
+				_tcpHostname: {
+					type: 'string',
+				},
+				_sslHostname: {
+					type: 'string',
+				},
+				keyValidatorClientType: {
+					type: 'string',
+				},
+				enableThriftServer: {
+					type: 'string',
+				},
+				enablePolicyDeployer: {
+					type: 'string',
+				},
+				topicConnectionFactoryQuery: {
+					type: 'string',
+				},
+				kmoffset: {
+					type: 'number',
+				},
+				tmoffset: {
+					type: 'number',
+				},
+				offset: {
+					type: 'number',
+				},
+			},
+			required: [
+				'_hostname',
+				'_tcpHostname',
+				'_sslHostname',
+				'keyValidatorClientType',
+				'enableThriftServer',
+				'enablePolicyDeployer',
+				'kmoffset',
+				'tmoffset',
+				'offset',
+			],
+		},
 	},
 };
 
@@ -437,6 +514,87 @@ let publisherlayoutConfs = {
 	],
 };
 
+let kmlayoutConfs = {
+	$id: 'km.confs.schema',
+	type: 'object',
+	properties: {
+		_hostname: {
+			type: 'string',
+		},
+		keyValidatorClientType: {
+			type: 'string',
+		},
+		enableThriftServer: {
+			type: 'string',
+		},
+		enablePolicyDeployer: {
+			type: 'string',
+		},
+		gwoffset: {
+			type: 'number',
+		},
+		offset: {
+			type: 'number',
+		},
+	},
+	required: [
+		'_hostname',
+		'keyValidatorClientType',
+		'enableThriftServer',
+		'enablePolicyDeployer',
+		'gwoffset',
+		'offset',
+	],
+};
+
+let gatewaylayoutConfs = {
+	$id: 'gateway.confs.schema',
+	type: 'object',
+	properties: {
+		_hostname: {
+			type: 'string',
+		},
+		_tcpHostname: {
+			type: 'string',
+		},
+		_sslHostname: {
+			type: 'string',
+		},
+		keyValidatorClientType: {
+			type: 'string',
+		},
+		enableThriftServer: {
+			type: 'string',
+		},
+		enablePolicyDeployer: {
+			type: 'string',
+        },
+        topicConnectionFactoryQuery: {
+            type: 'string'
+        },
+		kmoffset: {
+			type: 'number',
+		},
+		tmoffset: {
+			type: 'number',
+		},
+		offset: {
+			type: 'number',
+		},
+	},
+	required: [
+		'_hostname',
+		'_tcpHostname',
+		'_sslHostname',
+		'keyValidatorClientType',
+		'enableThriftServer',
+		'enablePolicyDeployer',
+		'kmoffset',
+		'tmoffset',
+		'offset',
+	],
+};
+
 exports.publishMultipleGatewaySchema = publishMultipleGatewaySchema;
 exports.environmentConfsSchema = environmentConfsSchema;
 exports.layoutConfsSchema = layoutConfsSchema;
@@ -449,3 +607,5 @@ exports.distributedSchema = distributedSchema;
 exports.tmlayoutConfs = tmlayoutConfs;
 exports.storelayoutConfs = storelayoutConfs;
 exports.publisherlayoutConfs = publisherlayoutConfs;
+exports.kmlayoutConfs = kmlayoutConfs;
+exports.gatewaylayoutConfs = gatewaylayoutConfs;
