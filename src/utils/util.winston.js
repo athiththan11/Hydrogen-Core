@@ -1,4 +1,4 @@
-'use-strict';
+'use strict';
 
 const __path = require('path');
 const winston = require('winston');
