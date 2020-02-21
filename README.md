@@ -14,15 +14,15 @@
 
 <br>
 
-<br />
-
-## Intro
+### Intro
 
 The core module which empowers `Hydrogen` Utils and Tools to configure WSO2 Servers. The tools backed & baked by `Hydrogen Core` are ...
 
 - [Hydrogen CLI](https://github.com/athiththan11/Hydrogen-CLI) : An Interactive CLI Tool to Configure WSO2 Servers
 
-## What's Inside
+<br />
+
+### What's Inside
 
 - [Intro](#intro)
 - [What's Inside](#whats-inside)
@@ -32,15 +32,17 @@ The core module which empowers `Hydrogen` Utils and Tools to configure WSO2 Serv
 - [🤝 Contribute](#%f0%9f%a4%9d-contribute)
 - [📝 License](#%f0%9f%93%9d-license)
 
-## 🚀 Install & Run
+<br />
 
-### GitHub Package Registry
+### 🚀 Install & Run
+
+#### GitHub Package Registry
 
 ```shell
 npm install @athiththan11/hydrogen-core
 ```
 
-### Setting Up Dev Environment
+#### Setting Up Dev Environment
 
 The `Hydrogen Core` module is packed and built on top of NodeJS `v10.18.1`. Therefore, it is advised to use NodeJS `v10.18.1` in your development environment to support and implement flawless experience.
 
@@ -48,10 +50,12 @@ The `Hydrogen Core` module is packed and built on top of NodeJS `v10.18.1`. Ther
 - Execute `npm install`
 - Develop and Contribute
 
-## 🤝 Contribute
+<br />
+
+### 🤝 Contribute
 
 Whether you're helping us fix bugs, improve the docs, or spread the word, we'd love to have you as part of  our community!
 
-## 📝 License
+### 📝 License
 
 Licensed under the [MIT License](LICENSE).
