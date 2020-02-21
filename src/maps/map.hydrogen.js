@@ -11,6 +11,13 @@ module.exports = {
 		is: 'wso2is',
 		iskm: 'wso2is-km',
 	},
+	profiles: {
+		trafficmanager: 'traffic-manager',
+		publisher: 'api-publisher',
+		store: 'api-store',
+		gateway: 'gateway-worker',
+		keymanager: 'api-key-manager',
+	},
 	datasource: {
 		mssql: 'mssql',
 		mysql: 'mysql',
@@ -72,6 +79,14 @@ module.exports = {
 		},
 	},
 	artifactPaths: {
+		bin: {
+			sh: {
+				profileSetup: '/bin/profileSetup.sh',
+			},
+			bat: {
+				profileSetup: '/bin/profileSetup.bat',
+			},
+		},
 		conf: {
 			axis2: '/repository/conf/axis2/axis2.xml',
 			axis2TM: '/repository/conf/axis2/axis2_TM.xml',
