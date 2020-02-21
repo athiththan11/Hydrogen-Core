@@ -33,17 +33,21 @@ async function configureIdentityServerKM(
 ) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring Identity Server as Key Manager');
 
-	await alterGatewayEnvironmentServerURL(iskmlayoutConfs, workingDir);
-	await alterOAuthConfigurationRevokeAPIURL(iskmlayoutConfs, workingDir);
+	try {
+		await alterGatewayEnvironmentServerURL(iskmlayoutConfs, workingDir);
+		await alterOAuthConfigurationRevokeAPIURL(iskmlayoutConfs, workingDir);
 
-	await alterMasterDSofAM(datasourceConfs.am, workingDir);
-	await alterMasterDSofUM(datasourceConfs.um, workingDir);
-	await alterMasterDSofREG(datasourceConfs.reg, workingDir);
+		await alterMasterDSofAM(datasourceConfs.am, workingDir);
+		await alterMasterDSofUM(datasourceConfs.um, workingDir);
+		await alterMasterDSofREG(datasourceConfs.reg, workingDir);
 
-	await alterRegistry(datasourceConfs.reg, iskmlayoutConfs.offset, workingDir);
-	await alterUserManagement(true, workingDir);
+		await alterRegistry(datasourceConfs.reg, iskmlayoutConfs.offset, workingDir);
+		await alterUserManagement(true, workingDir);
 
-	await configurePortOffset(workingDir, iskmlayoutConfs.offset);
+		await configurePortOffset(workingDir, iskmlayoutConfs.offset);
+	} catch (err) {
+		logger.error(err);
+	}
 }
 
 /**
@@ -66,17 +70,21 @@ async function configureAPIManagerwithISKM(
 	if (process.env.HYDROGEN_DEBUG)
 		logger.debug('Starting to configure API Manager with Identity Server as Key Manager ');
 
-	await alterAuthManagerServerURL(apimlayoutConfs, workingDir, apimlayoutConfs.iskmoffset);
-	await alterAPIKeyValidatorServerURL(apimlayoutConfs, workingDir, apimlayoutConfs.iskmoffset);
-	await alterAPIKeyValidatorKeyValidatorClientType(apimlayoutConfs, workingDir);
-	await alterAPIKeyValidatorEnableThriftServer(apimlayoutConfs, workingDir);
+	try {
+		await alterAuthManagerServerURL(apimlayoutConfs, workingDir, apimlayoutConfs.iskmoffset);
+		await alterAPIKeyValidatorServerURL(apimlayoutConfs, workingDir, apimlayoutConfs.iskmoffset);
+		await alterAPIKeyValidatorKeyValidatorClientType(apimlayoutConfs, workingDir);
+		await alterAPIKeyValidatorEnableThriftServer(apimlayoutConfs, workingDir);
 
-	await alterMasterDSofAM(datasourceConfs.am, workingDir);
-	await alterMasterDSofUM(datasourceConfs.um, workingDir);
-	await alterMasterDSofREG(datasourceConfs.reg, workingDir);
+		await alterMasterDSofAM(datasourceConfs.am, workingDir);
+		await alterMasterDSofUM(datasourceConfs.um, workingDir);
+		await alterMasterDSofREG(datasourceConfs.reg, workingDir);
 
-	await alterRegistry(datasourceConfs.reg, 0, workingDir);
-	await alterUserManagement(false, workingDir);
+		await alterRegistry(datasourceConfs.reg, 0, workingDir);
+		await alterUserManagement(false, workingDir);
+	} catch (err) {
+		logger.error(err);
+	}
 }
 
 exports.configureIdentityServerKM = configureIdentityServerKM;

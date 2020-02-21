@@ -76,7 +76,7 @@ async function loopGatewayNodes(apimPackDir, deploymentDir, gwCount, loopCount, 
 							loopGatewayNodes(apimPackDir, deploymentDir, gwCount, ++loopCount, layoutConfs);
 						})
 						.catch((err) => {
-							return logger.error(err);
+							logger.error(err);
 						});
 				} else {
 					layoutConfs.offset += 1;
@@ -85,12 +85,12 @@ async function loopGatewayNodes(apimPackDir, deploymentDir, gwCount, loopCount, 
 							loopGatewayNodes(apimPackDir, deploymentDir, gwCount, ++loopCount, layoutConfs);
 						})
 						.catch((err) => {
-							return logger.error(err);
+							logger.error(err);
 						});
 				}
 			})
 			.catch((err) => {
-				return logger.error(err);
+				logger.error(err);
 			});
 	}
 }
@@ -263,7 +263,7 @@ async function loopDistributedNodes(apimPackDir, deploymentDir, loopCount, datas
 				}
 			})
 			.catch((err) => {
-				return logger.error(err);
+				logger.error(err);
 			});
 	}
 }

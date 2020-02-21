@@ -79,7 +79,7 @@ async function executePostgreSQLScripts(platform, workingDir = process.cwd()) {
 					});
 				})
 				.catch((err) => {
-					return logger.error(err);
+					logger.error(err);
 				});
 		}
 		if (platform === HydrogenConfigMaps.platform.is) {
@@ -95,7 +95,7 @@ async function executePostgreSQLScripts(platform, workingDir = process.cwd()) {
 					});
 				})
 				.catch((err) => {
-					return logger.error(err);
+					logger.error(err);
 				});
 		}
 	}, HydrogenConfigMaps.docker.timeout.postgre);
@@ -147,7 +147,7 @@ async function loopAPIManagerDatasources(options, loopCount, workingDir = proces
 				loopAPIManagerDatasources(options, ++loopCount, workingDir);
 			})
 			.catch((err) => {
-				return logger.error(err);
+				logger.error(err);
 			});
 	}
 }

@@ -24,13 +24,17 @@ async function configureGateway(
 ) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring API Manager as Gateway');
 
-	await alterAuthManagerServerURL(layoutConfs, workingDir);
-	await alterAPIKeyValidatorServerURL(layoutConfs, workingDir);
-	await alterAPIKeyValidatorThriftClientPort(layoutConfs, workingDir);
-	await alterAPIKeyValidatorEnableThriftServer(layoutConfs, workingDir);
-	await alterOAuthConfigurationRevokeAPIURL(layoutConfs, workingDir);
+	try {
+		await alterAuthManagerServerURL(layoutConfs, workingDir);
+		await alterAPIKeyValidatorServerURL(layoutConfs, workingDir);
+		await alterAPIKeyValidatorThriftClientPort(layoutConfs, workingDir);
+		await alterAPIKeyValidatorEnableThriftServer(layoutConfs, workingDir);
+		await alterOAuthConfigurationRevokeAPIURL(layoutConfs, workingDir);
 
-	await configurePortOffset(workingDir, layoutConfs.offset);
+		await configurePortOffset(workingDir, layoutConfs.offset);
+	} catch (err) {
+		logger.error(err);
+	}
 }
 
 /**
@@ -43,7 +47,11 @@ async function configureGatewayAIO(workingDir, environmentConfsArray = []) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring API Manager for Multiple Gateway Setup');
 
 	// loop through environmentConfsArray and configure AIO pack
-	await loopGatewayEnvConfs(workingDir, environmentConfsArray, 0);
+	try {
+		await loopGatewayEnvConfs(workingDir, environmentConfsArray, 0);
+	} catch (err) {
+		logger.error(err);
+	}
 }
 
 /**
@@ -63,7 +71,7 @@ async function loopGatewayEnvConfs(workingDir, environmentConfs, loopCount) {
 				loopGatewayEnvConfs(workingDir, environmentConfs, ++loopCount);
 			})
 			.catch((err) => {
-				return logger.error(err);
+				logger.error(err);
 			});
 	}
 }
