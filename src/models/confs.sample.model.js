@@ -40,14 +40,6 @@ let iskmlayoutConfs = {
 	offset: 1,
 };
 
-let distributedConfs = {
-	tmlayoutConfs: tmlayoutConfs,
-	storelayoutConfs: storelayoutConfs,
-	publisherlayoutConfs: publisherlayoutConfs,
-	kmlayoutConfs: kmlayoutConfs,
-	gatewaylayoutConfs: gatewaylayoutConfs,
-};
-
 let tmlayoutConfs = {
 	enableThriftServer: 'false',
 	offset: 4,
@@ -102,6 +94,14 @@ let gatewaylayoutConfs = {
 	kmoffset: 1,
 	tmoffset: 4,
 	offset: 0,
+};
+
+let distributedConfs = {
+	tmlayoutConfs: tmlayoutConfs,
+	storelayoutConfs: storelayoutConfs,
+	publisherlayoutConfs: publisherlayoutConfs,
+	kmlayoutConfs: kmlayoutConfs,
+	gatewaylayoutConfs: gatewaylayoutConfs,
 };
 
 exports.environmentConfs = environmentConfs;
