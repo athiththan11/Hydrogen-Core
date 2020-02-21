@@ -74,6 +74,39 @@ function generateIdentityServerasKMDocs(iskmlayoutConfs) {
 	logger.info('\n\n' + table.toString() + '\n');
 }
 
+/**
+ * method to generate docs to for distributed deployment layout
+ *
+ * @param {{}} distributedConfs distributed layout configurations
+ */
+function generateDistributedDocs(distributedConfs) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Generating docs for Distributed deployment layout');
+
+	let table = new EasyTable();
+	table.cell('node', HydrogenConfigMaps.layoutNamePatterns.apim.distributed.gateway);
+	table.cell('port offset', distributedConfs.gatewaylayoutConfs.offset);
+	table.cell('port', HydrogenConfigMaps.ports._9443 + distributedConfs.gatewaylayoutConfs.offset);
+	table.newRow();
+	table.cell('node', HydrogenConfigMaps.layoutNamePatterns.apim.distributed.keymanager);
+	table.cell('port offset', distributedConfs.kmlayoutConfs.offset);
+	table.cell('port', HydrogenConfigMaps.ports._9443 + distributedConfs.kmlayoutConfs.offset);
+	table.newRow();
+	table.cell('node', HydrogenConfigMaps.layoutNamePatterns.apim.distributed.publisher);
+	table.cell('port offset', distributedConfs.publisherlayoutConfs.offset);
+	table.cell('port', HydrogenConfigMaps.ports._9443 + distributedConfs.publisherlayoutConfs.offset);
+	table.newRow();
+	table.cell('node', HydrogenConfigMaps.layoutNamePatterns.apim.distributed.store);
+	table.cell('port offset', distributedConfs.storelayoutConfs.offset);
+	table.cell('port', HydrogenConfigMaps.ports._9443 + distributedConfs.storelayoutConfs.offset);
+	table.newRow();
+	table.cell('node', HydrogenConfigMaps.layoutNamePatterns.apim.distributed.trafficmanager);
+	table.cell('port offset', distributedConfs.tmlayoutConfs.offset);
+	table.cell('port', HydrogenConfigMaps.ports._9443 + distributedConfs.tmlayoutConfs.offset);
+	table.newRow();
+	logger.info('\n\n' + table.toString() + '\n');
+}
+
 exports.generateDBDriverDocs = generateDBDriverDocs;
 exports.generatePublishMultipleGatewayDocs = generatePublishMultipleGatewayDocs;
 exports.generateIdentityServerasKMDocs = generateIdentityServerasKMDocs;
+exports.generateDistributedDocs = generateDistributedDocs;
