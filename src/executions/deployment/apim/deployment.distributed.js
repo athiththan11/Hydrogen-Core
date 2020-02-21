@@ -43,7 +43,6 @@ const { logger } = require('../../../utils/util.winston');
  * @param {string} workingDir path of the working directory
  * @param {{}} tmlayoutConfs traffic manager layout configurations
  */
-// TESTME: offset configurations
 async function configureTrafficManager(workingDir, tmlayoutConfs = { enableThriftServer: 'false', offset: 4 }) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring Traffic Manager for Distributed deployment layout');
 
@@ -76,7 +75,6 @@ async function configureTrafficManager(workingDir, tmlayoutConfs = { enableThrif
  * @param {{}} datasourceConfs datasource configurations
  * @param {{}} storelayoutConfs store layout configurations
  */
-// TESTME: offset configurations
 async function configureStore(
 	workingDir,
 	datasourceConfs,
@@ -129,7 +127,6 @@ async function configureStore(
  * @param {{}} datasourceConfs datasource configurations
  * @param {{}} publisherlayoutConfs publisher layout configurations
  */
-// TESTME: offset configurations
 async function configurePublisher(
 	workingDir,
 	datasourceConfs,
@@ -188,7 +185,6 @@ async function configurePublisher(
  * @param {{}} datasourceConfs datasource configurations
  * @param {{}} kmlayoutConfs keymanager layout configurations
  */
-// TESTME: offset configurations
 async function configureKeyManager(
 	workingDir,
 	datasourceConfs,
@@ -229,7 +225,6 @@ async function configureKeyManager(
  * @param {string} workingDir path of the current working directory
  * @param {{}} gatewaylayoutConfs gateway layout configurations
  */
-// TESTME: configure gateway
 async function configureDistributedGateway(
 	workingDir,
 	gatewaylayoutConfs = {

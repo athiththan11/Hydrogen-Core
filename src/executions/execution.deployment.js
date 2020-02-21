@@ -182,7 +182,6 @@ async function loopDistributedNodes(apimPackDir, deploymentDir, loopCount, datas
 			.then(() => {
 				let workingDir = __path.join(deploymentDir, packName);
                 if (packName === HydrogenConfigMaps.layoutNamePatterns.apim.distributed.gateway) {
-					// TESTME: configure gateway
 					configureDistributedGateway(workingDir, distributedLayoutConfs.gatewaylayoutConfs)
 						.then(() => {
 							loopDistributedNodes(
@@ -198,7 +197,6 @@ async function loopDistributedNodes(apimPackDir, deploymentDir, loopCount, datas
 						});
 				}
 				if (packName === HydrogenConfigMaps.layoutNamePatterns.apim.distributed.keymanager) {
-					// TESTME: configure key manager
 					configureKeyManager(workingDir, datasourceConfs, distributedLayoutConfs.kmlayoutConfs)
 						.then(() => {
 							loopDistributedNodes(
@@ -214,7 +212,6 @@ async function loopDistributedNodes(apimPackDir, deploymentDir, loopCount, datas
 						});
 				}
 				if (packName === HydrogenConfigMaps.layoutNamePatterns.apim.distributed.publisher) {
-					// TESTME: configure publisher
 					configurePublisher(workingDir, datasourceConfs, distributedLayoutConfs.publisherlayoutConfs)
 						.then(() => {
 							loopDistributedNodes(
@@ -230,7 +227,6 @@ async function loopDistributedNodes(apimPackDir, deploymentDir, loopCount, datas
 						});
 				}
 				if (packName === HydrogenConfigMaps.layoutNamePatterns.apim.distributed.store) {
-					// TESTME: configure store
 					configureStore(workingDir, datasourceConfs, distributedLayoutConfs.storelayoutConfs)
 						.then(() => {
 							loopDistributedNodes(
@@ -246,7 +242,6 @@ async function loopDistributedNodes(apimPackDir, deploymentDir, loopCount, datas
 						});
 				}
 				if (packName === HydrogenConfigMaps.layoutNamePatterns.apim.distributed.trafficmanager) {
-					// TESTME: configure traffic manager
 					configureTrafficManager(workingDir, distributedLayoutConfs.tmlayoutConfs)
 						.then(() => {
 							loopDistributedNodes(
