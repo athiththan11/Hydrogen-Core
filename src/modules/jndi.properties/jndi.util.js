@@ -1,7 +1,7 @@
 'use strict';
 
 const __path = require('path');
-const fs = require('fs');
+const fs = require('fs-extra');
 
 const constants = require('../../utils/constants');
 const HydrogenConfigMaps = require('../../maps/map.hydrogen');
@@ -18,9 +18,8 @@ async function alterJNDIProperties(args, workingDir = process.cwd(), tmOffset = 
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter jndi.properties');
 
 	try {
-		await fs
-			.readFile(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.jndiProperties), constants.utf8)
-			.then((parsed) => {
+		fs.readFile(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.jndiProperties), constants.utf8).then(
+			(parsed) => {
 				let altered = parsed;
 
 				let _altered =
@@ -31,7 +30,9 @@ async function alterJNDIProperties(args, workingDir = process.cwd(), tmOffset = 
 						altered.indexOf('connectionfactory.QueueConnectionFactory')
 					) +
 					`# ${constants.comment}
-connectionfactory.TopicConnectionFactory = amqp://admin:admin@clientid/carbon?brokerlist='${args._tcpHostname}:${constants.ports._5672 + tmOffset}'
+connectionfactory.TopicConnectionFactory = amqp://admin:admin@clientid/carbon?brokerlist='${
+						args._tcpHostname
+					}:${HydrogenConfigMaps.ports._5672 + tmOffset}'
 ` +
 					altered.substring(altered.indexOf('connectionfactory.QueueConnectionFactory'));
 
@@ -40,7 +41,8 @@ connectionfactory.TopicConnectionFactory = amqp://admin:admin@clientid/carbon?br
 					_altered,
 					constants.utf8
 				);
-			});
+			}
+		);
 	} catch (err) {
 		logger.error(err);
 	}
