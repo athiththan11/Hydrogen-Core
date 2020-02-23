@@ -42,19 +42,19 @@ let iskmlayoutConfs = {
 
 let tmlayoutConfs = {
 	enableThriftServer: 'false',
-	offset: 4,
+	offset: 0,
 };
 
 let storelayoutConfs = {
 	_hostname: 'https://localhost',
-	keyValidatorClientType: 'WSCLient',
+	keyValidatorClientType: 'WSClient',
 	enableThriftServer: 'false',
 	enableDataPublisher: 'false',
 	enablePolicyDeployer: 'false',
 	enableBlockCondition: 'false',
 	enableJMSConnectionDetails: 'false',
-	gwoffset: 0,
-	kmoffset: 1,
+	gwoffset: 1,
+	kmoffset: 4,
 	offset: 3,
 };
 
@@ -67,33 +67,35 @@ let publisherlayoutConfs = {
 	enableBlockCondition: 'false',
 	enableJMSConnectionDetails: 'false',
 	displayURL: 'true',
-	gwoffset: 0,
-	kmoffset: 1,
+	gwoffset: 1,
+	kmoffset: 4,
 	storeoffset: 3,
-	tmoffset: 4,
+	tmoffset: 0,
 	offset: 2,
 };
 
 let kmlayoutConfs = {
 	_hostname: 'https://localhost',
-	keyValidatorClientType: 'WSCLient',
+	keyValidatorClientType: 'WSClient',
 	enableThriftServer: 'false',
+	enableDataPublisher: 'false',
 	enablePolicyDeployer: 'false',
-	gwoffset: 0,
-	offset: 1,
+	enableJMSConnectionDetails: 'false',
+	gwoffset: 1,
+	offset: 4,
 };
 
 let gatewaylayoutConfs = {
 	_hostname: 'https://localhost',
 	_tcpHostname: 'tcp://localhost',
 	_sslHostname: 'ssl://localhost',
-	keyValidatorClientType: 'WSCLient',
+	keyValidatorClientType: 'WSClient',
 	enableThriftServer: 'false',
 	enablePolicyDeployer: 'false',
 	topicConnectionFactoryQuery: "?retries='5'%26connectdelay='50''",
-	kmoffset: 1,
-	tmoffset: 4,
-	offset: 0,
+	kmoffset: 4,
+	tmoffset: 0,
+	offset: 1,
 };
 
 let distributedConfs = {

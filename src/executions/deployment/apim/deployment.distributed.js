@@ -43,7 +43,7 @@ const { logger } = require('../../../utils/util.winston');
  * @param {string} workingDir path of the working directory
  * @param {{}} tmlayoutConfs traffic manager layout configurations
  */
-async function configureTrafficManager(workingDir, tmlayoutConfs = { enableThriftServer: 'false', offset: 4 }) {
+async function configureTrafficManager(workingDir, tmlayoutConfs = { enableThriftServer: 'false', offset: 0 }) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring Traffic Manager for Distributed deployment layout');
 
 	try {
@@ -80,14 +80,14 @@ async function configureStore(
 	datasourceConfs,
 	storelayoutConfs = {
 		_hostname: 'https://localhost',
-		keyValidatorClientType: 'WSCLient',
+		keyValidatorClientType: 'WSClient',
 		enableThriftServer: 'false',
 		enableDataPublisher: 'false',
 		enablePolicyDeployer: 'false',
 		enableBlockCondition: 'false',
 		enableJMSConnectionDetails: 'false',
-		gwoffset: 0,
-		kmoffset: 1,
+		gwoffset: 1,
+		kmoffset: 4,
 		offset: 3,
 	}
 ) {
@@ -139,10 +139,10 @@ async function configurePublisher(
 		enableBlockCondition: 'false',
 		enableJMSConnectionDetails: 'false',
 		displayURL: 'true',
-		gwoffset: 0,
-		kmoffset: 1,
+		gwoffset: 1,
+		kmoffset: 4,
 		storeoffset: 3,
-		tmoffset: 4,
+		tmoffset: 0,
 		offset: 2,
 	}
 ) {
@@ -190,11 +190,13 @@ async function configureKeyManager(
 	datasourceConfs,
 	kmlayoutConfs = {
 		_hostname: 'https://localhost',
-		keyValidatorClientType: 'WSCLient',
+		keyValidatorClientType: 'WSClient',
 		enableThriftServer: 'false',
+		enableDataPublisher: 'false',
 		enablePolicyDeployer: 'false',
-		gwoffset: 0,
-		offset: 1,
+		enableJMSConnectionDetails: 'false',
+		gwoffset: 1,
+		offset: 4,
 	}
 ) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring Key Manager for Distributed deployment layout');
@@ -231,13 +233,13 @@ async function configureDistributedGateway(
 		_hostname: 'https://localhost',
 		_tcpHostname: 'tcp://localhost',
 		_sslHostname: 'ssl://localhost',
-		keyValidatorClientType: 'WSCLient',
+		keyValidatorClientType: 'WSClient',
 		enableThriftServer: 'false',
 		enablePolicyDeployer: 'false',
 		topicConnectionFactoryQuery: "?retries='5'%26connectdelay='50''",
-		kmoffset: 1,
-		tmoffset: 4,
-		offset: 0,
+		kmoffset: 4,
+		tmoffset: 0,
+		offset: 1,
 	}
 ) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring Gateway for Distributed deployment layout');

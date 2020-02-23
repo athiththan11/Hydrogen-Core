@@ -322,7 +322,13 @@ let distributedSchema = {
 				enableThriftServer: {
 					type: 'string',
 				},
+				enableDataPublisher: {
+					type: 'string',
+				},
 				enablePolicyDeployer: {
+					type: 'string',
+				},
+				enableJMSConnectionDetails: {
 					type: 'string',
 				},
 				gwoffset: {
@@ -336,7 +342,9 @@ let distributedSchema = {
 				'_hostname',
 				'keyValidatorClientType',
 				'enableThriftServer',
+				'enableDataPublisher',
 				'enablePolicyDeployer',
+				'enableJMSConnectionDetails',
 				'gwoffset',
 				'offset',
 			],
@@ -527,7 +535,13 @@ let kmlayoutConfs = {
 		enableThriftServer: {
 			type: 'string',
 		},
+		enableDataPublisher: {
+			type: 'string',
+		},
 		enablePolicyDeployer: {
+			type: 'string',
+		},
+		enableJMSConnectionDetails: {
 			type: 'string',
 		},
 		gwoffset: {
@@ -541,7 +555,9 @@ let kmlayoutConfs = {
 		'_hostname',
 		'keyValidatorClientType',
 		'enableThriftServer',
+		'enableDataPublisher',
 		'enablePolicyDeployer',
+		'enableJMSConnectionDetails',
 		'gwoffset',
 		'offset',
 	],
@@ -568,10 +584,10 @@ let gatewaylayoutConfs = {
 		},
 		enablePolicyDeployer: {
 			type: 'string',
-        },
-        topicConnectionFactoryQuery: {
-            type: 'string'
-        },
+		},
+		topicConnectionFactoryQuery: {
+			type: 'string',
+		},
 		kmoffset: {
 			type: 'number',
 		},
