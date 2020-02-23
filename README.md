@@ -12,6 +12,8 @@
 
 <br>
 
+![Hydrogen Core Package](https://github.com/athiththan11/hydrogen-core/workflows/Hydrogen%20Core%20Package/badge.svg?branch=master&event=release)
+
 <br>
 
 ### Intro
