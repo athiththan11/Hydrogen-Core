@@ -85,9 +85,44 @@ function removeDeclaration(xml) {
 	return xml.split('<?xml version="1.0" encoding="UTF-8"?>\n')[1];
 }
 
+/**
+ * method to comment element using xml path
+ *
+ * @param {string} xmlPath xml path of the element to be commented
+ * @param {string} artifactPath file path of the xml artifact
+ */
+async function commentElemUsingXMLPath(xmlPath, artifactPath) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to comment element');
+
+	try {
+		await parseXML(artifactPath).then((parsed) => {
+			let doc = new XMLJS.Document(parsed);
+
+			let defaultElem = parsed.root().get(xmlPath);
+			if (defaultElem) {
+				let commentElem = new XMLJS.Comment(doc, defaultElem.toString());
+				parsed
+					.root()
+					.get(xmlPath)
+					.addPrevSibling(commentElem);
+				parsed
+					.root()
+					.get(xmlPath + '[1]')
+					.remove();
+				let altered = parsed.toString();
+
+				fs.writeFileSync(artifactPath, altered, constants.utf8);
+			}
+		});
+	} catch (err) {
+		logger.error(err);
+	}
+}
+
 exports.parseXML = parseXML;
 exports.alterElem = alterElem;
 exports.addHydrogeneratedElem = addHydrogeneratedElem;
 exports.commentElem = commentElem;
+exports.commentElemUsingXMLPath = commentElemUsingXMLPath;
 exports.removeDeclaration = removeDeclaration;
 exports.addHydrogeneratedComment = addHydrogeneratedComment;
