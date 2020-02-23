@@ -23,6 +23,7 @@ const {
 	addJMSConnectionDetailsServiceURL,
 	alterJMSConnectionParametersTopicConnectionFactory,
 } = require('../../../modules/api.manager/apimanager.util');
+const { commentWSTransportSender, commentWSSTransportSender } = require('../../../modules/axis2/axis2.util');
 const { alterJNDIProperties } = require('../../../modules/jndi.properties/jndi.util');
 const { configurePortOffset } = require('../../../modules/carbon/carbon.util');
 const { alterUserManagement } = require('../../../modules/user.management/usermgt.util');
@@ -114,6 +115,9 @@ async function configureStore(
 
 		await configurePortOffset(workingDir, storelayoutConfs.offset);
 
+		await commentWSTransportSender(workingDir);
+		await commentWSSTransportSender(workingDir);
+
 		await optimizeProfile(HydrogenConfigMaps.profiles.store, '', workingDir);
 	} catch (err) {
 		logger.error(err);
@@ -172,6 +176,9 @@ async function configurePublisher(
 
 		await configurePortOffset(workingDir, publisherlayoutConfs.offset);
 
+		await commentWSTransportSender(workingDir);
+		await commentWSSTransportSender(workingDir);
+
 		await optimizeProfile(HydrogenConfigMaps.profiles.publisher, '', workingDir);
 	} catch (err) {
 		logger.error(err);
@@ -206,6 +213,8 @@ async function configureKeyManager(
 		await alterAPIKeyValidatorKeyValidatorClientType(kmlayoutConfs, workingDir);
 		await alterAPIKeyValidatorEnableThriftServer(kmlayoutConfs, workingDir);
 		await alterPolicyDeployerEnabled(kmlayoutConfs, workingDir);
+		await alterDataPublisherEnabled(kmlayoutConfs, workingDir);
+		await alterJMSConnectionDetailsEnabled(kmlayoutConfs, workingDir);
 
 		await alterMasterDSofAM(datasourceConfs.am, workingDir);
 		await alterMasterDSofUM(datasourceConfs.um, workingDir);
@@ -215,6 +224,9 @@ async function configureKeyManager(
 		// await alterRegistry(datasourceConfs.reg, kmlayoutConfs.offset, workingDir);
 
 		await configurePortOffset(workingDir, kmlayoutConfs.offset);
+
+		await commentWSTransportSender(workingDir);
+		await commentWSSTransportSender(workingDir);
 
 		await optimizeProfile(HydrogenConfigMaps.profiles.keymanager, '', workingDir);
 	} catch (err) {
