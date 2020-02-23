@@ -60,9 +60,9 @@ async function configureTrafficManager(workingDir, tmlayoutConfs = { enableThrif
 		);
 
 		await alterAPIKeyValidatorEnableThriftServer(tmlayoutConfs, workingDir);
-        await configurePortOffset(workingDir, tmlayoutConfs.offset);
-        
-        await optimizeProfile(HydrogenConfigMaps.profiles.trafficmanager, '', workingDir);
+		await configurePortOffset(workingDir, tmlayoutConfs.offset);
+
+		await optimizeProfile(HydrogenConfigMaps.profiles.trafficmanager, '', workingDir);
 	} catch (err) {
 		logger.error(err);
 	}
@@ -112,9 +112,9 @@ async function configureStore(
 		await alterUserManagement(false, workingDir);
 		await alterRegistry(datasourceConfs.reg, storelayoutConfs.offset, workingDir);
 
-        await configurePortOffset(workingDir, storelayoutConfs.offset);
-        
-        await optimizeProfile(HydrogenConfigMaps.profiles.store, '', workingDir);
+		await configurePortOffset(workingDir, storelayoutConfs.offset);
+
+		await optimizeProfile(HydrogenConfigMaps.profiles.store, '', workingDir);
 	} catch (err) {
 		logger.error(err);
 	}
@@ -158,7 +158,7 @@ async function configurePublisher(
 		await alterTrafficManagerReceiverURLGroup(publisherlayoutConfs, workingDir, publisherlayoutConfs.tmoffset);
 		await alterTrafficManagerAuthURLGroup(publisherlayoutConfs, workingDir, publisherlayoutConfs.tmoffset);
 		await alterDataPublisherEnabled(publisherlayoutConfs, workingDir);
-		await alterPolicyDeployerServiceURL(publisherlayoutConfs, workingDir, publisherlayoutConfs.tmoffset);
+		await alterPolicyDeployerServiceURL(publisherlayoutConfs, workingDir, publisherlayoutConfs.gwoffset);
 		await alterBlockConditionEnabled(publisherlayoutConfs, workingDir);
 		await alterJMSConnectionDetailsEnabled(publisherlayoutConfs, workingDir);
 
@@ -170,9 +170,9 @@ async function configurePublisher(
 
 		await alterJNDIProperties(publisherlayoutConfs, workingDir, publisherlayoutConfs.tmoffset);
 
-        await configurePortOffset(workingDir, publisherlayoutConfs.offset);
-        
-        await optimizeProfile(HydrogenConfigMaps.profiles.publisher, '', workingDir);
+		await configurePortOffset(workingDir, publisherlayoutConfs.offset);
+
+		await optimizeProfile(HydrogenConfigMaps.profiles.publisher, '', workingDir);
 	} catch (err) {
 		logger.error(err);
 	}
@@ -209,13 +209,14 @@ async function configureKeyManager(
 
 		await alterMasterDSofAM(datasourceConfs.am, workingDir);
 		await alterMasterDSofUM(datasourceConfs.um, workingDir);
-		await alterMasterDSofREG(datasourceConfs.reg, workingDir);
 		await alterUserManagement(false, workingDir);
-		await alterRegistry(datasourceConfs.reg, kmlayoutConfs.offset, workingDir);
 
-        await configurePortOffset(workingDir, kmlayoutConfs.offset);
-        
-        await optimizeProfile(HydrogenConfigMaps.profiles.keymanager, '', workingDir);
+		// await alterMasterDSofREG(datasourceConfs.reg, workingDir);
+		// await alterRegistry(datasourceConfs.reg, kmlayoutConfs.offset, workingDir);
+
+		await configurePortOffset(workingDir, kmlayoutConfs.offset);
+
+		await optimizeProfile(HydrogenConfigMaps.profiles.keymanager, '', workingDir);
 	} catch (err) {
 		logger.error(err);
 	}
@@ -255,9 +256,9 @@ async function configureDistributedGateway(
 		await addJMSConnectionDetailsServiceURL(gatewaylayoutConfs, workingDir, gatewaylayoutConfs.tmoffset);
 		await alterJMSConnectionParametersTopicConnectionFactory(gatewaylayoutConfs, workingDir);
 
-        await configurePortOffset(workingDir, gatewaylayoutConfs.offset);
-        
-        await optimizeProfile(HydrogenConfigMaps.profiles.gateway, '', workingDir);
+		await configurePortOffset(workingDir, gatewaylayoutConfs.offset);
+
+		await optimizeProfile(HydrogenConfigMaps.profiles.gateway, '', workingDir);
 	} catch (err) {
 		logger.error(err);
 	}
