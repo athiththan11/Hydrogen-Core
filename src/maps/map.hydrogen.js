@@ -181,6 +181,10 @@ module.exports = {
 			throttlingconfigurations_jmsconnectiondetails_jmsconnectionparameters_connectionfactorytopicconnectionfactory:
 				'//*[local-name()="ThrottlingConfigurations"]/*[local-name()="JMSConnectionDetails"]/*[local-name()="JMSConnectionParameters"]/*[local-name()="connectionfactory.TopicConnectionFactory"]',
 		},
+		axis2: {
+			ws_transportsender: '//*[local-name()="transportSender"][@name="ws"]',
+			wss_transportsender: '//*[local-name()="transportSender"][@name="wss"]',
+		},
 	},
 	strings: {
 		jdbc_wso2am_db: 'jdbc/WSO2AM_DB',
