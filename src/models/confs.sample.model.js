@@ -25,7 +25,7 @@ let layoutConfs = {
 	_hostname: 'https://localhost',
 	thriftClientPort: '10397',
 	enableThriftServer: 'false',
-	offset: 1,
+	offset: 0,
 };
 
 let apimlayoutConfs = {
