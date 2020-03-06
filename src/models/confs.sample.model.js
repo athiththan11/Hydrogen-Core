@@ -1,5 +1,7 @@
 'use strict';
 
+//#region publish-through-multiple-gateway layout
+
 let environmentConfs = [
 	{
 		type: 'production',
@@ -28,6 +30,15 @@ let layoutConfs = {
 	offset: 0,
 };
 
+let publishmultiplegatewayConfs = {
+	environmentConfs: environmentConfs,
+	layoutConfs: layoutConfs,
+};
+
+//#endregion
+
+//#region is-km layout
+
 let apimlayoutConfs = {
 	_hostname: 'https://localhost',
 	keyValidatorClientType: 'WSClient',
@@ -39,6 +50,15 @@ let iskmlayoutConfs = {
 	_hostname: 'https://localhost',
 	offset: 1,
 };
+
+let iskmConfs = {
+	apimlayoutConfs: apimlayoutConfs,
+	iskmlayoutConfs: iskmlayoutConfs,
+};
+
+//#endregion
+
+//#region distributed layout
 
 let tmlayoutConfs = {
 	enableThriftServer: 'false',
@@ -106,13 +126,19 @@ let distributedConfs = {
 	gatewaylayoutConfs: gatewaylayoutConfs,
 };
 
+//#endregion
+
 exports.environmentConfs = environmentConfs;
 exports.layoutConfs = layoutConfs;
+exports.publishmultiplegatewayConfs = publishmultiplegatewayConfs;
+
 exports.apimlayoutConfs = apimlayoutConfs;
 exports.iskmlayoutConfs = iskmlayoutConfs;
-exports.distributedConfs = distributedConfs;
+exports.iskmConfs = iskmConfs;
+
 exports.tmlayoutConfs = tmlayoutConfs;
 exports.storelayoutConfs = storelayoutConfs;
 exports.publisherlayoutConfs = publisherlayoutConfs;
 exports.kmlayoutConfs = kmlayoutConfs;
 exports.gatewaylayoutConfs = gatewaylayoutConfs;
+exports.distributedConfs = distributedConfs;
