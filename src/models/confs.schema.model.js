@@ -111,7 +111,7 @@ let layoutConfsSchema = {
 		},
 		offset: {
 			type: 'number',
-			minimum: 1,
+			minimum: 0,
 		},
 	},
 	required: ['_hostname', 'thriftClientPort', 'enableThriftServer', 'offset'],
