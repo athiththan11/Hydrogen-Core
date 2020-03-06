@@ -1,6 +1,6 @@
 {
 	"name": "@athiththan11/hydrogen-core",
-	"version": "1.0.0",
+	"version": "v1.0.0",
 	"description": "core module of @athiththan11/hydrogen-cli",
 	"main": "index.js",
 	"scripts": {
