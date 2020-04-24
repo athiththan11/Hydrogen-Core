@@ -472,10 +472,174 @@ async function readAPIManagerMSSQLScripts(options, workingDir = process.cwd()) {
 	};
 	return scriptCollection;
 }
+// TESTME:
+/**
+ * method to read and return oracle sql scripts
+ *
+ * @param {('apim'|'is')} platform wso2 platform
+ * @param {string} [workingDir=process.cwd()] path of the working directory
+ * @returns {string} combined SQL script
+ */
+async function readOracleSQLScripts(platform, workingDir = process.cwd()) {
+	let scripts = [];
+
+	if (platform === HydrogenConfigMaps.platform.is) {
+		scripts.push(
+			fs
+				.readFileSync(
+					__path.join(
+						workingDir,
+						HydrogenConfigMaps.artifactPaths.scripts.is.dbscripts,
+						HydrogenConfigMaps.datasource.scripts.oracle
+					)
+				)
+				.toString()
+		);
+		scripts.push(
+			fs
+				.readFileSync(
+					__path.join(
+						workingDir,
+						HydrogenConfigMaps.artifactPaths.scripts.is.identity,
+						HydrogenConfigMaps.datasource.scripts.oracle
+					)
+				)
+				.toString()
+		);
+		scripts.push(
+			fs
+				.readFileSync(
+					__path.join(
+						workingDir,
+						HydrogenConfigMaps.artifactPaths.scripts.is.storedProcedure,
+						HydrogenConfigMaps.datasource.oracle,
+						HydrogenConfigMaps.datasource.scripts.oracle
+					)
+				)
+				.toString()
+		);
+		scripts.push(
+			fs
+				.readFileSync(
+					__path.join(
+						workingDir,
+						HydrogenConfigMaps.artifactPaths.scripts.is.uma,
+						HydrogenConfigMaps.datasource.scripts.oracle
+					)
+				)
+				.toString()
+		);
+		scripts.push(
+			fs
+				.readFileSync(
+					__path.join(
+						workingDir,
+						HydrogenConfigMaps.artifactPaths.scripts.is.consent,
+						HydrogenConfigMaps.datasource.scripts.oracle
+					)
+				)
+				.toString()
+		);
+	}
+
+	if (platform === HydrogenConfigMaps.platform.apim) {
+		scripts.push(
+			fs
+				.readFileSync(
+					__path.join(
+						workingDir,
+						HydrogenConfigMaps.artifactPaths.scripts.apim.apimgt,
+						HydrogenConfigMaps.datasource.scripts.oracle
+					)
+				)
+				.toString()
+		);
+	}
+
+	return scripts.join('\n');
+}
+
+/**
+ * method to read and return oracle sql scripts for api manager datasources including am, um, & reg db
+ *
+ * @param {{}} options command options
+ * @param {string} [workingDir=process.cwd()] path of the working directory
+ * @returns {{apimgtdb: string, userdb: string, regdb: string}} a collection of scripts for am, um & reg dbs
+ */
+async function readAPIManagerOracleSQLScripts(options, workingDir = process.cwd()) {
+	let scripts = [];
+
+	if (!options[HydrogenConfigMaps.platform.iskm] && !options.distributed) {
+		scripts.push(
+			fs
+				.readFileSync(
+					__path.join(
+						workingDir,
+						HydrogenConfigMaps.artifactPaths.scripts.apim.apimgt,
+						HydrogenConfigMaps.datasource.scripts.oracle
+					)
+				)
+				.toString()
+		);
+		scripts.push(
+			fs
+				.readFileSync(
+					__path.join(
+						workingDir,
+						HydrogenConfigMaps.artifactPaths.scripts.apim.dbscripts,
+						HydrogenConfigMaps.datasource.scripts.oracle
+					)
+				)
+				.toString()
+		);
+	}
+
+	if (options[HydrogenConfigMaps.platform.iskm] || options.distributed) {
+		let apimPack = fs.readdirSync(workingDir).filter((name) => {
+			return name.startsWith(HydrogenConfigMaps.servers.apim);
+		})[0];
+		if (apimPack) {
+			scripts.push(
+				fs
+					.readFileSync(
+						__path.join(
+							workingDir,
+							apimPack,
+							HydrogenConfigMaps.artifactPaths.scripts.apim.apimgt,
+							HydrogenConfigMaps.datasource.scripts.oracle
+						)
+					)
+					.toString()
+			);
+			scripts.push(
+				fs
+					.readFileSync(
+						__path.join(
+							workingDir,
+							apimPack,
+							HydrogenConfigMaps.artifactPaths.scripts.apim.dbscripts,
+							HydrogenConfigMaps.datasource.scripts.oracle
+						)
+					)
+					.toString()
+			);
+		}
+	}
+
+	// keywords are matched to be in hydrogen config maps > docker > apim.setup
+	let scriptCollection = {
+		apimgtdb: scripts[0],
+		userdb: scripts[1],
+		regdb: scripts[1],
+	};
+	return scriptCollection;
+}
 
 exports.readPostgreSQLScripts = readPostgreSQLScripts;
 exports.readMySQLScripts = readMySQLScripts;
 exports.readMSSQLScripts = readMSSQLScripts;
+exports.readOracleSQLScripts = readOracleSQLScripts;
 exports.readAPIManagerPostgresSQLScripts = readAPIManagerPostgresSQLScripts;
 exports.readAPIManagerMySQLScripts = readAPIManagerMySQLScripts;
 exports.readAPIManagerMSSQLScripts = readAPIManagerMSSQLScripts;
+exports.readAPIManagerOracleSQLScripts = readAPIManagerOracleSQLScripts;

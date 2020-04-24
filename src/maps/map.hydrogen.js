@@ -27,6 +27,7 @@ module.exports = {
 			mssql: 'mssql.sql',
 			mysql: 'mysql.sql',
 			postgre: 'postgresql.sql',
+			oracle: 'oracle.sql',
 		},
 	},
 	layout: {
@@ -212,6 +213,7 @@ module.exports = {
 			mssql: 10000,
 			mysql: 20000,
 			postgre: 5000,
+			oracle: 30000,
 		},
 	},
 };
