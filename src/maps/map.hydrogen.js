@@ -207,13 +207,14 @@ module.exports = {
 				mssql: 'wso2mssql',
 				mysql: 'wso2mysql',
 				postgre: 'wso2postgres',
+				oracle: 'wso2oracle',
 			},
 		},
 		timeout: {
 			mssql: 10000,
 			mysql: 20000,
 			postgre: 5000,
-			oracle: 30000,
+			oracle: 600000,
 		},
 	},
 };

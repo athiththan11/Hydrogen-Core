@@ -3,6 +3,7 @@
 const __path = require('path');
 const fs = require('fs');
 
+const { prepareOracleSQLScripts } = require('../utils/util');
 const HydrogenConfigMaps = require('../maps/map.hydrogen');
 
 /**
@@ -478,7 +479,7 @@ async function readAPIManagerMSSQLScripts(options, workingDir = process.cwd()) {
  *
  * @param {('apim'|'is')} platform wso2 platform
  * @param {string} [workingDir=process.cwd()] path of the working directory
- * @returns {string} combined SQL script
+ * @returns {[string]} combined SQL script
  */
 async function readOracleSQLScripts(platform, workingDir = process.cwd()) {
 	let scripts = [];
@@ -506,18 +507,19 @@ async function readOracleSQLScripts(platform, workingDir = process.cwd()) {
 				)
 				.toString()
 		);
-		scripts.push(
-			fs
-				.readFileSync(
-					__path.join(
-						workingDir,
-						HydrogenConfigMaps.artifactPaths.scripts.is.storedProcedure,
-						HydrogenConfigMaps.datasource.oracle,
-						HydrogenConfigMaps.datasource.scripts.oracle
-					)
-				)
-				.toString()
-		);
+		// * storedprocedure doesn't contain oracle script
+		// scripts.push(
+		// 	fs
+		// 		.readFileSync(
+		// 			__path.join(
+		// 				workingDir,
+		// 				HydrogenConfigMaps.artifactPaths.scripts.is.storedProcedure,
+		// 				HydrogenConfigMaps.datasource.oracle,
+		// 				HydrogenConfigMaps.datasource.scripts.oracle
+		// 			)
+		// 		)
+		// 		.toString()
+		// );
 		scripts.push(
 			fs
 				.readFileSync(
@@ -556,7 +558,7 @@ async function readOracleSQLScripts(platform, workingDir = process.cwd()) {
 		);
 	}
 
-	return scripts.join('\n');
+	return prepareOracleSQLScripts(scripts.join('\n'));
 }
 
 /**
@@ -564,7 +566,7 @@ async function readOracleSQLScripts(platform, workingDir = process.cwd()) {
  *
  * @param {{}} options command options
  * @param {string} [workingDir=process.cwd()] path of the working directory
- * @returns {{apimgtdb: string, userdb: string, regdb: string}} a collection of scripts for am, um & reg dbs
+ * @returns {{apimgtdb: [string], userdb: [string], regdb: [string]}} a collection of scripts for am, um & reg dbs
  */
 async function readAPIManagerOracleSQLScripts(options, workingDir = process.cwd()) {
 	let scripts = [];
@@ -628,11 +630,28 @@ async function readAPIManagerOracleSQLScripts(options, workingDir = process.cwd(
 
 	// keywords are matched to be in hydrogen config maps > docker > apim.setup
 	let scriptCollection = {
-		apimgtdb: scripts[0],
-		userdb: scripts[1],
-		regdb: scripts[1],
+		apimgtdb: prepareOracleSQLScripts(scripts[0]),
+		userdb: prepareOracleSQLScripts(scripts[1]),
+		regdb: prepareOracleSQLScripts(scripts[1]),
 	};
 	return scriptCollection;
+}
+
+/**
+ * method to generate create database queries for oracle
+ *
+ * @param {string} database database (user) name
+ * @returns {[string]} required create user queries
+ */
+function generateCreateQueryforOracle(database) {
+	let queries = [
+		`create user ${database} identified by oracle account unlock`,
+		`grant connect to ${database}`,
+		`grant create session, create table, create sequence, create trigger, create procedure to ${database}`,
+		`grant dba to ${database}`,
+		`commit`,
+	];
+	return queries;
 }
 
 exports.readPostgreSQLScripts = readPostgreSQLScripts;
@@ -643,3 +662,4 @@ exports.readAPIManagerPostgresSQLScripts = readAPIManagerPostgresSQLScripts;
 exports.readAPIManagerMySQLScripts = readAPIManagerMySQLScripts;
 exports.readAPIManagerMSSQLScripts = readAPIManagerMSSQLScripts;
 exports.readAPIManagerOracleSQLScripts = readAPIManagerOracleSQLScripts;
+exports.generateCreateQueryforOracle = generateCreateQueryforOracle;

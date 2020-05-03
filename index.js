@@ -47,12 +47,16 @@ exports.ExecutionPlans = {
 
 exports.DockerConfigs = {
 	MySQL: require('./src/docker/configs/config.mysql'),
+	Postgre: require('./src/docker/configs/config.postgre'),
+	MSSQL: require('./src/docker/configs/config.mssql'),
+	Oracle: require('./src/docker/configs/config.oracle'),
 };
 
 exports.Docker = {
 	MySQL: require('./src/docker/docker.mysql'),
 	Postgre: require('./src/docker/docker.postgre'),
 	MSSQL: require('./src/docker/docker.mssql'),
+	Oracle: require('./src/docker/docker.oracle'),
 };
 
 exports.ConfigMaps = {
