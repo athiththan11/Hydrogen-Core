@@ -73,7 +73,6 @@ async function executeOracleSQLScripts(platform, workinDir = process.cwd()) {
 	let config = oracleDockerConstants.default;
 	let combinedSQLScript = await readOracleSQLScripts(platform, workinDir);
 	if (platform === HydrogenConfigMaps.platform.apim) {
-		// TESTME:
 		if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create databases for API Manager');
 		Client.getConnection(config)
 			.then((connection) => {
@@ -101,7 +100,6 @@ async function executeOracleSQLScripts(platform, workinDir = process.cwd()) {
 			});
 	}
 	if (platform === HydrogenConfigMaps.platform.is) {
-		// TESTME:
 		if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create databases for Identity Server');
 		Client.getConnection(config)
 			.then((connection) => {
