@@ -5,6 +5,7 @@ const fs = require('fs');
 const XMLJS = require('libxmljs');
 const Toml = require('@iarna/toml');
 const _ = require('lodash');
+const Dot = require('dot-object');
 const prettify = require('prettify-xml');
 
 const constants = require('../../utils/constants');
@@ -23,8 +24,8 @@ const { constructJDBCUserStore } = require('../user.management/utils/util.usermg
 async function alterUserManagement(convertLDAPToJDBC, workingDir = process.cwd(), options = { version: '2.6' }) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter user-management');
 
-    try {
-        // apim 2.6 block
+	try {
+		// apim 2.6 block
 		if (options.version === HydrogenConfigMaps.supportedVersions.apim.v26)
 			await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.userManagement)).then(
 				(parsed) => {
@@ -119,22 +120,21 @@ async function alterUserManagement(convertLDAPToJDBC, workingDir = process.cwd()
 						constants.utf8
 					);
 				}
-            );
-        
-        // apim 3.x block
+			);
+
+		// apim 3.x block
 		if (options.version === HydrogenConfigMaps.supportedVersions.apim.v31)
 			await parseToml(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.deploymentToml)).then(
-				(parsed) => {
-					// TODO: ldap conversion
+				(toml) => {
+					// TODO: ldap converstion and configurations
+					let obj = {};
+					Dot.str(
+						HydrogenConfigMaps.tomlPaths.usermgt.realm_configuration_property_datasource,
+						'WSO2USER_DB',
+						obj
+					);
 
-					let toml = parsed;
-					let userMgtObj = {
-						realm_manager: {
-							data_source: 'WSO2USER_DB',
-						},
-					};
-
-					let altered = _.merge(toml, userMgtObj);
+					let altered = _.merge(toml, obj);
 					fs.writeFileSync(
 						__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.deploymentToml),
 						Toml.stringify(altered),

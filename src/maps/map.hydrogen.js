@@ -66,10 +66,12 @@ module.exports = {
 		},
 	},
 	ports: {
+		_9099: 9099,
 		_9443: 9443,
 		_9611: 9611,
 		_9711: 9711,
 		_5672: 5672,
+		_8099: 8099,
 		_8243: 8243,
 		_8280: 8280,
 		_10397: 10397,
@@ -193,6 +195,24 @@ module.exports = {
 		axis2: {
 			ws_transportsender: '//*[local-name()="transportSender"][@name="ws"]',
 			wss_transportsender: '//*[local-name()="transportSender"][@name="wss"]',
+		},
+	},
+	tomlPaths: {
+		usermgt: {
+			realm_configuration_property_datasource: 'realm_manager.data_source',
+		},
+		masterdatasource: {
+			datasources_datasource_wso2am_db: 'database.apim_db',
+			datasources_datasource_wso2um_db: 'database.user',
+			datasources_datasource_wso2shared_db: 'database.shared_db',
+		},
+		carbon: {
+			ports_offset: 'server.offset',
+		},
+		apimanager: {
+			oauthconfigurations_revokeapiurl: 'apim.oauth_config.revoke_endpoint',
+			apikeyvalidator_serverurl: 'apim.key_manager.service_url',
+			apigateway_environments_environment: 'apim.gateway.environment[0]',
 		},
 	},
 	strings: {

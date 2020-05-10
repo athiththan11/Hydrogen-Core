@@ -5,6 +5,7 @@ const fs = require('fs');
 const XMLJS = require('libxmljs');
 const Toml = require('@iarna/toml');
 const _ = require('lodash');
+const Dot = require('dot-object');
 
 const constants = require('../../utils/constants');
 const HydrogenConfigMaps = require('../../maps/map.hydrogen');
@@ -45,13 +46,9 @@ async function configurePortOffset(workingDir = process.cwd(), offset = 0, optio
 			// apim 3.x block
 			if (options.version === HydrogenConfigMaps.supportedVersions.apim.v31)
 				await parseToml(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.deploymentToml)).then(
-					(parsed) => {
-						let toml = parsed;
-						let obj = {
-							server: {
-								offset,
-							},
-						};
+					(toml) => {
+						let obj = {};
+						Dot.str(HydrogenConfigMaps.tomlPaths.carbon.ports_offset, offset, obj);
 
 						let altered = _.merge(toml, obj);
 						fs.writeFileSync(

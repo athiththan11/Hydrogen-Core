@@ -19,6 +19,7 @@ const {
 } = require('../../../modules/master.datasource/datasource.util');
 
 const { logger } = require('../../../utils/util.winston');
+const { _environmentConfs } = require('../../../models/v3/confs.sample.model');
 
 /**
  * method to configure identity-server-as-key-manager
@@ -37,9 +38,8 @@ async function configureIdentityServerKM(
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring Identity Server as Key Manager');
 
 	try {
-		// TODO: add new gateway environment in the IS KM not to alter in 3.x version
 		if (options.version === '2.6') await alterGatewayEnvironmentServerURL(iskmlayoutConfs, workingDir, options);
-		if (options.version === '3.1') await addGatewayEnvironment({}, workingDir, options);
+		if (options.version === '3.1') await addGatewayEnvironment(_environmentConfs, workingDir, options);
 
 		await alterOAuthConfigurationRevokeAPIURL(iskmlayoutConfs, workingDir, options);
 

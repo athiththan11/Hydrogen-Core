@@ -5,13 +5,14 @@ const fs = require('fs');
 const XMLJS = require('libxmljs');
 const Toml = require('@iarna/toml');
 const _ = require('lodash');
+const Dot = require('dot-object');
 const prettify = require('prettify-xml');
 
 const constants = require('../../utils/constants');
 const HydrogenConfigMaps = require('../../maps/map.hydrogen');
 const { logger } = require('../../utils/util.winston');
 const { parseXML, parseToml, removeDeclaration } = require('../../utils/util.parser');
-const { constructDatasource } = require('./utils/util.datasource');
+const { constructDatasource, constructDatasourceToml } = require('./utils/util.datasource');
 
 /**
  * method to alter and construct datasource configurations of AM_DB
@@ -74,20 +75,16 @@ async function alterMasterDSofAM(
 		// apim 3.x block
 		if (options.version === HydrogenConfigMaps.supportedVersions.apim.v31)
 			await parseToml(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.deploymentToml)).then(
-				(parsed) => {
-					let toml = parsed;
-					let datasourceObj = {
-						database: {
-							apim_db: {
-								type: options.datasource.type,
-								url: datasourceConfs._connectionUrl,
-								username: datasourceConfs._username,
-								password: datasourceConfs._password,
-							},
-						},
-					};
+				(toml) => {
+					datasourceConfs._type = options.datasource.type;
+					let obj = {};
+					Dot.str(
+						HydrogenConfigMaps.tomlPaths.masterdatasource.datasources_datasource_wso2am_db,
+						constructDatasourceToml(datasourceConfs),
+						obj
+					);
 
-					let altered = _.merge(toml, datasourceObj);
+					let altered = _.merge(toml, obj);
 					fs.writeFileSync(
 						__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.deploymentToml),
 						Toml.stringify(altered),
@@ -149,20 +146,16 @@ async function alterMasterDSofUM(
 		// apim 3.x block
 		if (options.version === HydrogenConfigMaps.supportedVersions.apim.v31)
 			await parseToml(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.deploymentToml)).then(
-				(parsed) => {
-					let toml = parsed;
-					let datasourceObj = {
-						database: {
-							user: {
-								type: options.datasource.type,
-								url: datasourceConfs._connectionUrl,
-								username: datasourceConfs._username,
-								password: datasourceConfs._password,
-							},
-						},
-					};
+				(toml) => {
+					datasourceConfs._type = options.datasource.type;
+					let obj = {};
+					Dot.str(
+						HydrogenConfigMaps.tomlPaths.masterdatasource.datasources_datasource_wso2um_db,
+						constructDatasourceToml(datasourceConfs),
+						obj
+					);
 
-					let altered = _.merge(toml, datasourceObj);
+					let altered = _.merge(toml, obj);
 					fs.writeFileSync(
 						__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.deploymentToml),
 						Toml.stringify(altered),
@@ -226,20 +219,16 @@ async function alterMasterDSofREG(
 		// apim 3.x block
 		if (options.version === HydrogenConfigMaps.supportedVersions.apim.v31)
 			await parseToml(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.deploymentToml)).then(
-				(parsed) => {
-					let toml = parsed;
-					let datasourceObj = {
-						database: {
-							shared_db: {
-								type: options.datasource.type,
-								url: datasourceConfs._connectionUrl,
-								username: datasourceConfs._username,
-								password: datasourceConfs._password,
-							},
-						},
-					};
+				(toml) => {
+					datasourceConfs._type = options.datasource.type;
+					let obj = {};
+					Dot.str(
+						HydrogenConfigMaps.tomlPaths.masterdatasource.datasources_datasource_wso2shared_db,
+						constructDatasourceToml(datasourceConfs),
+						obj
+					);
 
-					let altered = _.merge(toml, datasourceObj);
+					let altered = _.merge(toml, obj);
 					fs.writeFileSync(
 						__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.deploymentToml),
 						Toml.stringify(altered),

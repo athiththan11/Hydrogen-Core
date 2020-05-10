@@ -5,12 +5,13 @@ const fs = require('fs');
 const XMLJS = require('libxmljs');
 const Toml = require('@iarna/toml');
 const _ = require('lodash');
+const Dot = require('dot-object');
 
 const constants = require('../../utils/constants');
 const HydrogenConfigMaps = require('../../maps/map.hydrogen');
 const { logger } = require('../../utils/util.winston');
 const { parseXML, parseToml, addHydrogeneratedElem, removeDeclaration } = require('../../utils/util.parser');
-const { constructGatewayEnvironment } = require('./utils/util.apimanager');
+const { constructGatewayEnvironment, constructGatewayEnvironmentToml } = require('./utils/util.apimanager');
 
 /**
  * method to alter server of auth manager in api-manager.xml
@@ -134,18 +135,15 @@ async function alterAPIKeyValidatorServerURL(
 		// apim 3.x block
 		if (options.version === HydrogenConfigMaps.supportedVersions.apim.v31)
 			await parseToml(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.deploymentToml)).then(
-				(parsed) => {
-					let toml = parsed;
-					let keyvalidatorObj = {
-						apim: {
-							key_manager: {
-								service_url:
-									args._hostname + ':' + (HydrogenConfigMaps.ports._9443 + offset) + '/services/',
-							},
-						},
-					};
+				(toml) => {
+					let obj = {};
+					Dot.str(
+						HydrogenConfigMaps.tomlPaths.apimanager.apikeyvalidator_serverurl,
+						args._hostname + ':' + (HydrogenConfigMaps.ports._9443 + offset) + '/services/',
+						obj
+					);
 
-					let altered = _.merge(toml, keyvalidatorObj);
+					let altered = _.merge(toml, obj);
 					fs.writeFileSync(
 						__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.deploymentToml),
 						Toml.stringify(altered),
@@ -227,16 +225,13 @@ async function alterOAuthConfigurationRevokeAPIURL(
 		// apim 3.x block
 		if (options.version === HydrogenConfigMaps.supportedVersions.apim.v31)
 			await parseToml(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.deploymentToml)).then(
-				(parsed) => {
-					let toml = parsed;
-					let obj = {
-						apim: {
-							oauth_config: {
-								revoke_endpoint:
-									args._hostname + ':' + (HydrogenConfigMaps.ports._8243 + offset) + '/revoke',
-							},
-						},
-					};
+				(toml) => {
+					let obj = {};
+					Dot.str(
+						HydrogenConfigMaps.tomlPaths.apimanager.oauthconfigurations_revokeapiurl,
+						args._hostname + ':' + (HydrogenConfigMaps.ports._8243 + offset) + '/revoke',
+						obj
+					);
 
 					let altered = _.merge(toml, obj);
 					fs.writeFileSync(
@@ -536,34 +531,15 @@ async function addGatewayEnvironment(environmentConfs, workingDir = process.cwd(
 		// apim 3.x block
 		if (options.version === HydrogenConfigMaps.supportedVersions.apim.v31)
 			await parseToml(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.deploymentToml)).then(
-				(parsed) => {
-					// TODO: maybe need to change this one to add Gateway Environment method
-					let toml = parsed;
-					let gatewayEnvironment = {
-						apim: {
-							gateway: {
-								enviroment: [
-									{
-										name: 'Production and Sandbox',
-										type: 'hybrid',
-										display_in_api_console: true,
-										description:
-											'This is a hybrid gateway that handles both production and sandbox token traffic.',
-										show_as_token_endpoint_url: true,
-										service_url: 'https://localhost:9443/services/',
-										username: '${admin.username}',
-										password: '${admin.password}',
-										ws_endpoint: 'ws://localhost:9099',
-										wss_endpoint: 'wss://localhost:8099',
-										http_endpoint: 'http://localhost:${http.nio.port}',
-										https_endpoint: 'https://localhost:${https.nio.port}',
-									},
-								],
-							},
-						},
-					};
+				(toml) => {
+					let obj = {};
+					Dot.str(
+						HydrogenConfigMaps.tomlPaths.apimanager.apigateway_environments_environment,
+						constructGatewayEnvironmentToml(environmentConfs),
+						obj
+					);
 
-					let altered = _.merge(toml, gatewayEnvironment);
+					let altered = _.merge(toml, obj);
 					fs.writeFileSync(
 						__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.deploymentToml),
 						Toml.stringify(altered),
