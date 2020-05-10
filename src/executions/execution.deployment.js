@@ -102,8 +102,15 @@ async function loopGatewayNodes(apimPackDir, deploymentDir, gwCount, loopCount, 
  * @param {{}} datasourceConfs datasource configurations
  * @param {{}} apimlayoutConfs apim related layout configurations
  * @param {{}} iskmlayoutConfs is-km related layout configurations
+ * @param {{}} options platform and product options
  */
-async function configureIdentityServerasKeyManager(workingDir, datasourceConfs, apimlayoutConfs, iskmlayoutConfs) {
+async function configureIdentityServerasKeyManager(
+	workingDir,
+	datasourceConfs,
+	apimlayoutConfs,
+	iskmlayoutConfs,
+	options
+) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to configure Identity Server as Key Manager layout');
 
 	try {
@@ -125,8 +132,8 @@ async function configureIdentityServerasKeyManager(workingDir, datasourceConfs, 
 			})[0]
 		);
 
-		await configureIdentityServerKM(iskmPackDir, datasourceConfs, iskmlayoutConfs);
-		await configureAPIManagerwithISKM(apimPackDir, datasourceConfs, apimlayoutConfs);
+		await configureIdentityServerKM(iskmPackDir, datasourceConfs, iskmlayoutConfs, options);
+		await configureAPIManagerwithISKM(apimPackDir, datasourceConfs, apimlayoutConfs, options);
 	} catch (err) {
 		logger.error(err);
 	}
@@ -181,7 +188,7 @@ async function loopDistributedNodes(apimPackDir, deploymentDir, loopCount, datas
 		fs.copy(apimPackDir, __path.join(deploymentDir, packName))
 			.then(() => {
 				let workingDir = __path.join(deploymentDir, packName);
-                if (packName === HydrogenConfigMaps.layoutNamePatterns.apim.distributed.gateway) {
+				if (packName === HydrogenConfigMaps.layoutNamePatterns.apim.distributed.gateway) {
 					configureDistributedGateway(workingDir, distributedLayoutConfs.gatewaylayoutConfs)
 						.then(() => {
 							loopDistributedNodes(

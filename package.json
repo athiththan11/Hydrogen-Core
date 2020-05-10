@@ -16,6 +16,7 @@
 		"hydrogen-core"
 	],
 	"dependencies": {
+		"@iarna/toml": "^2.2.5",
 		"ajv": "^6.11.0",
 		"chance": "^1.1.4",
 		"dockerode": "^3.0.2",

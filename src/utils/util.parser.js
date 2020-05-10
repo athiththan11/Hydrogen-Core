@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const XMLJS = require('libxmljs');
+const Toml = require('@iarna/toml');
 
 const constants = require('../utils/constants');
 const { logger } = require('./util.winston');
@@ -20,6 +21,37 @@ async function parseXML(filePath) {
 	} catch (err) {
 		logger.error(err);
 		return null;
+	}
+}
+
+/**
+ * method to parse deployment toml
+ *
+ * @param {string} filePath deployment toml file path
+ * @returns {JsonMap} parsed toml JSONMap
+ */
+async function parseToml(filePath) {
+	try {
+		if (!fs.existsSync(filePath + '.bak')) await bakFile(filePath);
+		let parsed = fs.readFileSync(filePath, 'utf8');
+		parsed = Toml.parse(parsed);
+		return parsed;
+	} catch (err) {
+		logger.error(err);
+		return null;
+	}
+}
+
+/**
+ * method to create backup file
+ *
+ * @param {string} filePath file path
+ */
+async function bakFile(filePath) {
+	try {
+		fs.copyFileSync(filePath, filePath + '.bak');
+	} catch (err) {
+		logger.error(err);
 	}
 }
 
@@ -101,10 +133,7 @@ async function commentElemUsingXMLPath(xmlPath, artifactPath) {
 			let defaultElem = parsed.root().get(xmlPath);
 			if (defaultElem) {
 				let commentElem = new XMLJS.Comment(doc, defaultElem.toString());
-				parsed
-					.root()
-					.get(xmlPath)
-					.addPrevSibling(commentElem);
+				parsed.root().get(xmlPath).addPrevSibling(commentElem);
 				parsed
 					.root()
 					.get(xmlPath + '[1]')
@@ -120,6 +149,7 @@ async function commentElemUsingXMLPath(xmlPath, artifactPath) {
 }
 
 exports.parseXML = parseXML;
+exports.parseToml = parseToml;
 exports.alterElem = alterElem;
 exports.addHydrogeneratedElem = addHydrogeneratedElem;
 exports.commentElem = commentElem;

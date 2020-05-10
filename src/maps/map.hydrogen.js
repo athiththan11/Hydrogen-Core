@@ -37,6 +37,13 @@ module.exports = {
 			distributed: 'distributed',
 		},
 	},
+	supportedVersions: {
+		apim: {
+			v26: '2.6',
+			v30: '3.0',
+			v31: '3.1',
+		},
+	},
 	layoutNamePatterns: {
 		deployment: 'deployment',
 		apim: {
@@ -93,6 +100,7 @@ module.exports = {
 			axis2TM: '/repository/conf/axis2/axis2_TM.xml',
 			apiManager: '/repository/conf/api-manager.xml',
 			carbon: '/repository/conf/carbon.xml',
+			deploymentToml: '/repository/conf/deployment.toml',
 			identity: '/repository/conf/identity/identity.xml',
 			jndiProperties: '/repository/conf/jndi.properties',
 			masterDatasource: '/repository/conf/datasources/master-datasources.xml',

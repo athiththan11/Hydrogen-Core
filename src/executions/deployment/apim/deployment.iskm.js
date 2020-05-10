@@ -4,6 +4,7 @@ const {
 	alterAuthManagerServerURL,
 	alterAPIKeyValidatorServerURL,
 	alterGatewayEnvironmentServerURL,
+	addGatewayEnvironment,
 	alterOAuthConfigurationRevokeAPIURL,
 	alterAPIKeyValidatorEnableThriftServer,
 	alterAPIKeyValidatorKeyValidatorClientType,
@@ -25,26 +26,31 @@ const { logger } = require('../../../utils/util.winston');
  * @param {string} workingDir path of the working directory
  * @param {{}} datasourceConfs datasource configurations
  * @param {{}} iskmlayoutConfs layout configurations
+ * @param {{}} options platform and product options
  */
 async function configureIdentityServerKM(
 	workingDir,
 	datasourceConfs,
-	iskmlayoutConfs = { _hostname: 'https://localhost', offset: 1 }
+	iskmlayoutConfs = { _hostname: 'https://localhost', offset: 1 },
+	options = {}
 ) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring Identity Server as Key Manager');
 
 	try {
-		await alterGatewayEnvironmentServerURL(iskmlayoutConfs, workingDir);
-		await alterOAuthConfigurationRevokeAPIURL(iskmlayoutConfs, workingDir);
+		// TODO: add new gateway environment in the IS KM not to alter in 3.x version
+		if (options.version === '2.6') await alterGatewayEnvironmentServerURL(iskmlayoutConfs, workingDir, options);
+		if (options.version === '3.1') await addGatewayEnvironment({}, workingDir, options);
 
-		await alterMasterDSofAM(datasourceConfs.am, workingDir);
-		await alterMasterDSofUM(datasourceConfs.um, workingDir);
-		await alterMasterDSofREG(datasourceConfs.reg, workingDir);
+		await alterOAuthConfigurationRevokeAPIURL(iskmlayoutConfs, workingDir, options);
 
-		await alterRegistry(datasourceConfs.reg, iskmlayoutConfs.offset, workingDir);
-		await alterUserManagement(true, workingDir);
+		await alterMasterDSofAM(datasourceConfs.am, workingDir, options);
+		await alterMasterDSofUM(datasourceConfs.um, workingDir, options);
+		await alterMasterDSofREG(datasourceConfs.reg, workingDir, options);
 
-		await configurePortOffset(workingDir, iskmlayoutConfs.offset);
+		await alterRegistry(datasourceConfs.reg, iskmlayoutConfs.offset, workingDir, options);
+		await alterUserManagement(true, workingDir, options);
+
+		await configurePortOffset(workingDir, iskmlayoutConfs.offset, options);
 	} catch (err) {
 		logger.error(err);
 	}
@@ -56,6 +62,7 @@ async function configureIdentityServerKM(
  * @param {string} workingDir path of the working directory
  * @param {{}} datasourceConfs datasource configurations
  * @param {{}} apimlayoutConfs layout configurations
+ * @param {{}} options platform and product options
  */
 async function configureAPIManagerwithISKM(
 	workingDir,
@@ -65,23 +72,24 @@ async function configureAPIManagerwithISKM(
 		keyValidatorClientType: 'WSClient',
 		enableThriftServer: 'false',
 		iskmoffset: 1,
-	}
+	},
+	options = {}
 ) {
 	if (process.env.HYDROGEN_DEBUG)
 		logger.debug('Starting to configure API Manager with Identity Server as Key Manager ');
 
 	try {
-		await alterAuthManagerServerURL(apimlayoutConfs, workingDir, apimlayoutConfs.iskmoffset);
-		await alterAPIKeyValidatorServerURL(apimlayoutConfs, workingDir, apimlayoutConfs.iskmoffset);
-		await alterAPIKeyValidatorKeyValidatorClientType(apimlayoutConfs, workingDir);
-		await alterAPIKeyValidatorEnableThriftServer(apimlayoutConfs, workingDir);
+		await alterAuthManagerServerURL(apimlayoutConfs, workingDir, apimlayoutConfs.iskmoffset, options);
+		await alterAPIKeyValidatorServerURL(apimlayoutConfs, workingDir, apimlayoutConfs.iskmoffset, options);
+		await alterAPIKeyValidatorKeyValidatorClientType(apimlayoutConfs, workingDir, options);
+		await alterAPIKeyValidatorEnableThriftServer(apimlayoutConfs, workingDir, options);
 
-		await alterMasterDSofAM(datasourceConfs.am, workingDir);
-		await alterMasterDSofUM(datasourceConfs.um, workingDir);
-		await alterMasterDSofREG(datasourceConfs.reg, workingDir);
+		await alterMasterDSofAM(datasourceConfs.am, workingDir, options);
+		await alterMasterDSofUM(datasourceConfs.um, workingDir, options);
+		await alterMasterDSofREG(datasourceConfs.reg, workingDir, options);
 
-		await alterRegistry(datasourceConfs.reg, 0, workingDir);
-		await alterUserManagement(false, workingDir);
+		await alterRegistry(datasourceConfs.reg, 0, workingDir, options);
+		await alterUserManagement(false, workingDir, options);
 	} catch (err) {
 		logger.error(err);
 	}
