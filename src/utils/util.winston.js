@@ -3,16 +3,20 @@
 const __path = require('path');
 const winston = require('winston');
 
-const logFormat = winston.format.printf(({ level, message, timestamp }) => {
-	return `${timestamp} ${level}: ${message}`;
+// const logFormat = winston.format.printf(({ level, message, timestamp }) => {
+// 	return `${timestamp} ${level}: ${message}`;
+// });
+
+const minimalFormat = winston.format.printf(({ message }) => {
+	return `${message}`;
 });
 
 const logger = winston.createLogger({
 	format: winston.format.combine(
-		winston.format.colorize(),
-		winston.format.timestamp(),
-		winston.format.align(),
-		logFormat
+		// winston.format.colorize(),
+		// winston.format.timestamp(),
+		// winston.format.align(),
+		minimalFormat
 	),
 	transports: [
 		new winston.transports.File({
@@ -21,9 +25,9 @@ const logger = winston.createLogger({
 		}),
 		new winston.transports.File({
 			filename: __path.join(process.cwd(), '/logs', '/hydrogen.log'),
-			level: 'debug'
-        }),
-        new winston.transports.Console()
+			level: 'debug',
+		}),
+		new winston.transports.Console(),
 	],
 });
 
