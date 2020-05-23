@@ -2,11 +2,12 @@
 
 const Docker = require('dockerode');
 const Client = require('mssql');
+const ora = require('ora');
 
 const HydrogenConfigMaps = require('../maps/map.hydrogen');
 const mssqlDockerConstants = require('./configs/config.mssql');
 const { logger } = require('../utils/util.winston');
-const { generateRandomAnimalName } = require('../utils/util');
+const { generateRandomAnimalName, containerNameExists } = require('../utils/util');
 const { readMSSQLScripts, readAPIManagerMSSQLScripts } = require('../utils/util.scripts');
 
 /**
@@ -19,8 +20,10 @@ const { readMSSQLScripts, readAPIManagerMSSQLScripts } = require('../utils/util.
 async function createMSSQLDockerContainer(platform, options, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create Docker container for MSSQL');
 
+	const spinner = ora('Starting to create Docker container for MSSQL').start();
 	let instance = new Docker();
 	let chance = generateRandomAnimalName();
+	chance = containerNameExists(instance, chance);
 
 	instance.pull(`${mssqlDockerConstants.mssql.image}:${mssqlDockerConstants.mssql.tag}`, (err, stream) => {
 		if (!err) instance.modem.followProgress(stream, onFinished, onProgress);
@@ -28,6 +31,7 @@ async function createMSSQLDockerContainer(platform, options, workingDir = proces
 
 		function onFinished(err) {
 			if (!err) {
+				spinner.text = 'Pulling Done... Now Creating Container';
 				instance
 					.createContainer({
 						Image: mssqlDockerConstants.mssql.image + ':' + mssqlDockerConstants.mssql.tag,
@@ -37,7 +41,9 @@ async function createMSSQLDockerContainer(platform, options, workingDir = proces
 						HostConfig: mssqlDockerConstants.mssql.host,
 					})
 					.then((container) => {
-						logger.info('Created MSSQL Docker container : ' + chance);
+						if (process.env.HYDROGEN_DEBUG) logger.debug('Created MSSQL Docker container : ' + chance);
+						spinner.succeed('Created MSSQL Docker Container : ' + chance);
+
 						container.start().then(() => {
 							if (options.generate) {
 								if (options.setup) executeAPIManagerMSSQLScripts(options, workingDir);
@@ -45,10 +51,14 @@ async function createMSSQLDockerContainer(platform, options, workingDir = proces
 							}
 						});
 					});
+			} else {
+				spinner.stop();
+				return logger.error(err);
 			}
 		}
 		function onProgress() {
-			logger.info(`Pulling MSSQL Docker Image`);
+			// logger.debug(`Pulling MSSQL Docker Image`);
+			spinner.text = 'Pulling MSSQL Docker Image';
 		}
 	});
 }
@@ -62,22 +72,39 @@ async function createMSSQLDockerContainer(platform, options, workingDir = proces
 async function executeMSSQLScripts(platform, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to execute MSSQL scripts for datasource');
 
+	const spinner = ora('Executing MSSQL scripts').start();
 	let config = mssqlDockerConstants.default;
 	let combinedSQLScript = await readMSSQLScripts(platform, workingDir);
+
 	setTimeout(() => {
 		if (platform === HydrogenConfigMaps.platform.apim) {
 			if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create databases for API Manager');
+			spinner.text = 'Creating DBs for API Manager';
+
 			Client.connect(config, (err) => {
-				if (err) return logger.error(err);
+				if (err) {
+					spinner.stop();
+					return logger.error(err);
+				}
 				new Client.Request().query('create database ' + HydrogenConfigMaps.docker.apim.single + ';', (err) => {
-					if (err) return logger.error(err);
+					if (err) {
+						spinner.stop();
+						return logger.error(err);
+					}
 
 					Client.close();
 					config.database = HydrogenConfigMaps.docker.apim.single;
 					Client.connect(config, (err) => {
-						if (err) return logger.error(err);
+						if (err) {
+							spinner.stop();
+							return logger.error(err);
+						}
 						new Client.Request().query(combinedSQLScript, (err) => {
-							if (err) return logger.error(err);
+							if (err) {
+								spinner.stop();
+								return logger.error(err);
+							}
+							spinner.succeed('Created');
 							Client.close();
 						});
 					});
@@ -86,19 +113,34 @@ async function executeMSSQLScripts(platform, workingDir = process.cwd()) {
 		}
 		if (platform === HydrogenConfigMaps.platform.is) {
 			if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create database for Identity Server');
+			spinner.text = 'Creating DBs for Identity Server';
+
 			Client.connect(config, (err) => {
-				if (err) return logger.error(err);
+				if (err) {
+					spinner.stop();
+					return logger.error(err);
+				}
 				new Client.Request().query(
 					'create database ' + HydrogenConfigMaps.docker.is.single.mssql + ';',
 					(err) => {
-						if (err) return logger.error(err);
+						if (err) {
+							spinner.stop();
+							return logger.error(err);
+						}
 
 						Client.close();
 						config.database = HydrogenConfigMaps.docker.is.single.mssql;
 						Client.connect(config, (err) => {
-							if (err) return logger.error(err);
+							if (err) {
+								spinner.stop();
+								return logger.error(err);
+							}
 							new Client.Request().query(combinedSQLScript, (err) => {
-								if (err) return logger.error(err);
+								if (err) {
+									spinner.stop();
+									return logger.error(err);
+								}
+								spinner.succeed('Created');
 								Client.close();
 							});
 						});
@@ -133,30 +175,47 @@ async function executeAPIManagerMSSQLScripts(options, workingDir = process.cwd()
 async function loopAPIManagerDatasources(options, loopCount, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Looping through API Manager datasources');
 
+	const spinner = ora('Executing MSSQL Scripts');
 	let config = mssqlDockerConstants.default;
 	let datasourceLength = HydrogenConfigMaps.docker.apim.setup.length;
+
 	if (loopCount < datasourceLength) {
 		if (process.env.HYDROGEN_DEBUG)
 			logger.debug(
 				'Starting to create ' + HydrogenConfigMaps.docker.apim.setup[loopCount] + ' database for API Manager'
 			);
+		spinner.text = 'Creating ' + HydrogenConfigMaps.docker.apim.setup[loopCount];
+
 		let combinedSQLScript = await readAPIManagerMSSQLScripts(options, workingDir);
 		Client.connect(config, (err) => {
-			if (err) return logger.error(err);
+			if (err) {
+				spinner.stop();
+				return logger.error(err);
+			}
 			new Client.Request().query(
 				'create database ' + HydrogenConfigMaps.docker.apim.setup[loopCount] + ';',
 				(err) => {
-					if (err) return logger.error(err);
+					if (err) {
+						spinner.stop();
+						return logger.error(err);
+					}
 
 					Client.close();
 					config.database = HydrogenConfigMaps.docker.apim.setup[loopCount];
 					Client.connect(config, (err) => {
-						if (err) return logger.error(err);
+						if (err) {
+							spinner.stop();
+							return logger.error(err);
+						}
 						new Client.Request().query(
 							combinedSQLScript[HydrogenConfigMaps.docker.apim.setup[loopCount]],
 							(err) => {
-								if (err) return logger.error(err);
+								if (err) {
+									spinner.stop();
+									return logger.error(err);
+								}
 
+								spinner.succeed();
 								Client.close();
 								loopAPIManagerDatasources(options, ++loopCount, workingDir);
 							}

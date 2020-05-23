@@ -2,11 +2,12 @@
 
 const Docker = require('dockerode');
 const Client = require('oracledb');
+const ora = require('ora');
 
 const HydrogenConfigMaps = require('../maps/map.hydrogen');
 const oracleDockerConstants = require('./configs/config.oracle');
 const { logger } = require('../utils/util.winston');
-const { generateRandomAnimalName } = require('../utils/util');
+const { generateRandomAnimalName, containerNameExists } = require('../utils/util');
 const {
 	readOracleSQLScripts,
 	readAPIManagerOracleSQLScripts,
@@ -23,14 +24,18 @@ const {
 async function createOracleDockerContainer(platform, options, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create Docker container for Oracle');
 
+	const spinner = ora('Starting to create Docker container for Oracle').start();
 	let instance = new Docker();
 	let chance = generateRandomAnimalName();
+	chance = containerNameExists(instance, chance);
+
 	instance.pull(`${oracleDockerConstants.oracle.image}:${oracleDockerConstants.oracle.tag}`, (err, stream) => {
 		if (!err) instance.modem.followProgress(stream, onFinished, onProgress);
 		else return logger.error(err);
 
 		function onFinished(err) {
 			if (!err) {
+				spinner.text = 'Pulling Done... Now Creating Container';
 				instance
 					.createContainer({
 						Image: oracleDockerConstants.oracle.image + ':' + oracleDockerConstants.oracle.tag,
@@ -40,10 +45,12 @@ async function createOracleDockerContainer(platform, options, workingDir = proce
 						HostConfig: oracleDockerConstants.oracle.host,
 					})
 					.then((container) => {
-						logger.info('Created Oracle Docker container : ' + chance);
+						if (process.env.HYDROGEN_DEBUG) logger.debug('Created Oracle Docker container : ' + chance);
+						if (process.env.HYDROGEN_DEBUG) logger.debug('Waiting for the container to initialize');
+
 						container.start();
-						logger.info('Waiting for the container to initialize');
 						setTimeout(() => {
+							spinner.succeed('Created Oracle Docker Container : ' + chance);
 							if (options.generate) {
 								if (options.setup) executeAPIManagerOracleSQLScripts(options, workingDir);
 								else executeOracleSQLScripts(platform, workingDir);
@@ -51,12 +58,17 @@ async function createOracleDockerContainer(platform, options, workingDir = proce
 						}, HydrogenConfigMaps.docker.timeout.oracle);
 					})
 					.catch((err) => {
+						spinner.stop();
 						return logger.error(err);
 					});
-			} else return logger.error(err);
+			} else {
+				spinner.stop();
+				return logger.error(err);
+			}
 		}
 		function onProgress() {
-			logger.info(`Pulling Oracle Docker Image`);
+			// logger.debug(`Pulling Oracle Docker Image`);
+			spinner.text = 'Pulling Oracle Docker Image';
 		}
 	});
 }
@@ -70,10 +82,14 @@ async function createOracleDockerContainer(platform, options, workingDir = proce
 async function executeOracleSQLScripts(platform, workinDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to execute Oracle scripts for datasource');
 
+	const spinner = ora('Executing Oracle scripts').start();
 	let config = oracleDockerConstants.default;
 	let combinedSQLScript = await readOracleSQLScripts(platform, workinDir);
+
 	if (platform === HydrogenConfigMaps.platform.apim) {
 		if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create databases for API Manager');
+		spinner.text = 'Creating DBs for API Manager';
+
 		Client.getConnection(config)
 			.then((connection) => {
 				if (process.env.HYDROGEN_DEBUG) logger.debug('Creating Users in Oracle Instance');
@@ -86,21 +102,27 @@ async function executeOracleSQLScripts(platform, workinDir = process.cwd()) {
 						Client.getConnection(config)
 							.then((connection) => {
 								loopExecuteOracleQuery(connection, combinedSQLScript);
+								spinner.succeed('Created');
 							})
 							.catch((err) => {
+								spinner.stop();
 								return logger.error('Error while obtaining connection for ' + config.user + '\n', err);
 							});
 					})
 					.catch((err) => {
+						spinner.stop();
 						return logger.error(err);
 					});
 			})
 			.catch((err) => {
+				spinner.stop();
 				return logger.error('Error while obtaining initial connection\n', err);
 			});
 	}
 	if (platform === HydrogenConfigMaps.platform.is) {
 		if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create databases for Identity Server');
+		spinner.text = 'Creating DBs for Identity Server';
+
 		Client.getConnection(config)
 			.then((connection) => {
 				if (process.env.HYDROGEN_DEBUG) logger.debug('Creating Users in Oracle Instance');
@@ -113,16 +135,20 @@ async function executeOracleSQLScripts(platform, workinDir = process.cwd()) {
 						Client.getConnection(config)
 							.then((connection) => {
 								loopExecuteOracleQuery(connection, combinedSQLScript);
+								spinner.succeed('Created');
 							})
 							.catch((err) => {
+								spinner.stop();
 								return logger.error('Error while obtaining connection for ' + config.user + '\n', err);
 							});
 					})
 					.catch((err) => {
+						spinner.stop();
 						return logger.error(err);
 					});
 			})
 			.catch((err) => {
+				spinner.stop();
 				return logger.error('Error while obtaining initial connection\n', err);
 			});
 	}
@@ -175,13 +201,17 @@ async function executeAPIManagerOracleSQLScripts(options, workingDir = process.c
 async function loopAPIManagerDatasources(options, loopCount, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Looping through API Manager datasources');
 
+	const spinner = ora('Executing Oracle Scripts');
 	let config = oracleDockerConstants.default;
 	let datasourceLength = HydrogenConfigMaps.docker.apim.setup.length;
+
 	if (loopCount < datasourceLength) {
 		if (process.env.HYDROGEN_DEBUG)
 			logger.debug(
 				'Starting to create ' + HydrogenConfigMaps.docker.apim.setup[loopCount] + ' database for API Manager'
 			);
+		spinner.text = 'Creating ' + HydrogenConfigMaps.docker.apim.setup[loopCount];
+
 		let combinedSQLScript = await readAPIManagerOracleSQLScripts(options, workingDir);
 		Client.getConnection(config)
 			.then((connection) => {
@@ -201,12 +231,15 @@ async function loopAPIManagerDatasources(options, loopCount, workingDir = proces
 							)
 						) {
 							if (process.env.HYDROGEN_DEBUG) logger.debug('Starting the next iteration');
+							spinner.succeed();
+
 							loopAPIManagerDatasources(options, ++loopCount, workingDir);
 						}
 					});
 				}, 10000);
 			})
 			.catch((err) => {
+				spinner.stop();
 				return logger.error(err);
 			});
 	}
