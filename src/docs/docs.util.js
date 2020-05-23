@@ -1,6 +1,7 @@
 'use strict';
 
 const EasyTable = require('easy-table');
+const ora = require('ora');
 
 const { logger } = require('../utils/util.winston');
 const HydrogenConfigMaps = require('../maps/map.hydrogen');
@@ -13,20 +14,30 @@ const HydrogenConfigMaps = require('../maps/map.hydrogen');
 function generateDBDriverDocs(databaseType) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Generating database driver docs');
 
+	const spinner = ora('Generating database driver docs').start();
 	switch (databaseType.toLowerCase()) {
 		case HydrogenConfigMaps.datasource.postgre:
-			logger.info('Please download the Postgre JDBC Driver from ' + HydrogenConfigMaps.jdbcDrivers.postgre);
+			if (process.env.HYDROGEN_DEBUG)
+				logger.debug('Please download the Postgre JDBC Driver from ' + HydrogenConfigMaps.jdbcDrivers.postgre);
+			spinner.text = 'Please download the Postgre JDBC Driver from ' + HydrogenConfigMaps.jdbcDrivers.postgre;
 			break;
 		case HydrogenConfigMaps.datasource.mysql:
-			logger.info('Please download the MySQL JDBC Driver from ' + HydrogenConfigMaps.jdbcDrivers.mysql);
+			if (process.env.HYDROGEN_DEBUG)
+				logger.debug('Please download the MySQL JDBC Driver from ' + HydrogenConfigMaps.jdbcDrivers.mysql);
+			spinner.text = 'Please download the MySQL JDBC Driver from ' + HydrogenConfigMaps.jdbcDrivers.mysql;
 			break;
 		case HydrogenConfigMaps.datasource.mssql:
-			logger.info('Please download the MSSQL JDBC Driver from ' + HydrogenConfigMaps.jdbcDrivers.mssql);
+			if (process.env.HYDROGEN_DEBUG)
+				logger.debug('Please download the MSSQL JDBC Driver from ' + HydrogenConfigMaps.jdbcDrivers.mssql);
+			spinner.text = 'Please download the MSSQL JDBC Driver from ' + HydrogenConfigMaps.jdbcDrivers.mssql;
 			break;
 		case HydrogenConfigMaps.datasource.oracle:
-			logger.info('Please download the Oracle JDBC Driver from ' + HydrogenConfigMaps.jdbcDrivers.oracle);
+			if (process.env.HYDROGEN_DEBUG)
+				logger.debug('Please download the Oracle JDBC Driver from ' + HydrogenConfigMaps.jdbcDrivers.oracle);
+			spinner.text = 'Please download the Oracle JDBC Driver from ' + HydrogenConfigMaps.jdbcDrivers.oracle;
 			break;
 	}
+	spinner.warn();
 }
 
 /**
