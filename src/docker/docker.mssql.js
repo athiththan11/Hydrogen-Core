@@ -72,14 +72,13 @@ async function createMSSQLDockerContainer(platform, options, workingDir = proces
 async function executeMSSQLScripts(platform, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to execute MSSQL scripts for datasource');
 
-	const spinner = ora('Executing MSSQL scripts').start();
 	let config = mssqlDockerConstants.default;
 	let combinedSQLScript = await readMSSQLScripts(platform, workingDir);
 
 	setTimeout(() => {
 		if (platform === HydrogenConfigMaps.platform.apim) {
 			if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create databases for API Manager');
-			spinner.text = 'Creating DBs for API Manager';
+			const spinner = ora('Creating DBs for API Manager').start();
 
 			Client.connect(config, (err) => {
 				if (err) {
@@ -113,7 +112,7 @@ async function executeMSSQLScripts(platform, workingDir = process.cwd()) {
 		}
 		if (platform === HydrogenConfigMaps.platform.is) {
 			if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create database for Identity Server');
-			spinner.text = 'Creating DBs for Identity Server';
+			const spinner = ora('Creating DBs for Identity Server').start();
 
 			Client.connect(config, (err) => {
 				if (err) {
@@ -175,7 +174,6 @@ async function executeAPIManagerMSSQLScripts(options, workingDir = process.cwd()
 async function loopAPIManagerDatasources(options, loopCount, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Looping through API Manager datasources');
 
-	const spinner = ora('Executing MSSQL Scripts');
 	let config = mssqlDockerConstants.default;
 	let datasourceLength = HydrogenConfigMaps.docker.apim.setup.length;
 
@@ -184,7 +182,7 @@ async function loopAPIManagerDatasources(options, loopCount, workingDir = proces
 			logger.debug(
 				'Starting to create ' + HydrogenConfigMaps.docker.apim.setup[loopCount] + ' database for API Manager'
 			);
-		spinner.text = 'Creating ' + HydrogenConfigMaps.docker.apim.setup[loopCount];
+		const spinner = ora('Creating ' + HydrogenConfigMaps.docker.apim.setup[loopCount]).start();
 
 		let combinedSQLScript = await readAPIManagerMSSQLScripts(options, workingDir);
 		Client.connect(config, (err) => {

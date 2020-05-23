@@ -82,13 +82,12 @@ async function createOracleDockerContainer(platform, options, workingDir = proce
 async function executeOracleSQLScripts(platform, workinDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to execute Oracle scripts for datasource');
 
-	const spinner = ora('Executing Oracle scripts').start();
 	let config = oracleDockerConstants.default;
 	let combinedSQLScript = await readOracleSQLScripts(platform, workinDir);
 
 	if (platform === HydrogenConfigMaps.platform.apim) {
 		if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create databases for API Manager');
-		spinner.text = 'Creating DBs for API Manager';
+		const spinner = ora('Creating DBs for API Manager').start();
 
 		Client.getConnection(config)
 			.then((connection) => {
@@ -121,7 +120,7 @@ async function executeOracleSQLScripts(platform, workinDir = process.cwd()) {
 	}
 	if (platform === HydrogenConfigMaps.platform.is) {
 		if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create databases for Identity Server');
-		spinner.text = 'Creating DBs for Identity Server';
+		const spinner = ora('Creating DBs for Identity Server').start();
 
 		Client.getConnection(config)
 			.then((connection) => {
@@ -201,7 +200,6 @@ async function executeAPIManagerOracleSQLScripts(options, workingDir = process.c
 async function loopAPIManagerDatasources(options, loopCount, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Looping through API Manager datasources');
 
-	const spinner = ora('Executing Oracle Scripts');
 	let config = oracleDockerConstants.default;
 	let datasourceLength = HydrogenConfigMaps.docker.apim.setup.length;
 
@@ -210,7 +208,7 @@ async function loopAPIManagerDatasources(options, loopCount, workingDir = proces
 			logger.debug(
 				'Starting to create ' + HydrogenConfigMaps.docker.apim.setup[loopCount] + ' database for API Manager'
 			);
-		spinner.text = 'Creating ' + HydrogenConfigMaps.docker.apim.setup[loopCount];
+		const spinner = ora('Creating ' + HydrogenConfigMaps.docker.apim.setup[loopCount]);
 
 		let combinedSQLScript = await readAPIManagerOracleSQLScripts(options, workingDir);
 		Client.getConnection(config)

@@ -74,14 +74,13 @@ async function createPostgreDockerContainer(platform, options, workingDir = proc
 async function executePostgreSQLScripts(platform, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to execute Postgre scripts for datasource');
 
-	const spinner = ora('Executing Postgre script').start();
 	let config = postgreDockerConstants.default;
 	let combinedSQLScript = await readPostgreSQLScripts(platform, workingDir);
 
 	setTimeout(() => {
 		if (platform === HydrogenConfigMaps.platform.apim) {
 			if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create databases for API Manager');
-			spinner.text = 'Creating DBs for API Manager';
+			const spinner = ora('Creating DBs for API Manager').start();
 
 			createdb(config, HydrogenConfigMaps.docker.apim.single)
 				.then(() => {
@@ -105,7 +104,7 @@ async function executePostgreSQLScripts(platform, workingDir = process.cwd()) {
 		}
 		if (platform === HydrogenConfigMaps.platform.is) {
 			if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create databases for Identity Server');
-			spinner.text = 'Creating DBs for Identity Server';
+			const spinner = ora('Creating DBs for Identity Server').start();
 
 			createdb(config, HydrogenConfigMaps.docker.is.single.postgre)
 				.then(() => {
@@ -154,7 +153,6 @@ async function executeAPIManagerPostgreSQLScripts(options, workingDir = process.
 async function loopAPIManagerDatasources(options, loopCount, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Looping through API Manager datasources');
 
-	const spinner = ora('Executing Postgre Scripts');
 	let config = postgreDockerConstants.default;
 	let datasourceLength = HydrogenConfigMaps.docker.apim.setup.length;
 
@@ -163,7 +161,7 @@ async function loopAPIManagerDatasources(options, loopCount, workingDir = proces
 			logger.debug(
 				'Starting to create ' + HydrogenConfigMaps.docker.apim.setup[loopCount] + ' database for API Manager'
 			);
-		spinner.text = 'Creating ' + HydrogenConfigMaps.docker.apim.setup[loopCount];
+		const spinner = ora('Creating ' + HydrogenConfigMaps.docker.apim.setup[loopCount]).start();
 
 		let combinedSQLScript = await readAPIManagerPostgresSQLScripts(options, workingDir);
 		createdb(config, HydrogenConfigMaps.docker.apim.setup[loopCount])

@@ -73,7 +73,6 @@ async function createMySQLDockerContainer(platform, options, workingDir = proces
 async function executeMySQLScripts(platform, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to execute MySQL scripts for datasource');
 
-	const spinner = ora('Executing MySQL script').start();
 	let config = mysqlDockerConstants.default;
 	let combinedSQLScript = await readMySQLScripts(platform, workingDir);
 
@@ -81,7 +80,7 @@ async function executeMySQLScripts(platform, workingDir = process.cwd()) {
 		let client = Client.createConnection(config);
 		if (platform === HydrogenConfigMaps.platform.apim) {
 			if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create databases for API Manager');
-			spinner.text = 'Creating DBs for API Manager';
+			const spinner = ora('Creating DBs for API Manager').start();
 
 			client.connect((err) => {
 				if (err) {
@@ -120,7 +119,7 @@ async function executeMySQLScripts(platform, workingDir = process.cwd()) {
 		}
 		if (platform === HydrogenConfigMaps.platform.is) {
 			if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to create databases for Identity Server');
-			spinner.text = 'Creating DBs for Identity Server';
+			const spinner = ora('Creating DBs for Identity Server').start();
 
 			client.connect((err) => {
 				if (err) {
@@ -187,7 +186,6 @@ async function executeAPIManagerMySQLScripts(options, workingDir = process.cwd()
 async function loopAPIManagerDatasources(options, loopCount, workingDir = process.cwd()) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Looping through API Manager datasources');
 
-	const spinner = ora('Executing MSSQL Scripts');
 	let config = mysqlDockerConstants.default;
 	let datasourceLength = HydrogenConfigMaps.docker.apim.setup.length;
 
@@ -196,7 +194,7 @@ async function loopAPIManagerDatasources(options, loopCount, workingDir = proces
 			logger.debug(
 				'Starting to create ' + HydrogenConfigMaps.docker.apim.setup[loopCount] + ' database for API Manager'
 			);
-		spinner.text = 'Creating ' + HydrogenConfigMaps.docker.apim.setup[loopCount];
+		const spinner = ora('Creating ' + HydrogenConfigMaps.docker.apim.setup[loopCount]).start();
 
 		let combinedSQLScript = await readAPIManagerMySQLScripts(options, workingDir);
 		let client = Client.createConnection(config);
