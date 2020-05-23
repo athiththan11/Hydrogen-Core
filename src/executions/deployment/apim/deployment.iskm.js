@@ -18,6 +18,7 @@ const {
 } = require('../../../modules/master.datasource/datasource.util');
 
 const { logger } = require('../../../utils/util.winston');
+const ora = require('ora');
 
 /**
  * method to configure identity-server-as-key-manager
@@ -32,6 +33,7 @@ async function configureIdentityServerKM(
 	iskmlayoutConfs = { _hostname: 'https://localhost', offset: 1 }
 ) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring Identity Server as Key Manager');
+	const spinner = ora('Configuring Server :: Identity Server as Key Manager').start();
 
 	try {
 		await alterGatewayEnvironmentServerURL(iskmlayoutConfs, workingDir);
@@ -46,7 +48,10 @@ async function configureIdentityServerKM(
 
 		await configurePortOffset(workingDir, iskmlayoutConfs.offset);
 	} catch (err) {
+		spinner.stop();
 		logger.error(err);
+	} finally {
+		spinner.succeed();
 	}
 }
 
@@ -69,6 +74,7 @@ async function configureAPIManagerwithISKM(
 ) {
 	if (process.env.HYDROGEN_DEBUG)
 		logger.debug('Starting to configure API Manager with Identity Server as Key Manager ');
+	const spinner = ora('Configuring Server :: API Manager').start();
 
 	try {
 		await alterAuthManagerServerURL(apimlayoutConfs, workingDir, apimlayoutConfs.iskmoffset);
@@ -83,7 +89,10 @@ async function configureAPIManagerwithISKM(
 		await alterRegistry(datasourceConfs.reg, 0, workingDir);
 		await alterUserManagement(false, workingDir);
 	} catch (err) {
+		spinner.stop();
 		logger.error(err);
+	} finally {
+		spinner.succeed();
 	}
 }
 

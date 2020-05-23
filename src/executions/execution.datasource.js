@@ -11,6 +11,7 @@ const { alterRegistry } = require('../modules/registry/registry.util');
 const { alterUserManagement } = require('../modules/user.management/usermgt.util');
 
 const { logger } = require('../utils/util.winston');
+const ora = require('ora');
 
 /**
  * method to alter and replace the H2 carbon datasource with other database types
@@ -21,9 +22,17 @@ const { logger } = require('../utils/util.winston');
 async function replaceISCarbonDatasource(workingDir, datasourceConfs) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Replacing IS H2 Carbon Datasource');
 
-	await alterMasterDS(datasourceConfs, workingDir);
-	await alterIdentity(datasourceConfs._jndiName, workingDir);
-	await alterRegistry(datasourceConfs, 0, workingDir);
+	const spinner = ora('Configuring Datasource').start();
+	try {
+		await alterMasterDS(datasourceConfs, workingDir);
+		await alterIdentity(datasourceConfs._jndiName, workingDir);
+		await alterRegistry(datasourceConfs, 0, workingDir);
+	} catch (err) {
+		spinner.stop();
+		logger.error(err);
+	} finally {
+		spinner.succeed();
+	}
 }
 
 /**
@@ -35,7 +44,15 @@ async function replaceISCarbonDatasource(workingDir, datasourceConfs) {
 async function replaceAPIManagerAMDatasource(workingDir, datasourceConfs) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Replacing API Manager AM Datasource');
 
-	await alterMasterDSofAM(datasourceConfs, workingDir);
+	const spinner = ora('Configuring Datasource').start();
+	try {
+		await alterMasterDSofAM(datasourceConfs, workingDir);
+	} catch (err) {
+		spinner.stop();
+		logger.error(err);
+	} finally {
+		spinner.succeed();
+	}
 }
 
 /**
@@ -46,12 +63,19 @@ async function replaceAPIManagerAMDatasource(workingDir, datasourceConfs) {
  */
 async function configureAPIManagerDatasources(workingDir, datasourceConfs) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring API Manager Datasources');
-
-	await alterMasterDSofAM(datasourceConfs.am, workingDir);
-	await alterMasterDSofUM(datasourceConfs.um, workingDir);
-	await alterMasterDSofREG(datasourceConfs.reg, workingDir);
-	await alterRegistry(datasourceConfs.reg, 0, workingDir);
-	await alterUserManagement(false, workingDir);
+	const spinner = ora('Configuring Datasource').start();
+	try {
+		await alterMasterDSofAM(datasourceConfs.am, workingDir);
+		await alterMasterDSofUM(datasourceConfs.um, workingDir);
+		await alterMasterDSofREG(datasourceConfs.reg, workingDir);
+		await alterRegistry(datasourceConfs.reg, 0, workingDir);
+		await alterUserManagement(false, workingDir);
+	} catch (err) {
+		spinner.stop();
+		logger.error(err);
+	} finally {
+		spinner.succeed();
+	}
 }
 
 exports.replaceISCarbonDatasource = replaceISCarbonDatasource;

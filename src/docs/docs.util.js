@@ -50,6 +50,7 @@ function generatePublishMultipleGatewayDocs(gwCount, layoutConfs) {
 	if (process.env.HYDROGEN_DEBUG)
 		logger.debug('Generating docs for deployment layout Publish through Multiple Gateways');
 
+	const spinner = ora('Generating deployment docs').start();
 	let table = new EasyTable();
 	table.cell('node', HydrogenConfigMaps.layoutNamePatterns.apim.publishMultipleGateway.aio);
 	table.cell('port offset', 0);
@@ -61,7 +62,9 @@ function generatePublishMultipleGatewayDocs(gwCount, layoutConfs) {
 		table.cell('port', HydrogenConfigMaps.ports._9443 + (index + 1));
 		table.newRow();
 	}
-	logger.info('\n\n' + table.toString() + '\n');
+
+	if (process.env.HYDROGEN_DEBUG) logger.debug('\n\n' + table.toString() + '\n');
+	spinner.info('\n\n' + table.toString() + '\n');
 }
 
 /**
@@ -73,6 +76,7 @@ function generateIdentityServerasKMDocs(iskmlayoutConfs) {
 	if (process.env.HYDROGEN_DEBUG)
 		logger.debug('Generating docs for deployment layout Identity Server as Key Manager');
 
+	const spinner = ora('Generating deployment docs').start();
 	let table = new EasyTable();
 	table.cell('node', HydrogenConfigMaps.layoutNamePatterns.apim.iskm.iskm);
 	table.cell('port offset', iskmlayoutConfs.offset);
@@ -82,7 +86,9 @@ function generateIdentityServerasKMDocs(iskmlayoutConfs) {
 	table.cell('port offset', 0);
 	table.cell('port', HydrogenConfigMaps.ports._9443);
 	table.newRow();
-	logger.info('\n\n' + table.toString() + '\n');
+
+	if (process.env.HYDROGEN_DEBUG) logger.debug('\n\n' + table.toString() + '\n');
+	spinner.info('\n\n' + table.toString() + '\n');
 }
 
 /**
@@ -93,6 +99,7 @@ function generateIdentityServerasKMDocs(iskmlayoutConfs) {
 function generateDistributedDocs(distributedConfs) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Generating docs for Distributed deployment layout');
 
+	const spinner = ora('Generating deployment docs').start();
 	let table = new EasyTable();
 	table.cell('node', HydrogenConfigMaps.layoutNamePatterns.apim.distributed.trafficmanager);
 	table.cell('port offset', distributedConfs.tmlayoutConfs.offset);
@@ -114,7 +121,9 @@ function generateDistributedDocs(distributedConfs) {
 	table.cell('port offset', distributedConfs.gatewaylayoutConfs.offset);
 	table.cell('port', HydrogenConfigMaps.ports._9443 + distributedConfs.gatewaylayoutConfs.offset);
 	table.newRow();
-	logger.info('\n\n' + table.toString() + '\n');
+
+	if (process.env.HYDROGEN_DEBUG) logger.debug('\n\n' + table.toString() + '\n');
+	spinner.info('\n\n' + table.toString() + '\n');
 }
 
 exports.generateDBDriverDocs = generateDBDriverDocs;

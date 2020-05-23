@@ -14,6 +14,7 @@ const {
 
 const HydrogenConfigMaps = require('../maps/map.hydrogen');
 const { logger } = require('../utils/util.winston');
+const ora = require('ora');
 
 /**
  * method to configure deployment setup for publish-through-multiple-gateway
@@ -67,6 +68,8 @@ async function loopGatewayNodes(apimPackDir, deploymentDir, gwCount, loopCount, 
 				? HydrogenConfigMaps.layoutNamePatterns.apim.publishMultipleGateway.aio
 				: `${HydrogenConfigMaps.layoutNamePatterns.apim.publishMultipleGateway.gw_node}${loopCount}`;
 		if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to configure ' + packName);
+		const spinner = ora('Configuring Server :: ' + packName).start();
+
 		fs.copy(apimPackDir, __path.join(deploymentDir, packName))
 			.then(() => {
 				let workingDir = __path.join(deploymentDir, packName);
@@ -74,6 +77,7 @@ async function loopGatewayNodes(apimPackDir, deploymentDir, gwCount, loopCount, 
 					configureGatewayAIO(workingDir, environmentConfs)
 						.then(() => {
 							loopGatewayNodes(apimPackDir, deploymentDir, gwCount, ++loopCount, layoutConfs);
+							spinner.succeed();
 						})
 						.catch((err) => {
 							logger.error(err);
@@ -83,6 +87,7 @@ async function loopGatewayNodes(apimPackDir, deploymentDir, gwCount, loopCount, 
 					configureGateway(workingDir, layoutConfs)
 						.then(() => {
 							loopGatewayNodes(apimPackDir, deploymentDir, gwCount, ++loopCount, layoutConfs);
+							spinner.succeed();
 						})
 						.catch((err) => {
 							logger.error(err);
@@ -178,10 +183,12 @@ async function loopDistributedNodes(apimPackDir, deploymentDir, loopCount, datas
 	if (loopCount < HydrogenConfigMaps.layoutNamePatterns.apim.distributed.names.length) {
 		let packName = HydrogenConfigMaps.layoutNamePatterns.apim.distributed.names[loopCount];
 		if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to configure ' + packName);
+		const spinner = ora('Configuring & Optimizing Server :: ' + packName + ' ').start();
+
 		fs.copy(apimPackDir, __path.join(deploymentDir, packName))
 			.then(() => {
 				let workingDir = __path.join(deploymentDir, packName);
-                if (packName === HydrogenConfigMaps.layoutNamePatterns.apim.distributed.gateway) {
+				if (packName === HydrogenConfigMaps.layoutNamePatterns.apim.distributed.gateway) {
 					configureDistributedGateway(workingDir, distributedLayoutConfs.gatewaylayoutConfs)
 						.then(() => {
 							loopDistributedNodes(
@@ -191,8 +198,10 @@ async function loopDistributedNodes(apimPackDir, deploymentDir, loopCount, datas
 								datasourceConfs,
 								distributedLayoutConfs
 							);
+							spinner.succeed('Configured & Optimized :: ' + packName);
 						})
 						.catch((err) => {
+							spinner.stop();
 							logger.error(err);
 						});
 				}
@@ -206,8 +215,10 @@ async function loopDistributedNodes(apimPackDir, deploymentDir, loopCount, datas
 								datasourceConfs,
 								distributedLayoutConfs
 							);
+							spinner.succeed('Configured & Optimized :: ' + packName);
 						})
 						.catch((err) => {
+							spinner.stop();
 							logger.error(err);
 						});
 				}
@@ -221,8 +232,10 @@ async function loopDistributedNodes(apimPackDir, deploymentDir, loopCount, datas
 								datasourceConfs,
 								distributedLayoutConfs
 							);
+							spinner.succeed();
 						})
 						.catch((err) => {
+							spinner.stop();
 							logger.error(err);
 						});
 				}
@@ -236,8 +249,10 @@ async function loopDistributedNodes(apimPackDir, deploymentDir, loopCount, datas
 								datasourceConfs,
 								distributedLayoutConfs
 							);
+							spinner.succeed('Configured & Optimized :: ' + packName);
 						})
 						.catch((err) => {
+							spinner.stop();
 							logger.error(err);
 						});
 				}
@@ -251,13 +266,16 @@ async function loopDistributedNodes(apimPackDir, deploymentDir, loopCount, datas
 								datasourceConfs,
 								distributedLayoutConfs
 							);
+							spinner.succeed('Configured & Optimized :: ' + packName);
 						})
 						.catch((err) => {
+							spinner.stop();
 							logger.error(err);
 						});
 				}
 			})
 			.catch((err) => {
+				spinner.stop();
 				logger.error(err);
 			});
 	}
