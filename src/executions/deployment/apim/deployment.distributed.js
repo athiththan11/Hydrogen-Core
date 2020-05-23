@@ -6,6 +6,7 @@ const __path = require('path');
 const {
 	alterAuthManagerServerURL,
 	alterGatewayEnvironmentServerURL,
+	addGatewayEnvironment,
 	alterAPIKeyValidatorServerURL,
 	alterAPIKeyValidatorEnableThriftServer,
 	alterOAuthConfigurationRevokeAPIURL,
@@ -36,6 +37,7 @@ const {
 const { optimizeProfile } = require('../../../utils/util.profile');
 
 const HydrogenConfigMaps = require('../../../maps/map.hydrogen');
+const { _environmentConfs } = require('../../../models/v3/confs.sample.model');
 const { logger } = require('../../../utils/util.winston');
 
 /**
@@ -191,7 +193,9 @@ async function configurePublisher(
  * @param {string} workingDir path of the working directory
  * @param {{}} datasourceConfs datasource configurations
  * @param {{}} kmlayoutConfs keymanager layout configurations
+ * @param {{}} options platform and product options
  */
+// TESTME:
 async function configureKeyManager(
 	workingDir,
 	datasourceConfs,
@@ -204,31 +208,40 @@ async function configureKeyManager(
 		enableJMSConnectionDetails: 'false',
 		gwoffset: 1,
 		offset: 4,
-	}
+	},
+	options = {}
 ) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring Key Manager for Distributed deployment layout');
 
 	try {
-		await alterGatewayEnvironmentServerURL(kmlayoutConfs, workingDir, kmlayoutConfs.gwoffset);
-		await alterAPIKeyValidatorKeyValidatorClientType(kmlayoutConfs, workingDir);
-		await alterAPIKeyValidatorEnableThriftServer(kmlayoutConfs, workingDir);
-		await alterPolicyDeployerEnabled(kmlayoutConfs, workingDir);
-		await alterDataPublisherEnabled(kmlayoutConfs, workingDir);
-		await alterJMSConnectionDetailsEnabled(kmlayoutConfs, workingDir);
+        await optimizeProfile(HydrogenConfigMaps.profiles.keymanager, '', workingDir);
 
-		await alterMasterDSofAM(datasourceConfs.am, workingDir);
-		await alterMasterDSofUM(datasourceConfs.um, workingDir);
-		await alterUserManagement(false, workingDir);
+		if (options.version === HydrogenConfigMaps.supportedVersions.apim.v26) {
+			await alterGatewayEnvironmentServerURL(kmlayoutConfs, workingDir, kmlayoutConfs.gwoffset);
+			await alterAPIKeyValidatorKeyValidatorClientType(kmlayoutConfs, workingDir);
+			await alterAPIKeyValidatorEnableThriftServer(kmlayoutConfs, workingDir);
+
+			await alterPolicyDeployerEnabled(kmlayoutConfs, workingDir);
+			await alterDataPublisherEnabled(kmlayoutConfs, workingDir);
+			await alterJMSConnectionDetailsEnabled(kmlayoutConfs, workingDir);
+
+			await commentWSTransportSender(workingDir);
+			await commentWSSTransportSender(workingDir);
+		}
+
+		if (options.version === HydrogenConfigMaps.supportedVersions.apim.v31) {
+			_environmentConfs.offset = kmlayoutConfs.gwoffset;
+			await addGatewayEnvironment(_environmentConfs, workingDir, options);
+		}
+
+		await alterMasterDSofAM(datasourceConfs.am, workingDir, options);
+		await alterMasterDSofUM(datasourceConfs.um, workingDir, options);
+		await alterUserManagement(false, workingDir, options);
 
 		// await alterMasterDSofREG(datasourceConfs.reg, workingDir);
 		// await alterRegistry(datasourceConfs.reg, kmlayoutConfs.offset, workingDir);
 
-		await configurePortOffset(workingDir, kmlayoutConfs.offset);
-
-		await commentWSTransportSender(workingDir);
-		await commentWSSTransportSender(workingDir);
-
-		await optimizeProfile(HydrogenConfigMaps.profiles.keymanager, '', workingDir);
+		await configurePortOffset(workingDir, kmlayoutConfs.offset, options);
 	} catch (err) {
 		logger.error(err);
 	}

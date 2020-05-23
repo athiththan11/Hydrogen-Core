@@ -532,6 +532,7 @@ async function addGatewayEnvironment(environmentConfs, workingDir = process.cwd(
 		if (options.version === HydrogenConfigMaps.supportedVersions.apim.v31)
 			await parseToml(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.deploymentToml)).then(
 				(toml) => {
+					_.unset(toml, HydrogenConfigMaps.tomlPaths.apimanager.apigateway_environments_environment);
 					let obj = {};
 					Dot.str(
 						HydrogenConfigMaps.tomlPaths.apimanager.apigateway_environments_environment,

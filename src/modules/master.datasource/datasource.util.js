@@ -76,6 +76,7 @@ async function alterMasterDSofAM(
 		if (options.version === HydrogenConfigMaps.supportedVersions.apim.v31)
 			await parseToml(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.deploymentToml)).then(
 				(toml) => {
+					_.unset(toml, HydrogenConfigMaps.tomlPaths.masterdatasource.datasources_datasource_wso2am_db);
 					datasourceConfs._type = options.datasource.type;
 					let obj = {};
 					Dot.str(
@@ -147,6 +148,7 @@ async function alterMasterDSofUM(
 		if (options.version === HydrogenConfigMaps.supportedVersions.apim.v31)
 			await parseToml(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.deploymentToml)).then(
 				(toml) => {
+					_.unset(toml, HydrogenConfigMaps.tomlPaths.masterdatasource.datasources_datasource_wso2um_db);
 					datasourceConfs._type = options.datasource.type;
 					let obj = {};
 					Dot.str(
@@ -220,6 +222,7 @@ async function alterMasterDSofREG(
 		if (options.version === HydrogenConfigMaps.supportedVersions.apim.v31)
 			await parseToml(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.deploymentToml)).then(
 				(toml) => {
+					_.unset(toml, HydrogenConfigMaps.tomlPaths.masterdatasource.datasources_datasource_wso2shared_db);
 					datasourceConfs._type = options.datasource.type;
 					let obj = {};
 					Dot.str(
