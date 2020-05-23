@@ -2,3 +2,12 @@
 .vscode
 .eslintrc.yml
 .nvmrc
+
+*-debug.log
+*-error.log
+*.log
+/.nyc_output
+/dist
+/tmp
+/yarn.lock
+node_modules

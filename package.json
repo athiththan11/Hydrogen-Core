@@ -1,6 +1,6 @@
 {
 	"name": "@athiththan11/hydrogen-core",
-	"version": "v1.1.0",
+	"version": "v1.2.0",
 	"description": "core module of @athiththan11/hydrogen-cli",
 	"main": "index.js",
 	"scripts": {
@@ -16,22 +16,22 @@
 		"hydrogen-core"
 	],
 	"dependencies": {
-		"ajv": "^6.11.0",
-		"chance": "^1.1.4",
-		"dockerode": "^3.0.2",
+		"ajv": "^6.12.2",
+		"chance": "^1.1.5",
+		"dockerode": "^3.2.0",
 		"dockerode-utils": "0.0.7",
 		"easy-table": "^1.1.1",
 		"fs-extra": "^8.1.0",
 		"libxmljs": "^0.19.7",
 		"lodash": "^4.17.15",
-		"mssql": "^6.0.1",
-		"mysql": "^2.17.1",
+		"mssql": "^6.2.0",
+		"mysql": "^2.18.1",
 		"ora": "^4.0.4",
 		"oracledb": "^4.2.0",
-		"pg": "^7.15.1",
+		"pg": "^7.18.2",
 		"pgtools": "^0.3.0",
 		"prettify-xml": "^1.2.0",
-		"shelljs": "^0.8.3",
+		"shelljs": "^0.8.4",
 		"toml": "^3.0.0",
 		"winston": "^3.2.1"
 	},
