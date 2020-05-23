@@ -8,7 +8,27 @@ const Chance = require('chance');
  * @returns {string} an animal name
  */
 function generateRandomAnimalName() {
-	return new Chance().animal().replace(/[^a-zA-Z]/g, '');
+	return new Chance()
+		.animal()
+		.replace(/[^a-zA-Z]/g, '')
+		.toLowerCase();
+}
+
+/**
+ * method to check if any containers existing with the same name
+ *
+ * @param {Dockerode} docker docker instance
+ * @param {string} name container name
+ */
+function containerNameExists(docker, name) {
+	let chance = name;
+	docker.listContainers({ name: chance }, (err, containers) => {
+		if (containers.length > 0) {
+			chance = generateRandomAnimalName();
+			containerNameExists(docker, chance);
+		} else name = chance;
+	});
+	return chance;
 }
 
 /**
@@ -30,3 +50,4 @@ function prepareOracleSQLScripts(script) {
 
 exports.generateRandomAnimalName = generateRandomAnimalName;
 exports.prepareOracleSQLScripts = prepareOracleSQLScripts;
+exports.containerNameExists = containerNameExists;
