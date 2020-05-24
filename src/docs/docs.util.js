@@ -3,6 +3,8 @@
 const EasyTable = require('easy-table');
 const ora = require('ora');
 
+const { writeDeploymentConfigurations } = require('../utils/util.readme');
+
 const { logger } = require('../utils/util.winston');
 const HydrogenConfigMaps = require('../maps/map.hydrogen');
 
@@ -65,6 +67,8 @@ function generatePublishMultipleGatewayDocs(gwCount, layoutConfs) {
 
 	if (process.env.HYDROGEN_DEBUG) logger.debug('\n\n' + table.toString() + '\n');
 	spinner.info('\n\n' + table.toString() + '\n');
+
+	writeDeploymentConfigurations(table.toString());
 }
 
 /**
@@ -89,6 +93,8 @@ function generateIdentityServerasKMDocs(iskmlayoutConfs) {
 
 	if (process.env.HYDROGEN_DEBUG) logger.debug('\n\n' + table.toString() + '\n');
 	spinner.info('\n\n' + table.toString() + '\n');
+
+	writeDeploymentConfigurations(table.toString());
 }
 
 /**
@@ -124,6 +130,8 @@ function generateDistributedDocs(distributedConfs) {
 
 	if (process.env.HYDROGEN_DEBUG) logger.debug('\n\n' + table.toString() + '\n');
 	spinner.info('\n\n' + table.toString() + '\n');
+
+	writeDeploymentConfigurations(table.toString());
 }
 
 exports.generateDBDriverDocs = generateDBDriverDocs;

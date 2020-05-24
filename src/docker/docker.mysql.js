@@ -9,6 +9,7 @@ const mysqlDockerConstants = require('./configs/config.mysql');
 const { logger } = require('../utils/util.winston');
 const { generateRandomAnimalName, containerNameExists } = require('../utils/util');
 const { readMySQLScripts, readAPIManagerMySQLScripts } = require('../utils/util.scripts');
+const { writeDockerConfigurations } = require('../utils/util.readme');
 
 /**
  * method to create a docker container for the mysql datasources
@@ -50,6 +51,15 @@ async function createMySQLDockerContainer(platform, options, workingDir = proces
 								if (options.setup) executeAPIManagerMySQLScripts(options, workingDir);
 								else executeMySQLScripts(platform, workingDir);
 							}
+							writeDockerConfigurations(
+								'- Docker Container for MySQL: `' +
+									chance +
+									'`\n- Docker Image: `' +
+									mysqlDockerConstants.mysql.image +
+									':' +
+									mysqlDockerConstants.mysql.tag +
+									'`'
+							);
 						});
 					});
 			} else {

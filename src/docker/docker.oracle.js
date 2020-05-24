@@ -13,6 +13,7 @@ const {
 	readAPIManagerOracleSQLScripts,
 	generateCreateQueryforOracle,
 } = require('../utils/util.scripts');
+const { writeDockerConfigurations } = require('../utils/util.readme');
 
 /**
  * method to create a docker container for the oracle datasources
@@ -55,6 +56,15 @@ async function createOracleDockerContainer(platform, options, workingDir = proce
 								if (options.setup) executeAPIManagerOracleSQLScripts(options, workingDir);
 								else executeOracleSQLScripts(platform, workingDir);
 							}
+							writeDockerConfigurations(
+								'- Docker Container for Oracle: `' +
+									chance +
+									'`\n- Docker Image: `' +
+									oracleDockerConstants.oracle.image +
+									':' +
+									oracleDockerConstants.oracle.tag +
+									'`'
+							);
 						}, HydrogenConfigMaps.docker.timeout.oracle);
 					})
 					.catch((err) => {

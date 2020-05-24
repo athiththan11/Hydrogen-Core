@@ -9,6 +9,7 @@ const mssqlDockerConstants = require('./configs/config.mssql');
 const { logger } = require('../utils/util.winston');
 const { generateRandomAnimalName, containerNameExists } = require('../utils/util');
 const { readMSSQLScripts, readAPIManagerMSSQLScripts } = require('../utils/util.scripts');
+const { writeDockerConfigurations } = require('../utils/util.readme');
 
 /**
  * method to create a docker container for the mssql datasources
@@ -49,6 +50,15 @@ async function createMSSQLDockerContainer(platform, options, workingDir = proces
 								if (options.setup) executeAPIManagerMSSQLScripts(options, workingDir);
 								else executeMSSQLScripts(platform, workingDir);
 							}
+							writeDockerConfigurations(
+								'- Docker Container for MSSQL: `' +
+									chance +
+									'`\n- Docker Image: `' +
+									mssqlDockerConstants.mssql.image +
+									':' +
+									mssqlDockerConstants.mssql.tag +
+									'`'
+							);
 						});
 					});
 			} else {

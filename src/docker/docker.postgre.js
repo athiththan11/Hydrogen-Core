@@ -10,6 +10,7 @@ const postgreDockerConstants = require('./configs/config.postgre');
 const { logger } = require('../utils/util.winston');
 const { generateRandomAnimalName, containerNameExists } = require('../utils/util');
 const { readPostgreSQLScripts, readAPIManagerPostgresSQLScripts } = require('../utils/util.scripts');
+const { writeDockerConfigurations } = require('../utils/util.readme');
 
 /**
  * method to create a docker container for the postgre datasources
@@ -50,6 +51,15 @@ async function createPostgreDockerContainer(platform, options, workingDir = proc
 								if (options.setup) executeAPIManagerPostgreSQLScripts(options, workingDir);
 								else executePostgreSQLScripts(platform, workingDir);
 							}
+							writeDockerConfigurations(
+								'- Docker Container for Postgre: `' +
+									chance +
+									'`\n- Docker Image: `' +
+									postgreDockerConstants.postgre.image +
+									':' +
+									postgreDockerConstants.postgre.tag +
+									'`'
+							);
 						});
 					});
 			} else {

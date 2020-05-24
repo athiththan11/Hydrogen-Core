@@ -197,6 +197,10 @@ module.exports = {
 		utf8: 'encoding="UTF-8"',
 		iso_8859_1: 'encoding="ISO-8859-1"',
 	},
+	readme: {
+		md: 'HYDROGEN_README.md',
+		h1: '# HYDROGEN README',
+	},
 	docker: {
 		apim: {
 			single: 'wso2amdb',
