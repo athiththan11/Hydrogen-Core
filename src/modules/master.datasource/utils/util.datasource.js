@@ -46,9 +46,26 @@ function constructDatasource(Element, xmlDoc, args) {
 		.parent()
 		.node('validationInterval', args._validationInterval)
 		.parent()
-        .node('defaultAutoCommit', args._defaultAutoCommit);
-    
+		.node('defaultAutoCommit', args._defaultAutoCommit);
+
 	return datasourceElem;
 }
 
+/**
+ * method to construct datasources
+ *
+ * @param {{}} args datasource parameters and connection strings
+ * @returns {{}} json object
+ */
+function constructDatasourceToml(args) {
+	let obj = {
+		type: args._type,
+		url: args._connectionUrl,
+		username: args._username,
+		password: args._password,
+	};
+	return obj;
+}
+
 exports.constructDatasource = constructDatasource;
+exports.constructDatasourceToml = constructDatasourceToml;
