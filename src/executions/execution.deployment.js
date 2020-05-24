@@ -23,8 +23,9 @@ const ora = require('ora');
  * @param {number} gwCount number of gateway nodes
  * @param {{}} layoutConfs layout configurations
  * @param {[]} environmentConfs gateway environment configurations
+ * @param {{}} options platform and product options
  */
-async function configurePublishMultipleGateway(workingDir, gwCount, layoutConfs, environmentConfs) {
+async function configurePublishMultipleGateway(workingDir, gwCount, layoutConfs, environmentConfs, options = {}) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to configure Publish-through-Multiple-Gateway layout');
 
 	try {
@@ -43,7 +44,7 @@ async function configurePublishMultipleGateway(workingDir, gwCount, layoutConfs,
 
 		fs.mkdirSync(deploymentDir);
 		// gateway count increased by 1 to include the aio pack on the loops
-		await loopGatewayNodes(apimPackDir, deploymentDir, ++gwCount, 0, layoutConfs, environmentConfs);
+		await loopGatewayNodes(apimPackDir, deploymentDir, ++gwCount, 0, layoutConfs, environmentConfs, options);
 	} catch (err) {
 		logger.error(err);
 	}
@@ -58,8 +59,17 @@ async function configurePublishMultipleGateway(workingDir, gwCount, layoutConfs,
  * @param {number} loopCount loop count
  * @param {{}} layoutConfs layout configurations
  * @param {[]} environmentConfs gateway environment configurations
+ * @param {{}} options platform and product options
  */
-async function loopGatewayNodes(apimPackDir, deploymentDir, gwCount, loopCount, layoutConfs, environmentConfs) {
+async function loopGatewayNodes(
+	apimPackDir,
+	deploymentDir,
+	gwCount,
+	loopCount,
+	layoutConfs,
+	environmentConfs,
+	options = {}
+) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Looping through Gateway nodes');
 
 	if (loopCount < gwCount) {
@@ -74,9 +84,17 @@ async function loopGatewayNodes(apimPackDir, deploymentDir, gwCount, loopCount, 
 			.then(() => {
 				let workingDir = __path.join(deploymentDir, packName);
 				if (packName === HydrogenConfigMaps.layoutNamePatterns.apim.publishMultipleGateway.aio) {
-					configureGatewayAIO(workingDir, environmentConfs)
+					configureGatewayAIO(workingDir, environmentConfs, options)
 						.then(() => {
-							loopGatewayNodes(apimPackDir, deploymentDir, gwCount, ++loopCount, layoutConfs);
+							loopGatewayNodes(
+								apimPackDir,
+								deploymentDir,
+								gwCount,
+								++loopCount,
+								layoutConfs,
+								environmentConfs,
+								options
+							);
 							spinner.succeed();
 						})
 						.catch((err) => {
@@ -84,9 +102,17 @@ async function loopGatewayNodes(apimPackDir, deploymentDir, gwCount, loopCount, 
 						});
 				} else {
 					layoutConfs.offset += 1;
-					configureGateway(workingDir, layoutConfs)
+					configureGateway(workingDir, layoutConfs, options)
 						.then(() => {
-							loopGatewayNodes(apimPackDir, deploymentDir, gwCount, ++loopCount, layoutConfs);
+							loopGatewayNodes(
+								apimPackDir,
+								deploymentDir,
+								gwCount,
+								++loopCount,
+								layoutConfs,
+								environmentConfs,
+								options
+							);
 							spinner.succeed();
 						})
 						.catch((err) => {

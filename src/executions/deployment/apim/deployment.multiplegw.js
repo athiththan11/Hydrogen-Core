@@ -17,21 +17,26 @@ const { logger } = require('../../../utils/util.winston');
  *
  * @param {string} workingDir path of the working directory
  * @param {{}} layoutConfs layout configuration arguments
+ * @param {{}} options platform and product options
  */
 async function configureGateway(
 	workingDir,
-	layoutConfs = { _hostname: 'https://localhost', thriftClientPort: '10397', enableThriftServer: 'false', offset: 1 }
+	layoutConfs = { _hostname: 'https://localhost', thriftClientPort: '10397', enableThriftServer: 'false', offset: 1 },
+	options = {}
 ) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring API Manager as Gateway');
 
 	try {
-		await alterAuthManagerServerURL(layoutConfs, workingDir);
-		await alterAPIKeyValidatorServerURL(layoutConfs, workingDir);
-		await alterAPIKeyValidatorThriftClientPort(layoutConfs, workingDir);
-		await alterAPIKeyValidatorEnableThriftServer(layoutConfs, workingDir);
-		await alterOAuthConfigurationRevokeAPIURL(layoutConfs, workingDir);
+		if (options.version === '2.6') {
+			await alterAuthManagerServerURL(layoutConfs, workingDir);
+			await alterAPIKeyValidatorThriftClientPort(layoutConfs, workingDir);
+		}
 
-		await configurePortOffset(workingDir, layoutConfs.offset);
+		await alterAPIKeyValidatorServerURL(layoutConfs, workingDir, undefined, options);
+		await alterAPIKeyValidatorEnableThriftServer(layoutConfs, workingDir, options);
+		await alterOAuthConfigurationRevokeAPIURL(layoutConfs, workingDir, undefined, options);
+
+		await configurePortOffset(workingDir, layoutConfs.offset, options);
 	} catch (err) {
 		logger.error(err);
 	}
@@ -42,13 +47,14 @@ async function configureGateway(
  *
  * @param {string} workingDir path of the working directory
  * @param {[]} environmentConfsArray gateway environment configuration arguments
+ * @param {{}} options platform and product options
  */
-async function configureGatewayAIO(workingDir, environmentConfsArray = []) {
+async function configureGatewayAIO(workingDir, environmentConfsArray = [], options = {}) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring API Manager for Multiple Gateway Setup');
 
 	// loop through environmentConfsArray and configure AIO pack
 	try {
-		await loopGatewayEnvConfs(workingDir, environmentConfsArray, 0);
+		await loopGatewayEnvConfs(workingDir, environmentConfsArray, 0, options);
 	} catch (err) {
 		logger.error(err);
 	}
@@ -60,15 +66,16 @@ async function configureGatewayAIO(workingDir, environmentConfsArray = []) {
  * @param {string} workingDir path of the working directory
  * @param {[]} environmentConfs gateway environment configurations
  * @param {number} loopCount loop count
+ * @param {{}} options platform and product options
  */
-async function loopGatewayEnvConfs(workingDir, environmentConfs, loopCount) {
+async function loopGatewayEnvConfs(workingDir, environmentConfs, loopCount, options = {}) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Looping through Gateway Environment Configurations');
 
 	if (loopCount < environmentConfs.length) {
 		if (process.env.HYDROGEN_DEBUG) logger.debug('Adding environment ' + loopCount);
-		addGatewayEnvironment(environmentConfs[loopCount], workingDir)
+		addGatewayEnvironment(environmentConfs[loopCount], workingDir, options)
 			.then(() => {
-				loopGatewayEnvConfs(workingDir, environmentConfs, ++loopCount);
+				loopGatewayEnvConfs(workingDir, environmentConfs, ++loopCount, options);
 			})
 			.catch((err) => {
 				logger.error(err);

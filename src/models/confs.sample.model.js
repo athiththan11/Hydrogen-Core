@@ -19,6 +19,8 @@ let environmentConfs = [
 		_name: 'Staging environment one',
 		_description: 'a sample stage environment',
 		_hostname: 'localhost',
+		username: 'admin',
+		password: 'admin',
 		offset: 2,
 	},
 ];
