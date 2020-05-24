@@ -4,6 +4,7 @@ const {
 	alterAuthManagerServerURL,
 	alterAPIKeyValidatorServerURL,
 	alterGatewayEnvironmentServerURL,
+	addGatewayEnvironment,
 	alterOAuthConfigurationRevokeAPIURL,
 	alterAPIKeyValidatorEnableThriftServer,
 	alterAPIKeyValidatorKeyValidatorClientType,
@@ -18,6 +19,7 @@ const {
 } = require('../../../modules/master.datasource/datasource.util');
 
 const { logger } = require('../../../utils/util.winston');
+const { _environmentConfs } = require('../../../models/v3/confs.sample.model');
 const ora = require('ora');
 
 /**
@@ -26,27 +28,31 @@ const ora = require('ora');
  * @param {string} workingDir path of the working directory
  * @param {{}} datasourceConfs datasource configurations
  * @param {{}} iskmlayoutConfs layout configurations
+ * @param {{}} options platform and product options
  */
 async function configureIdentityServerKM(
 	workingDir,
 	datasourceConfs,
-	iskmlayoutConfs = { _hostname: 'https://localhost', offset: 1 }
+	iskmlayoutConfs = { _hostname: 'https://localhost', offset: 1 },
+	options = {}
 ) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring Identity Server as Key Manager');
 	const spinner = ora('Configuring Server :: Identity Server as Key Manager').start();
 
 	try {
-		await alterGatewayEnvironmentServerURL(iskmlayoutConfs, workingDir);
+		if (options.version === '2.6') await alterGatewayEnvironmentServerURL(iskmlayoutConfs, workingDir, options);
+		if (options.version === '3.1') await addGatewayEnvironment(_environmentConfs, workingDir, options);
+
 		await alterOAuthConfigurationRevokeAPIURL(iskmlayoutConfs, workingDir);
 
-		await alterMasterDSofAM(datasourceConfs.am, workingDir);
-		await alterMasterDSofUM(datasourceConfs.um, workingDir);
-		await alterMasterDSofREG(datasourceConfs.reg, workingDir);
+		await alterMasterDSofAM(datasourceConfs.am, workingDir, options);
+		await alterMasterDSofUM(datasourceConfs.um, workingDir, options);
+		await alterMasterDSofREG(datasourceConfs.reg, workingDir, options);
 
-		await alterRegistry(datasourceConfs.reg, iskmlayoutConfs.offset, workingDir);
-		await alterUserManagement(true, workingDir);
+		await alterRegistry(datasourceConfs.reg, iskmlayoutConfs.offset, workingDir, options);
+		await alterUserManagement(true, workingDir, options);
 
-		await configurePortOffset(workingDir, iskmlayoutConfs.offset);
+		await configurePortOffset(workingDir, iskmlayoutConfs.offset, options);
 	} catch (err) {
 		spinner.stop();
 		logger.error(err);
@@ -61,6 +67,7 @@ async function configureIdentityServerKM(
  * @param {string} workingDir path of the working directory
  * @param {{}} datasourceConfs datasource configurations
  * @param {{}} apimlayoutConfs layout configurations
+ * @param {{}} options platform and product options
  */
 async function configureAPIManagerwithISKM(
 	workingDir,
@@ -70,24 +77,25 @@ async function configureAPIManagerwithISKM(
 		keyValidatorClientType: 'WSClient',
 		enableThriftServer: 'false',
 		iskmoffset: 1,
-	}
+	},
+	options = {}
 ) {
 	if (process.env.HYDROGEN_DEBUG)
 		logger.debug('Starting to configure API Manager with Identity Server as Key Manager ');
 	const spinner = ora('Configuring Server :: API Manager').start();
 
 	try {
-		await alterAuthManagerServerURL(apimlayoutConfs, workingDir, apimlayoutConfs.iskmoffset);
-		await alterAPIKeyValidatorServerURL(apimlayoutConfs, workingDir, apimlayoutConfs.iskmoffset);
-		await alterAPIKeyValidatorKeyValidatorClientType(apimlayoutConfs, workingDir);
-		await alterAPIKeyValidatorEnableThriftServer(apimlayoutConfs, workingDir);
+		await alterAuthManagerServerURL(apimlayoutConfs, workingDir, apimlayoutConfs.iskmoffset, options);
+		await alterAPIKeyValidatorServerURL(apimlayoutConfs, workingDir, apimlayoutConfs.iskmoffset, options);
+		await alterAPIKeyValidatorKeyValidatorClientType(apimlayoutConfs, workingDir, options);
+		await alterAPIKeyValidatorEnableThriftServer(apimlayoutConfs, workingDir, options);
 
-		await alterMasterDSofAM(datasourceConfs.am, workingDir);
-		await alterMasterDSofUM(datasourceConfs.um, workingDir);
-		await alterMasterDSofREG(datasourceConfs.reg, workingDir);
+		await alterMasterDSofAM(datasourceConfs.am, workingDir, options);
+		await alterMasterDSofUM(datasourceConfs.um, workingDir, options);
+		await alterMasterDSofREG(datasourceConfs.reg, workingDir, options);
 
-		await alterRegistry(datasourceConfs.reg, 0, workingDir);
-		await alterUserManagement(false, workingDir);
+		await alterRegistry(datasourceConfs.reg, 0, workingDir, options);
+		await alterUserManagement(false, workingDir, options);
 	} catch (err) {
 		spinner.stop();
 		logger.error(err);
