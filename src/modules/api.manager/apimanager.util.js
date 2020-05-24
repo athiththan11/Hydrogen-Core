@@ -492,9 +492,13 @@ async function alterGatewayEnvironmentServerURL(
  *
  * @param {{}} environmentConfs gateway environment configuration parameters
  * @param {string} [workingDir=process.cwd()] path of the current working directory
- * @param {{ version: string }} options configuration parameters and arguments to identify versions
+ * @param {{ version: string, 'publish-multiple-gateway': boolean }} options configuration parameters and arguments to identify versions
  */
-async function addGatewayEnvironment(environmentConfs, workingDir = process.cwd(), options = { version: '2.6' }) {
+async function addGatewayEnvironment(
+	environmentConfs,
+	workingDir = process.cwd(),
+	options = { version: '2.6', 'publish-multiple-gateway': false }
+) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to construct and add new Gateway Environment');
 
 	try {
@@ -531,15 +535,21 @@ async function addGatewayEnvironment(environmentConfs, workingDir = process.cwd(
 		if (options.version === HydrogenConfigMaps.supportedVersions.apim.v31)
 			await parseToml(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.deploymentToml)).then(
 				(toml) => {
-					_.unset(toml, HydrogenConfigMaps.tomlPaths.apimanager.apigateway_environments_environment);
 					let obj = {};
-					Dot.str(
-						HydrogenConfigMaps.tomlPaths.apimanager.apigateway_environments_environment,
-						constructGatewayEnvironmentToml(environmentConfs),
-						obj
-					);
+					let altered;
+					if (options['publish-multiple-gateway']) {
+						toml['apim']['gateway']['environment'].push(constructGatewayEnvironmentToml(environmentConfs));
+						altered = toml;
+					} else {
+						_.unset(toml, HydrogenConfigMaps.tomlPaths.apimanager.apigateway_environments_environment);
+						Dot.str(
+							HydrogenConfigMaps.tomlPaths.apimanager.apigateway_environments_environment,
+							constructGatewayEnvironmentToml(environmentConfs),
+							obj
+						);
+						altered = _.merge(toml, obj);
+					}
 
-					let altered = _.merge(toml, obj);
 					fs.writeFileSync(
 						__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.deploymentToml),
 						Toml.stringify(altered),
