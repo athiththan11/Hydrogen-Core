@@ -40,13 +40,14 @@ async function replaceISCarbonDatasource(workingDir, datasourceConfs) {
  *
  * @param {string} workingDir path of the working directory
  * @param {{}} datasourceConfs datasource configuration arguments
+ * @param {{}} options platform and product options
  */
-async function replaceAPIManagerAMDatasource(workingDir, datasourceConfs) {
+async function replaceAPIManagerAMDatasource(workingDir, datasourceConfs, options) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Replacing API Manager AM Datasource');
 
 	const spinner = ora('Configuring Datasource').start();
 	try {
-		await alterMasterDSofAM(datasourceConfs, workingDir);
+		await alterMasterDSofAM(datasourceConfs, workingDir, options);
 	} catch (err) {
 		spinner.stop();
 		logger.error(err);
@@ -60,16 +61,17 @@ async function replaceAPIManagerAMDatasource(workingDir, datasourceConfs) {
  *
  * @param {string} workingDir path of the working directory
  * @param {{am: {}, um: {}, reg: {}}} datasourceConfs datasource configuration arguments
+ * @param {{}} options platform and product options
  */
-async function configureAPIManagerDatasources(workingDir, datasourceConfs) {
+async function configureAPIManagerDatasources(workingDir, datasourceConfs, options) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring API Manager Datasources');
 	const spinner = ora('Configuring Datasource').start();
 	try {
-		await alterMasterDSofAM(datasourceConfs.am, workingDir);
-		await alterMasterDSofUM(datasourceConfs.um, workingDir);
-		await alterMasterDSofREG(datasourceConfs.reg, workingDir);
-		await alterRegistry(datasourceConfs.reg, 0, workingDir);
-		await alterUserManagement(false, workingDir);
+		await alterMasterDSofAM(datasourceConfs.am, workingDir, options);
+		await alterMasterDSofUM(datasourceConfs.um, workingDir, options);
+		await alterMasterDSofREG(datasourceConfs.reg, workingDir, options);
+		await alterRegistry(datasourceConfs.reg, 0, workingDir, options);
+		await alterUserManagement(false, workingDir, options);
 	} catch (err) {
 		spinner.stop();
 		logger.error(err);
