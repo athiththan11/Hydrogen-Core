@@ -95,9 +95,10 @@ async function loopGatewayNodes(
 								environmentConfs,
 								options
 							);
-							spinner.succeed();
+							if (spinner.isSpinning) spinner.succeed();
 						})
 						.catch((err) => {
+							if (spinner.isSpinning) spinner.fail();
 							logger.error(err);
 						});
 				} else {
@@ -113,9 +114,10 @@ async function loopGatewayNodes(
 								environmentConfs,
 								options
 							);
-							spinner.succeed();
+							if (spinner.isSpinning) spinner.succeed();
 						})
 						.catch((err) => {
+							if (spinner.isSpinning) spinner.fail();
 							logger.error(err);
 						});
 				}
@@ -231,10 +233,10 @@ async function loopDistributedNodes(apimPackDir, deploymentDir, loopCount, datas
 								datasourceConfs,
 								distributedLayoutConfs
 							);
-							spinner.succeed('Configured & Optimized :: ' + packName);
+							if (spinner.isSpinning) spinner.succeed('Configured & Optimized :: ' + packName);
 						})
 						.catch((err) => {
-							spinner.stop();
+							if (spinner.isSpinning) spinner.fail();
 							logger.error(err);
 						});
 				}
@@ -248,10 +250,10 @@ async function loopDistributedNodes(apimPackDir, deploymentDir, loopCount, datas
 								datasourceConfs,
 								distributedLayoutConfs
 							);
-							spinner.succeed('Configured & Optimized :: ' + packName);
+							if (spinner.isSpinning) spinner.succeed('Configured & Optimized :: ' + packName);
 						})
 						.catch((err) => {
-							spinner.stop();
+							if (spinner.isSpinning) spinner.fail();
 							logger.error(err);
 						});
 				}
@@ -265,10 +267,10 @@ async function loopDistributedNodes(apimPackDir, deploymentDir, loopCount, datas
 								datasourceConfs,
 								distributedLayoutConfs
 							);
-							spinner.succeed();
+							if (spinner.isSpinning) spinner.succeed();
 						})
 						.catch((err) => {
-							spinner.stop();
+							if (spinner.isSpinning) spinner.fail();
 							logger.error(err);
 						});
 				}
@@ -282,10 +284,10 @@ async function loopDistributedNodes(apimPackDir, deploymentDir, loopCount, datas
 								datasourceConfs,
 								distributedLayoutConfs
 							);
-							spinner.succeed('Configured & Optimized :: ' + packName);
+							if (spinner.isSpinning) spinner.succeed('Configured & Optimized :: ' + packName);
 						})
 						.catch((err) => {
-							spinner.stop();
+							if (spinner.isSpinning) spinner.fail();
 							logger.error(err);
 						});
 				}
@@ -299,16 +301,16 @@ async function loopDistributedNodes(apimPackDir, deploymentDir, loopCount, datas
 								datasourceConfs,
 								distributedLayoutConfs
 							);
-							spinner.succeed('Configured & Optimized :: ' + packName);
+							if (spinner.isSpinning) spinner.succeed('Configured & Optimized :: ' + packName);
 						})
 						.catch((err) => {
-							spinner.stop();
+							if (spinner.isSpinning) spinner.fail();
 							logger.error(err);
 						});
 				}
 			})
 			.catch((err) => {
-				spinner.stop();
+				if (spinner.isSpinning) spinner.fail();
 				logger.error(err);
 			});
 	}

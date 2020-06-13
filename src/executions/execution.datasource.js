@@ -28,10 +28,10 @@ async function replaceISCarbonDatasource(workingDir, datasourceConfs) {
 		await alterIdentity(datasourceConfs._jndiName, workingDir);
 		await alterRegistry(datasourceConfs, 0, workingDir);
 	} catch (err) {
-		spinner.stop();
+		if (spinner.isSpinning) spinner.fail();
 		logger.error(err);
 	} finally {
-		spinner.succeed();
+		if (spinner.isSpinning) spinner.succeed();
 	}
 }
 
@@ -49,10 +49,10 @@ async function replaceAPIManagerAMDatasource(workingDir, datasourceConfs, option
 	try {
 		await alterMasterDSofAM(datasourceConfs, workingDir, options);
 	} catch (err) {
-		spinner.stop();
+		if (spinner.isSpinning) spinner.fail();
 		logger.error(err);
 	} finally {
-		spinner.succeed();
+		if (spinner.isSpinning) spinner.succeed();
 	}
 }
 
@@ -73,10 +73,10 @@ async function configureAPIManagerDatasources(workingDir, datasourceConfs, optio
 		await alterRegistry(datasourceConfs.reg, 0, workingDir, options);
 		await alterUserManagement(false, workingDir, options);
 	} catch (err) {
-		spinner.stop();
+		if (spinner.isSpinning) spinner.fail();
 		logger.error(err);
 	} finally {
-		spinner.succeed();
+		if (spinner.isSpinning) spinner.succeed();
 	}
 }
 

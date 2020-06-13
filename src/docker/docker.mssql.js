@@ -43,7 +43,7 @@ async function createMSSQLDockerContainer(platform, options, workingDir = proces
 					})
 					.then((container) => {
 						if (process.env.HYDROGEN_DEBUG) logger.debug('Created MSSQL Docker container : ' + chance);
-						spinner.succeed('Created MSSQL Docker Container : ' + chance);
+						if (spinner.isSpinning) spinner.succeed('Created MSSQL Docker Container : ' + chance);
 
 						container.start().then(() => {
 							if (options.generate) {
@@ -62,7 +62,7 @@ async function createMSSQLDockerContainer(platform, options, workingDir = proces
 						});
 					});
 			} else {
-				spinner.stop();
+				if (spinner.isSpinning) spinner.fail();
 				return logger.error(err);
 			}
 		}
@@ -92,12 +92,12 @@ async function executeMSSQLScripts(platform, workingDir = process.cwd()) {
 
 			Client.connect(config, (err) => {
 				if (err) {
-					spinner.stop();
+					if (spinner.isSpinning) spinner.fail();
 					return logger.error(err);
 				}
 				new Client.Request().query('create database ' + HydrogenConfigMaps.docker.apim.single + ';', (err) => {
 					if (err) {
-						spinner.stop();
+						if (spinner.isSpinning) spinner.fail();
 						return logger.error(err);
 					}
 
@@ -105,15 +105,15 @@ async function executeMSSQLScripts(platform, workingDir = process.cwd()) {
 					config.database = HydrogenConfigMaps.docker.apim.single;
 					Client.connect(config, (err) => {
 						if (err) {
-							spinner.stop();
+							if (spinner.isSpinning) spinner.fail();
 							return logger.error(err);
 						}
 						new Client.Request().query(combinedSQLScript, (err) => {
 							if (err) {
-								spinner.stop();
+								if (spinner.isSpinning) spinner.fail();
 								return logger.error(err);
 							}
-							spinner.succeed('Created');
+							if (spinner.isSpinning) spinner.succeed('Created');
 							Client.close();
 						});
 					});
@@ -126,14 +126,14 @@ async function executeMSSQLScripts(platform, workingDir = process.cwd()) {
 
 			Client.connect(config, (err) => {
 				if (err) {
-					spinner.stop();
+					if (spinner.isSpinning) spinner.fail();
 					return logger.error(err);
 				}
 				new Client.Request().query(
 					'create database ' + HydrogenConfigMaps.docker.is.single.mssql + ';',
 					(err) => {
 						if (err) {
-							spinner.stop();
+							if (spinner.isSpinning) spinner.fail();
 							return logger.error(err);
 						}
 
@@ -141,15 +141,15 @@ async function executeMSSQLScripts(platform, workingDir = process.cwd()) {
 						config.database = HydrogenConfigMaps.docker.is.single.mssql;
 						Client.connect(config, (err) => {
 							if (err) {
-								spinner.stop();
+								if (spinner.isSpinning) spinner.fail();
 								return logger.error(err);
 							}
 							new Client.Request().query(combinedSQLScript, (err) => {
 								if (err) {
-									spinner.stop();
+									if (spinner.isSpinning) spinner.fail();
 									return logger.error(err);
 								}
-								spinner.succeed('Created');
+								if (spinner.isSpinning) spinner.succeed('Created');
 								Client.close();
 							});
 						});
@@ -197,14 +197,14 @@ async function loopAPIManagerDatasources(options, loopCount, workingDir = proces
 		let combinedSQLScript = await readAPIManagerMSSQLScripts(options, workingDir);
 		Client.connect(config, (err) => {
 			if (err) {
-				spinner.stop();
+				if (spinner.isSpinning) spinner.fail();
 				return logger.error(err);
 			}
 			new Client.Request().query(
 				'create database ' + HydrogenConfigMaps.docker.apim.setup[loopCount] + ';',
 				(err) => {
 					if (err) {
-						spinner.stop();
+						if (spinner.isSpinning) spinner.fail();
 						return logger.error(err);
 					}
 
@@ -212,18 +212,18 @@ async function loopAPIManagerDatasources(options, loopCount, workingDir = proces
 					config.database = HydrogenConfigMaps.docker.apim.setup[loopCount];
 					Client.connect(config, (err) => {
 						if (err) {
-							spinner.stop();
+							if (spinner.isSpinning) spinner.fail();
 							return logger.error(err);
 						}
 						new Client.Request().query(
 							combinedSQLScript[HydrogenConfigMaps.docker.apim.setup[loopCount]],
 							(err) => {
 								if (err) {
-									spinner.stop();
+									if (spinner.isSpinning) spinner.fail();
 									return logger.error(err);
 								}
 
-								spinner.succeed();
+								if (spinner.isSpinning) spinner.succeed();
 								Client.close();
 								loopAPIManagerDatasources(options, ++loopCount, workingDir);
 							}

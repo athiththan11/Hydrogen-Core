@@ -51,7 +51,7 @@ async function createOracleDockerContainer(platform, options, workingDir = proce
 
 						container.start();
 						setTimeout(() => {
-							spinner.succeed('Created Oracle Docker Container : ' + chance);
+							if (spinner.isSpinning) spinner.succeed('Created Oracle Docker Container : ' + chance);
 							if (options.generate) {
 								if (options.setup) executeAPIManagerOracleSQLScripts(options, workingDir);
 								else executeOracleSQLScripts(platform, workingDir);
@@ -68,11 +68,11 @@ async function createOracleDockerContainer(platform, options, workingDir = proce
 						}, HydrogenConfigMaps.docker.timeout.oracle);
 					})
 					.catch((err) => {
-						spinner.stop();
+						if (spinner.isSpinning) spinner.fail();
 						return logger.error(err);
 					});
 			} else {
-				spinner.stop();
+				if (spinner.isSpinning) spinner.fail();
 				return logger.error(err);
 			}
 		}
@@ -111,20 +111,20 @@ async function executeOracleSQLScripts(platform, workinDir = process.cwd()) {
 						Client.getConnection(config)
 							.then((connection) => {
 								loopExecuteOracleQuery(connection, combinedSQLScript);
-								spinner.succeed('Created');
+								if (spinner.isSpinning) spinner.succeed('Created');
 							})
 							.catch((err) => {
-								spinner.stop();
+								if (spinner.isSpinning) spinner.fail();
 								return logger.error('Error while obtaining connection for ' + config.user + '\n', err);
 							});
 					})
 					.catch((err) => {
-						spinner.stop();
+						if (spinner.isSpinning) spinner.fail();
 						return logger.error(err);
 					});
 			})
 			.catch((err) => {
-				spinner.stop();
+				if (spinner.isSpinning) spinner.fail();
 				return logger.error('Error while obtaining initial connection\n', err);
 			});
 	}
@@ -144,20 +144,20 @@ async function executeOracleSQLScripts(platform, workinDir = process.cwd()) {
 						Client.getConnection(config)
 							.then((connection) => {
 								loopExecuteOracleQuery(connection, combinedSQLScript);
-								spinner.succeed('Created');
+								if (spinner.isSpinning) spinner.succeed('Created');
 							})
 							.catch((err) => {
-								spinner.stop();
+								if (spinner.isSpinning) spinner.fail();
 								return logger.error('Error while obtaining connection for ' + config.user + '\n', err);
 							});
 					})
 					.catch((err) => {
-						spinner.stop();
+						if (spinner.isSpinning) spinner.fail();
 						return logger.error(err);
 					});
 			})
 			.catch((err) => {
-				spinner.stop();
+				if (spinner.isSpinning) spinner.fail();
 				return logger.error('Error while obtaining initial connection\n', err);
 			});
 	}
@@ -239,7 +239,7 @@ async function loopAPIManagerDatasources(options, loopCount, workingDir = proces
 							)
 						) {
 							if (process.env.HYDROGEN_DEBUG) logger.debug('Starting the next iteration');
-							spinner.succeed();
+							if (spinner.isSpinning) spinner.succeed();
 
 							loopAPIManagerDatasources(options, ++loopCount, workingDir);
 						}
@@ -247,7 +247,7 @@ async function loopAPIManagerDatasources(options, loopCount, workingDir = proces
 				}, 10000);
 			})
 			.catch((err) => {
-				spinner.stop();
+				if (spinner.isSpinning) spinner.fail();
 				return logger.error(err);
 			});
 	}

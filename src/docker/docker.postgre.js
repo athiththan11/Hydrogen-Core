@@ -44,7 +44,7 @@ async function createPostgreDockerContainer(platform, options, workingDir = proc
 					})
 					.then((container) => {
 						if (process.env.HYDROGEN_DEBUG) logger.debug('Created Postgre Docker container : ' + chance);
-						spinner.succeed('Created Postgre Docker container : ' + chance);
+						if (spinner.isSpinning) spinner.succeed('Created Postgre Docker container : ' + chance);
 
 						container.start().then(() => {
 							if (options.generate) {
@@ -63,7 +63,7 @@ async function createPostgreDockerContainer(platform, options, workingDir = proc
 						});
 					});
 			} else {
-				spinner.stop();
+				if (spinner.isSpinning) spinner.fail();
 				return logger.error(err);
 			}
 		}
@@ -99,16 +99,16 @@ async function executePostgreSQLScripts(platform, workingDir = process.cwd()) {
 					client.connect();
 					client.query(combinedSQLScript, (err) => {
 						if (err) {
-							spinner.stop();
+							if (spinner.isSpinning) spinner.fail();
 							return logger.error(err);
 						}
-						spinner.succeed('Created');
+						if (spinner.isSpinning) spinner.succeed('Created');
 
 						client.end();
 					});
 				})
 				.catch((err) => {
-					spinner.stop();
+					if (spinner.isSpinning) spinner.fail();
 					logger.error(err);
 				});
 		}
@@ -123,16 +123,16 @@ async function executePostgreSQLScripts(platform, workingDir = process.cwd()) {
 					client.connect();
 					client.query(combinedSQLScript, (err) => {
 						if (err) {
-							spinner.stop();
+							if (spinner.isSpinning) spinner.fail();
 							return logger.error(err);
 						}
-						spinner.succeed('Created');
+						if (spinner.isSpinning) spinner.succeed('Created');
 
 						client.end();
 					});
 				})
 				.catch((err) => {
-					spinner.stop();
+					if (spinner.isSpinning) spinner.fail();
 					logger.error(err);
 				});
 		}
@@ -181,10 +181,10 @@ async function loopAPIManagerDatasources(options, loopCount, workingDir = proces
 				client.connect();
 				client.query(combinedSQLScript[HydrogenConfigMaps.docker.apim.setup[loopCount]], (err) => {
 					if (err) {
-						spinner.stop();
+						if (spinner.isSpinning) spinner.fail();
 						return logger.error(err);
 					}
-					spinner.succeed();
+					if (spinner.isSpinning) spinner.succeed();
 
 					client.end();
 				});
@@ -193,7 +193,7 @@ async function loopAPIManagerDatasources(options, loopCount, workingDir = proces
 				loopAPIManagerDatasources(options, ++loopCount, workingDir);
 			})
 			.catch((err) => {
-				spinner.stop();
+				if (spinner.isSpinning) spinner.fail();
 				logger.error(err);
 			});
 	}

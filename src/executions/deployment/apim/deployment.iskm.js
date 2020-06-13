@@ -54,10 +54,10 @@ async function configureIdentityServerKM(
 
 		await configurePortOffset(workingDir, iskmlayoutConfs.offset, options);
 	} catch (err) {
-		spinner.stop();
+		if (spinner.isSpinning) spinner.fail();
 		logger.error(err);
 	} finally {
-		spinner.succeed();
+		if (spinner.isSpinning) spinner.succeed();
 	}
 }
 
@@ -97,10 +97,10 @@ async function configureAPIManagerwithISKM(
 		await alterRegistry(datasourceConfs.reg, 0, workingDir, options);
 		await alterUserManagement(false, workingDir, options);
 	} catch (err) {
-		spinner.stop();
+		if (spinner.isSpinning) spinner.fail();
 		logger.error(err);
 	} finally {
-		spinner.succeed();
+		if (spinner.isSpinning) spinner.succeed();
 	}
 }
 

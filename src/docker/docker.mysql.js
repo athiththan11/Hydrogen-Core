@@ -44,7 +44,7 @@ async function createMySQLDockerContainer(platform, options, workingDir = proces
 					})
 					.then((container) => {
 						if (process.env.HYDROGEN_DEBUG) logger.debug('Created MySQL Docker container : ' + chance);
-						spinner.succeed('Created MySQL Docker container : ' + chance);
+						if (spinner.isSpinning) spinner.succeed('Created MySQL Docker container : ' + chance);
 
 						container.start().then(() => {
 							if (options.generate) {
@@ -63,7 +63,7 @@ async function createMySQLDockerContainer(platform, options, workingDir = proces
 						});
 					});
 			} else {
-				spinner.stop();
+				if (spinner.isSpinning) spinner.fail();
 				return logger.error(err);
 			}
 		}
@@ -94,7 +94,7 @@ async function executeMySQLScripts(platform, workingDir = process.cwd()) {
 
 			client.connect((err) => {
 				if (err) {
-					spinner.stop();
+					if (spinner.isSpinning) spinner.fail();
 					return logger.error(err);
 				}
 				client.query(
@@ -103,17 +103,17 @@ async function executeMySQLScripts(platform, workingDir = process.cwd()) {
 						' charset latin1 collate latin1_swedish_ci',
 					(err) => {
 						if (err) {
-							spinner.stop();
+							if (spinner.isSpinning) spinner.fail();
 							return logger.error(err);
 						}
 						config.database = HydrogenConfigMaps.docker.apim.single;
 						const newClient = Client.createConnection(config);
 						newClient.query(combinedSQLScript, (err) => {
 							if (err) {
-								spinner.stop();
+								if (spinner.isSpinning) spinner.fail();
 								return logger.error(err);
 							}
-							spinner.succeed('Created');
+							if (spinner.isSpinning) spinner.succeed('Created');
 
 							newClient.end();
 							client.end();
@@ -133,7 +133,7 @@ async function executeMySQLScripts(platform, workingDir = process.cwd()) {
 
 			client.connect((err) => {
 				if (err) {
-					spinner.stop();
+					if (spinner.isSpinning) spinner.fail();
 					return logger.error(err);
 				}
 				client.query(
@@ -142,17 +142,17 @@ async function executeMySQLScripts(platform, workingDir = process.cwd()) {
 						' charset latin1 collate latin1_swedish_ci',
 					(err) => {
 						if (err) {
-							spinner.stop();
+							if (spinner.isSpinning) spinner.fail();
 							return logger.error(err);
 						}
 						config.database = HydrogenConfigMaps.docker.is.single.mysql;
 						const newClient = Client.createConnection(config);
 						newClient.query(combinedSQLScript, (err) => {
 							if (err) {
-								spinner.stop();
+								if (spinner.isSpinning) spinner.fail();
 								return logger.error(err);
 							}
-							spinner.succeed('Created');
+							if (spinner.isSpinning) spinner.succeed('Created');
 
 							newClient.end();
 							client.end();
@@ -210,7 +210,7 @@ async function loopAPIManagerDatasources(options, loopCount, workingDir = proces
 		let client = Client.createConnection(config);
 		client.connect((err) => {
 			if (err) {
-				spinner.stop();
+				if (spinner.isSpinning) spinner.fail();
 				return logger.error(err);
 			}
 			client.query(
@@ -219,17 +219,17 @@ async function loopAPIManagerDatasources(options, loopCount, workingDir = proces
 					` charset latin1 collate latin1_swedish_ci;`,
 				(err) => {
 					if (err) {
-						spinner.stop();
+						if (spinner.isSpinning) spinner.fail();
 						return logger.error(err);
 					}
 					config.database = HydrogenConfigMaps.docker.apim.setup[loopCount];
 					const subclient = Client.createConnection(config);
 					subclient.query(combinedSQLScript[HydrogenConfigMaps.docker.apim.setup[loopCount]], (err) => {
 						if (err) {
-							spinner.stop();
+							if (spinner.isSpinning) spinner.fail();
 							return logger.error(err);
 						}
-						spinner.succeed();
+						if (spinner.isSpinning) spinner.succeed();
 
 						subclient.end();
 						client.end();
