@@ -1,7 +1,7 @@
 'use strict';
 
 let publishMultipleGatewaySchema = {
-	$id: 'publismultiplegateway.schema',
+	$id: 'publishmultiplegateway.schema',
 	type: 'object',
 	properties: {
 		environmentConfs: {
