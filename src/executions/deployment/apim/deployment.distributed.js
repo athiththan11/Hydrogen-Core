@@ -239,6 +239,7 @@ async function configureKeyManager(
  *
  * @param {string} workingDir path of the current working directory
  * @param {{}} gatewaylayoutConfs gateway layout configurations
+ * @param {{}} options platform and product options
  */
 async function configureDistributedGateway(
 	workingDir,
@@ -253,23 +254,37 @@ async function configureDistributedGateway(
 		kmoffset: 4,
 		tmoffset: 0,
 		offset: 1,
-	}
+	},
+	options = {}
 ) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring Gateway for Distributed deployment layout');
 
 	try {
-		await alterAPIKeyValidatorServerURL(gatewaylayoutConfs, workingDir, gatewaylayoutConfs.kmoffset);
-		await alterAPIKeyValidatorKeyValidatorClientType(gatewaylayoutConfs, workingDir);
-		await alterAPIKeyValidatorEnableThriftServer(gatewaylayoutConfs, workingDir);
-		await alterTrafficManagerReceiverURLGroup(gatewaylayoutConfs, workingDir, gatewaylayoutConfs.tmoffset);
-		await alterTrafficManagerAuthURLGroup(gatewaylayoutConfs, workingDir, gatewaylayoutConfs.tmoffset);
-		await alterPolicyDeployerEnabled(gatewaylayoutConfs, workingDir);
-		await alterPolicyDeployerServiceURL(gatewaylayoutConfs, workingDir, gatewaylayoutConfs.tmoffset);
-		await addJMSConnectionDetailsServiceURL(gatewaylayoutConfs, workingDir, gatewaylayoutConfs.tmoffset);
-		await alterJMSConnectionParametersTopicConnectionFactory(gatewaylayoutConfs, workingDir);
+		await alterAPIKeyValidatorServerURL(gatewaylayoutConfs, workingDir, gatewaylayoutConfs.kmoffset, options);
 
-		await configurePortOffset(workingDir, gatewaylayoutConfs.offset);
+		await alterAPIKeyValidatorKeyValidatorClientType(gatewaylayoutConfs, workingDir, options);
+		await alterAPIKeyValidatorEnableThriftServer(gatewaylayoutConfs, workingDir, options);
 
+		if (options.version === '2.6') {
+			await alterTrafficManagerReceiverURLGroup(
+				gatewaylayoutConfs,
+				workingDir,
+				gatewaylayoutConfs.tmoffset,
+				options
+			);
+			await alterTrafficManagerAuthURLGroup(gatewaylayoutConfs, workingDir, gatewaylayoutConfs.tmoffset, options);
+			await alterPolicyDeployerEnabled(gatewaylayoutConfs, workingDir, options);
+			await alterPolicyDeployerServiceURL(gatewaylayoutConfs, workingDir, gatewaylayoutConfs.tmoffset, options);
+			await addJMSConnectionDetailsServiceURL(
+				gatewaylayoutConfs,
+				workingDir,
+				gatewaylayoutConfs.tmoffset,
+				options
+			);
+			await alterJMSConnectionParametersTopicConnectionFactory(gatewaylayoutConfs, workingDir, options);
+		}
+
+		await configurePortOffset(workingDir, gatewaylayoutConfs.offset, options);
 		await optimizeProfile(HydrogenConfigMaps.profiles.gateway, '', workingDir);
 	} catch (err) {
 		logger.error(err);
