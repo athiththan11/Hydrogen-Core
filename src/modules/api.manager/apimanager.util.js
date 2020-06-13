@@ -682,50 +682,52 @@ async function alterDataPublisherEnabled(args, workingDir = process.cwd()) {
  *
  * @param {{}} args configuration parameters and arguments
  * @param {string} [workingDir=process.cwd()] path of the current working directory
+ * @param {{ version: string }} options configuration parameters and arguments to identify versions
  */
-async function alterPolicyDeployerEnabled(args, workingDir = process.cwd()) {
+async function alterPolicyDeployerEnabled(args, workingDir = process.cwd(), options = { version: '2.6' }) {
 	if (process.env.HYDROGEN_DEBUG)
 		logger.debug('Starting to alter Enabled of PolicyDeployer under Throttling Configurations');
 
 	try {
-		await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager)).then((parsed) => {
-			let doc = new XMLJS.Document(parsed);
-			let enableElem = new XMLJS.Element(doc, 'Enabled', args.enablePolicyDeployer);
+		if (options.version === HydrogenConfigMaps.supportedVersions.apim.v26)
+			await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager)).then((parsed) => {
+				let doc = new XMLJS.Document(parsed);
+				let enableElem = new XMLJS.Element(doc, 'Enabled', args.enablePolicyDeployer);
 
-			let defaultElem = parsed
-				.root()
-				.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_policydeployer_enabled);
-			let commentElem = new XMLJS.Comment(doc, defaultElem.toString());
-			parsed
-				.root()
-				.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_policydeployer_enabled)
-				.addNextSibling(enableElem);
-			parsed
-				.root()
-				.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_policydeployer_enabled)
-				.addPrevSibling(commentElem);
-			parsed
-				.root()
-				.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_policydeployer_enabled + '[1]')
-				.remove();
-			let altered = removeDeclaration(parsed.toString());
-			let authManagerElem = altered.substring(
-				altered.indexOf('<PolicyDeployer>'),
-				altered.indexOf('</PolicyDeployer>')
-			);
+				let defaultElem = parsed
+					.root()
+					.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_policydeployer_enabled);
+				let commentElem = new XMLJS.Comment(doc, defaultElem.toString());
+				parsed
+					.root()
+					.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_policydeployer_enabled)
+					.addNextSibling(enableElem);
+				parsed
+					.root()
+					.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_policydeployer_enabled)
+					.addPrevSibling(commentElem);
+				parsed
+					.root()
+					.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_policydeployer_enabled + '[1]')
+					.remove();
+				let altered = removeDeclaration(parsed.toString());
+				let authManagerElem = altered.substring(
+					altered.indexOf('<PolicyDeployer>'),
+					altered.indexOf('</PolicyDeployer>')
+				);
 
-			let alteredElem = addHydrogeneratedElem(authManagerElem, '<Enabled>', 'changed');
-			let _altered =
-				altered.substring(0, altered.indexOf('<PolicyDeployer>')) +
-				alteredElem +
-				altered.substring(altered.indexOf('</PolicyDeployer>'));
+				let alteredElem = addHydrogeneratedElem(authManagerElem, '<Enabled>', 'changed');
+				let _altered =
+					altered.substring(0, altered.indexOf('<PolicyDeployer>')) +
+					alteredElem +
+					altered.substring(altered.indexOf('</PolicyDeployer>'));
 
-			fs.writeFileSync(
-				__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager),
-				_altered,
-				constants.utf8
-			);
-		});
+				fs.writeFileSync(
+					__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager),
+					_altered,
+					constants.utf8
+				);
+			});
 	} catch (err) {
 		logger.error(err);
 	}
@@ -939,56 +941,69 @@ async function alterAPIStoreURL(args, workingDir = process.cwd(), offset = 0) {
  * @param {{}} args configuration parameters and arguments
  * @param {string} [workingDir=process.cwd()] path of the current working directory
  * @param {number} [offset=0] offset value
+ * @param {{ version: string }} options configuration parameters and arguments to identify versions
  */
-async function alterTrafficManagerReceiverURLGroup(args, workingDir = process.cwd(), offset = 0) {
+async function alterTrafficManagerReceiverURLGroup(
+	args,
+	workingDir = process.cwd(),
+	offset = 0,
+	options = { version: '2.6' }
+) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter Receiver URL Group of Traffic Manager');
 
 	try {
-		await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager)).then((parsed) => {
-			let doc = new XMLJS.Document(parsed);
-			let receiverURLElem = new XMLJS.Element(
-				doc,
-				'ReceiverUrlGroup',
-				args._tcpHostname + ':' + (HydrogenConfigMaps.ports._9611 + offset)
-			);
+		if (options.version === HydrogenConfigMaps.supportedVersions.apim.v26)
+			await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager)).then((parsed) => {
+				let doc = new XMLJS.Document(parsed);
+				let receiverURLElem = new XMLJS.Element(
+					doc,
+					'ReceiverUrlGroup',
+					args._tcpHostname + ':' + (HydrogenConfigMaps.ports._9611 + offset)
+				);
 
-			let defaultElem = parsed
-				.root()
-				.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_trafficmanager_receiverurlgroup);
-			let commentElem = new XMLJS.Comment(doc, defaultElem.toString());
-			parsed
-				.root()
-				.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_trafficmanager_receiverurlgroup)
-				.addNextSibling(receiverURLElem);
-			parsed
-				.root()
-				.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_trafficmanager_receiverurlgroup)
-				.addPrevSibling(commentElem);
-			parsed
-				.root()
-				.get(
-					HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_trafficmanager_receiverurlgroup +
-						'[1]'
-				)
-				.remove();
-			let altered = removeDeclaration(parsed.toString());
-			let authManagerElem = altered.substring(
-				altered.indexOf('<TrafficManager>'),
-				altered.indexOf('</TrafficManager>')
-			);
+				let defaultElem = parsed
+					.root()
+					.get(
+						HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_trafficmanager_receiverurlgroup
+					);
+				let commentElem = new XMLJS.Comment(doc, defaultElem.toString());
+				parsed
+					.root()
+					.get(
+						HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_trafficmanager_receiverurlgroup
+					)
+					.addNextSibling(receiverURLElem);
+				parsed
+					.root()
+					.get(
+						HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_trafficmanager_receiverurlgroup
+					)
+					.addPrevSibling(commentElem);
+				parsed
+					.root()
+					.get(
+						HydrogenConfigMaps.xmlPaths.apimanager
+							.throttlingconfigurations_trafficmanager_receiverurlgroup + '[1]'
+					)
+					.remove();
+				let altered = removeDeclaration(parsed.toString());
+				let authManagerElem = altered.substring(
+					altered.indexOf('<TrafficManager>'),
+					altered.indexOf('</TrafficManager>')
+				);
 
-			let alteredElem = addHydrogeneratedElem(authManagerElem, '<ReceiverUrlGroup>', 'changed');
-			let _altered =
-				altered.substring(0, altered.indexOf('<TrafficManager>')) +
-				alteredElem +
-				altered.substring(altered.indexOf('</TrafficManager>'));
+				let alteredElem = addHydrogeneratedElem(authManagerElem, '<ReceiverUrlGroup>', 'changed');
+				let _altered =
+					altered.substring(0, altered.indexOf('<TrafficManager>')) +
+					alteredElem +
+					altered.substring(altered.indexOf('</TrafficManager>'));
 
-			fs.writeFileSync(
-				__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager),
-				_altered,
-				constants.utf8
-			);
-		});
+				fs.writeFileSync(
+					__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager),
+					_altered,
+					constants.utf8
+				);
+			});
 	} catch (err) {
 		logger.error(err);
 	}
@@ -1000,55 +1015,63 @@ async function alterTrafficManagerReceiverURLGroup(args, workingDir = process.cw
  * @param {{}} args configuration parameters and arguments
  * @param {string} [workingDir=process.cwd()] path of the current working directory
  * @param {number} [offset=0] offset value
+ * @param {{ version: string }} options configuration parameters and arguments to identify versions
  */
-async function alterTrafficManagerAuthURLGroup(args, workingDir = process.cwd(), offset = 0) {
+async function alterTrafficManagerAuthURLGroup(
+	args,
+	workingDir = process.cwd(),
+	offset = 0,
+	options = { version: '2.6' }
+) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter Auth URL Group of Traffic Manager');
 
 	try {
-		await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager)).then((parsed) => {
-			let doc = new XMLJS.Document(parsed);
-			let authURLElem = new XMLJS.Element(
-				doc,
-				'AuthUrlGroup',
-				args._sslHostname + ':' + (HydrogenConfigMaps.ports._9711 + offset)
-			);
+		if (options.version === HydrogenConfigMaps.supportedVersions.apim.v26)
+			await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager)).then((parsed) => {
+				let doc = new XMLJS.Document(parsed);
+				let authURLElem = new XMLJS.Element(
+					doc,
+					'AuthUrlGroup',
+					args._sslHostname + ':' + (HydrogenConfigMaps.ports._9711 + offset)
+				);
 
-			let defaultElem = parsed
-				.root()
-				.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_trafficmanager_authurlgroup);
-			let commentElem = new XMLJS.Comment(doc, defaultElem.toString());
-			parsed
-				.root()
-				.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_trafficmanager_authurlgroup)
-				.addNextSibling(authURLElem);
-			parsed
-				.root()
-				.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_trafficmanager_authurlgroup)
-				.addPrevSibling(commentElem);
-			parsed
-				.root()
-				.get(
-					HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_trafficmanager_authurlgroup + '[1]'
-				)
-				.remove();
-			let altered = removeDeclaration(parsed.toString());
-			let authManagerElem = altered.substring(
-				altered.indexOf('<TrafficManager>'),
-				altered.indexOf('</TrafficManager>')
-			);
+				let defaultElem = parsed
+					.root()
+					.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_trafficmanager_authurlgroup);
+				let commentElem = new XMLJS.Comment(doc, defaultElem.toString());
+				parsed
+					.root()
+					.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_trafficmanager_authurlgroup)
+					.addNextSibling(authURLElem);
+				parsed
+					.root()
+					.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_trafficmanager_authurlgroup)
+					.addPrevSibling(commentElem);
+				parsed
+					.root()
+					.get(
+						HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_trafficmanager_authurlgroup +
+							'[1]'
+					)
+					.remove();
+				let altered = removeDeclaration(parsed.toString());
+				let authManagerElem = altered.substring(
+					altered.indexOf('<TrafficManager>'),
+					altered.indexOf('</TrafficManager>')
+				);
 
-			let alteredElem = addHydrogeneratedElem(authManagerElem, '<AuthUrlGroup>', 'changed');
-			let _altered =
-				altered.substring(0, altered.indexOf('<TrafficManager>')) +
-				alteredElem +
-				altered.substring(altered.indexOf('</TrafficManager>'));
+				let alteredElem = addHydrogeneratedElem(authManagerElem, '<AuthUrlGroup>', 'changed');
+				let _altered =
+					altered.substring(0, altered.indexOf('<TrafficManager>')) +
+					alteredElem +
+					altered.substring(altered.indexOf('</TrafficManager>'));
 
-			fs.writeFileSync(
-				__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager),
-				_altered,
-				constants.utf8
-			);
-		});
+				fs.writeFileSync(
+					__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager),
+					_altered,
+					constants.utf8
+				);
+			});
 	} catch (err) {
 		logger.error(err);
 	}
@@ -1060,53 +1083,63 @@ async function alterTrafficManagerAuthURLGroup(args, workingDir = process.cwd(),
  * @param {{}} args configuration parameters and arguments
  * @param {string} [workingDir=process.cwd()] path of the current working directory
  * @param {number} [offset=0] offset value
+ * @param {{ version: string }} options configuration parameters and arguments to identify versions
  */
-async function alterPolicyDeployerServiceURL(args, workingDir = process.cwd(), offset = 0) {
+async function alterPolicyDeployerServiceURL(
+	args,
+	workingDir = process.cwd(),
+	offset = 0,
+	options = { version: '2.6' }
+) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter ServiceURL of Policy Deployer');
 
 	try {
-		await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager)).then((parsed) => {
-			let doc = new XMLJS.Document(parsed);
-			let serviceURLElem = new XMLJS.Element(
-				doc,
-				'ServiceURL',
-				args._hostname + ':' + (HydrogenConfigMaps.ports._9443 + offset) + '/services/'
-			);
+		if (options.version === HydrogenConfigMaps.supportedVersions.apim.v26)
+			await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager)).then((parsed) => {
+				let doc = new XMLJS.Document(parsed);
+				let serviceURLElem = new XMLJS.Element(
+					doc,
+					'ServiceURL',
+					args._hostname + ':' + (HydrogenConfigMaps.ports._9443 + offset) + '/services/'
+				);
 
-			let defaultElem = parsed
-				.root()
-				.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_policydeployer_serviceurl);
-			let commentElem = new XMLJS.Comment(doc, defaultElem.toString());
-			parsed
-				.root()
-				.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_policydeployer_serviceurl)
-				.addNextSibling(serviceURLElem);
-			parsed
-				.root()
-				.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_policydeployer_serviceurl)
-				.addPrevSibling(commentElem);
-			parsed
-				.root()
-				.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_policydeployer_serviceurl + '[1]')
-				.remove();
-			let altered = removeDeclaration(parsed.toString());
-			let authManagerElem = altered.substring(
-				altered.indexOf('<PolicyDeployer>'),
-				altered.indexOf('</PolicyDeployer>')
-			);
+				let defaultElem = parsed
+					.root()
+					.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_policydeployer_serviceurl);
+				let commentElem = new XMLJS.Comment(doc, defaultElem.toString());
+				parsed
+					.root()
+					.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_policydeployer_serviceurl)
+					.addNextSibling(serviceURLElem);
+				parsed
+					.root()
+					.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_policydeployer_serviceurl)
+					.addPrevSibling(commentElem);
+				parsed
+					.root()
+					.get(
+						HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_policydeployer_serviceurl +
+							'[1]'
+					)
+					.remove();
+				let altered = removeDeclaration(parsed.toString());
+				let authManagerElem = altered.substring(
+					altered.indexOf('<PolicyDeployer>'),
+					altered.indexOf('</PolicyDeployer>')
+				);
 
-			let alteredElem = addHydrogeneratedElem(authManagerElem, '<ServiceURL>', 'service url changed');
-			let _altered =
-				altered.substring(0, altered.indexOf('<PolicyDeployer>')) +
-				alteredElem +
-				altered.substring(altered.indexOf('</PolicyDeployer>'));
+				let alteredElem = addHydrogeneratedElem(authManagerElem, '<ServiceURL>', 'service url changed');
+				let _altered =
+					altered.substring(0, altered.indexOf('<PolicyDeployer>')) +
+					alteredElem +
+					altered.substring(altered.indexOf('</PolicyDeployer>'));
 
-			fs.writeFileSync(
-				__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager),
-				_altered,
-				constants.utf8
-			);
-		});
+				fs.writeFileSync(
+					__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager),
+					_altered,
+					constants.utf8
+				);
+			});
 	} catch (err) {
 		logger.error(err);
 	}
@@ -1118,41 +1151,50 @@ async function alterPolicyDeployerServiceURL(args, workingDir = process.cwd(), o
  * @param {{}} args configuration parameters and arguments
  * @param {string} workingDir path of the current working directory
  * @param {number} offset offset value
+ * @param {{ version: string }} options configuration parameters and arguments to identify versions
  */
-async function addJMSConnectionDetailsServiceURL(args, workingDir = process.cwd(), offset = 0) {
+async function addJMSConnectionDetailsServiceURL(
+	args,
+	workingDir = process.cwd(),
+	offset = 0,
+	options = { version: '2.6' }
+) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to add ServiceURL for JMSConnectionDetails');
 
 	try {
-		await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager)).then((parsed) => {
-			let doc = new XMLJS.Document(parsed);
-			let serviceURLElem = new XMLJS.Element(
-				doc,
-				'ServiceURL',
-				args._tcpHostname + ':' + (HydrogenConfigMaps.ports._5672 + offset)
-			);
+		if (options.version === HydrogenConfigMaps.supportedVersions.apim.v26)
+			await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager)).then((parsed) => {
+				let doc = new XMLJS.Document(parsed);
+				let serviceURLElem = new XMLJS.Element(
+					doc,
+					'ServiceURL',
+					args._tcpHostname + ':' + (HydrogenConfigMaps.ports._5672 + offset)
+				);
 
-			parsed
-				.root()
-				.get(HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_jmsconnectiondetails_destination)
-				.addNextSibling(serviceURLElem);
-			let altered = removeDeclaration(parsed.toString());
-			let jmsConnectionDetailsElem = altered.substring(
-				altered.indexOf('<JMSConnectionDetails>'),
-				altered.indexOf('</JMSConnectionDetails>')
-			);
+				parsed
+					.root()
+					.get(
+						HydrogenConfigMaps.xmlPaths.apimanager.throttlingconfigurations_jmsconnectiondetails_destination
+					)
+					.addNextSibling(serviceURLElem);
+				let altered = removeDeclaration(parsed.toString());
+				let jmsConnectionDetailsElem = altered.substring(
+					altered.indexOf('<JMSConnectionDetails>'),
+					altered.indexOf('</JMSConnectionDetails>')
+				);
 
-			let alteredElem = addHydrogeneratedElem(jmsConnectionDetailsElem, '<ServiceURL>', 'service url added');
-			let _altered =
-				altered.substring(0, altered.indexOf('<JMSConnectionDetails>')) +
-				alteredElem +
-				altered.substring(altered.indexOf('</JMSConnectionDetails>'));
+				let alteredElem = addHydrogeneratedElem(jmsConnectionDetailsElem, '<ServiceURL>', 'service url added');
+				let _altered =
+					altered.substring(0, altered.indexOf('<JMSConnectionDetails>')) +
+					alteredElem +
+					altered.substring(altered.indexOf('</JMSConnectionDetails>'));
 
-			fs.writeFileSync(
-				__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager),
-				_altered,
-				constants.utf8
-			);
-		});
+				fs.writeFileSync(
+					__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager),
+					_altered,
+					constants.utf8
+				);
+			});
 	} catch (err) {
 		logger.error(err);
 	}
@@ -1163,73 +1205,79 @@ async function addJMSConnectionDetailsServiceURL(args, workingDir = process.cwd(
  *
  * @param {{}} args configuration parameters and arguments
  * @param {string} workingDir path of the current working directory
+ * @param {{ version: string }} options configuration parameters and arguments to identify versions
  */
-async function alterJMSConnectionParametersTopicConnectionFactory(args, workingDir = process.cwd()) {
+async function alterJMSConnectionParametersTopicConnectionFactory(
+	args,
+	workingDir = process.cwd(),
+	options = { version: '2.6' }
+) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to alter TopicConnectionFactory of JMSConnectionParameters');
 
 	try {
-		await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager)).then((parsed) => {
-			let doc = new XMLJS.Document(parsed);
-			let topicConnectionFactoryElem = new XMLJS.Element(
-				doc,
-				'connectionfactory.TopicConnectionFactory',
-				"amqp://${admin.username}:${admin.password}@clientid/carbon?brokerlist='" +
-					args._tcpHostname +
-					':${jms.port}' +
-					args.topicConnectionFactoryQuery
-			);
-
-			let defaultElemt = parsed
-				.root()
-				.get(
-					HydrogenConfigMaps.xmlPaths.apimanager
-						.throttlingconfigurations_jmsconnectiondetails_jmsconnectionparameters_connectionfactorytopicconnectionfactory
+		if (options.version === HydrogenConfigMaps.supportedVersions.apim.v26)
+			await parseXML(__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager)).then((parsed) => {
+				let doc = new XMLJS.Document(parsed);
+				let topicConnectionFactoryElem = new XMLJS.Element(
+					doc,
+					'connectionfactory.TopicConnectionFactory',
+					"amqp://${admin.username}:${admin.password}@clientid/carbon?brokerlist='" +
+						args._tcpHostname +
+						':${jms.port}' +
+						args.topicConnectionFactoryQuery
 				);
-			let commentElem = new XMLJS.Comment(doc, defaultElemt.toString());
-			parsed
-				.root()
-				.get(
-					HydrogenConfigMaps.xmlPaths.apimanager
-						.throttlingconfigurations_jmsconnectiondetails_jmsconnectionparameters_connectionfactorytopicconnectionfactory
-				)
-				.addNextSibling(topicConnectionFactoryElem);
-			parsed
-				.root()
-				.get(
-					HydrogenConfigMaps.xmlPaths.apimanager
-						.throttlingconfigurations_jmsconnectiondetails_jmsconnectionparameters_connectionfactorytopicconnectionfactory
-				)
-				.addPrevSibling(commentElem);
-			parsed
-				.root()
-				.get(
-					HydrogenConfigMaps.xmlPaths.apimanager
-						.throttlingconfigurations_jmsconnectiondetails_jmsconnectionparameters_connectionfactorytopicconnectionfactory +
-						'[1]'
-				)
-				.remove();
-			let altered = removeDeclaration(parsed.toString());
-			let jmsConnectionDetailsElem = altered.substring(
-				altered.indexOf('<JMSConnectionParameters>'),
-				altered.indexOf('</JMSConnectionParameters>')
-			);
 
-			let alteredElem = addHydrogeneratedElem(
-				jmsConnectionDetailsElem,
-				'<connectionfactory.TopicConnectionFactory>',
-				'connection factory changed'
-			);
-			let _altered =
-				altered.substring(0, altered.indexOf('<JMSConnectionParameters>')) +
-				alteredElem +
-				altered.substring(altered.indexOf('</JMSConnectionParameters>'));
+				let defaultElemt = parsed
+					.root()
+					.get(
+						HydrogenConfigMaps.xmlPaths.apimanager
+							.throttlingconfigurations_jmsconnectiondetails_jmsconnectionparameters_connectionfactorytopicconnectionfactory
+					);
+				let commentElem = new XMLJS.Comment(doc, defaultElemt.toString());
+				parsed
+					.root()
+					.get(
+						HydrogenConfigMaps.xmlPaths.apimanager
+							.throttlingconfigurations_jmsconnectiondetails_jmsconnectionparameters_connectionfactorytopicconnectionfactory
+					)
+					.addNextSibling(topicConnectionFactoryElem);
+				parsed
+					.root()
+					.get(
+						HydrogenConfigMaps.xmlPaths.apimanager
+							.throttlingconfigurations_jmsconnectiondetails_jmsconnectionparameters_connectionfactorytopicconnectionfactory
+					)
+					.addPrevSibling(commentElem);
+				parsed
+					.root()
+					.get(
+						HydrogenConfigMaps.xmlPaths.apimanager
+							.throttlingconfigurations_jmsconnectiondetails_jmsconnectionparameters_connectionfactorytopicconnectionfactory +
+							'[1]'
+					)
+					.remove();
+				let altered = removeDeclaration(parsed.toString());
+				let jmsConnectionDetailsElem = altered.substring(
+					altered.indexOf('<JMSConnectionParameters>'),
+					altered.indexOf('</JMSConnectionParameters>')
+				);
 
-			fs.writeFileSync(
-				__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager),
-				_altered,
-				constants.utf8
-			);
-		});
+				let alteredElem = addHydrogeneratedElem(
+					jmsConnectionDetailsElem,
+					'<connectionfactory.TopicConnectionFactory>',
+					'connection factory changed'
+				);
+				let _altered =
+					altered.substring(0, altered.indexOf('<JMSConnectionParameters>')) +
+					alteredElem +
+					altered.substring(altered.indexOf('</JMSConnectionParameters>'));
+
+				fs.writeFileSync(
+					__path.join(workingDir, HydrogenConfigMaps.artifactPaths.conf.apiManager),
+					_altered,
+					constants.utf8
+				);
+			});
 	} catch (err) {
 		logger.error(err);
 	}
