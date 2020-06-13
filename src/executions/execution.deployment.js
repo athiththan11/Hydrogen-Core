@@ -178,8 +178,9 @@ async function configureIdentityServerasKeyManager(
  * @param {string} workingDir path of the working directory
  * @param {{}} datasourceConfs datasource configurations
  * @param {{publisherlayoutConfs: {}, storelayoutConfs: {}, tmlayoutConfs: {}}} distributedLayoutConfs distributed layout configurations
+ * @param {{}} options platform and product options
  */
-async function configureDistributedDeployment(workingDir, datasourceConfs, distributedLayoutConfs) {
+async function configureDistributedDeployment(workingDir, datasourceConfs, distributedLayoutConfs, options) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to configure Distributed deployment layout');
 
 	try {
@@ -188,16 +189,21 @@ async function configureDistributedDeployment(workingDir, datasourceConfs, distr
 			fs.removeSync(__path.join(workingDir, '.DS_STORE'));
 		}
 
-		let apimPackDir = __path.join(
-			workingDir,
-			fs.readdirSync(workingDir).filter((name) => {
-				return name.startsWith(HydrogenConfigMaps.servers.apim);
-			})[0]
-		);
+		let apimPackDir = null;
+		if (options.version === '2.6') {
+			apimPackDir = __path.join(
+				workingDir,
+				fs.readdirSync(workingDir).filter((name) => {
+					return name.startsWith(HydrogenConfigMaps.servers.apim);
+				})[0]
+			);
+		}
 		let deploymentDir = __path.join(workingDir, HydrogenConfigMaps.layoutNamePatterns.deployment);
 		fs.mkdirSync(deploymentDir);
 
-		await loopDistributedNodes(apimPackDir, deploymentDir, 0, datasourceConfs, distributedLayoutConfs);
+		if (options.version === '2.6')
+			await loopDistributedNodes(apimPackDir, deploymentDir, 0, datasourceConfs, distributedLayoutConfs);
+		if (options.version === '3.1') await generateDeploymentToml(deploymentDir);
 	} catch (err) {
 		logger.error(err);
 	}
@@ -215,7 +221,7 @@ async function configureDistributedDeployment(workingDir, datasourceConfs, distr
 async function loopDistributedNodes(apimPackDir, deploymentDir, loopCount, datasourceConfs, distributedLayoutConfs) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Looping through Distributed nodes');
 
-	if (loopCount < HydrogenConfigMaps.layoutNamePatterns.apim.distributed.names.length) {
+	if (loopCount < HydrogenConfigMaps.layoutNamePatterns.apim.distributed.names.length && apimPackDir) {
 		let packName = HydrogenConfigMaps.layoutNamePatterns.apim.distributed.names[loopCount];
 		if (process.env.HYDROGEN_DEBUG) logger.debug('Starting to configure ' + packName);
 		const spinner = ora('Configuring & Optimizing Server :: ' + packName + ' ').start();
@@ -313,6 +319,25 @@ async function loopDistributedNodes(apimPackDir, deploymentDir, loopCount, datas
 				if (spinner.isSpinning) spinner.fail();
 				logger.error(err);
 			});
+	}
+}
+
+/**
+ * method to generate deployment toml for distributed deployment
+ *
+ * @param {string} deploymentDir path of the deployment directory
+ */
+async function generateDeploymentToml(deploymentDir) {
+	if (process.env.HYDROGEN_DEBUG) logger.debug('Generating deployment.toml Configurations');
+	const spinner = ora('Constructing deployment.toml').start();
+
+	try {
+		await fs.copy(__path.join(__dirname, HydrogenConfigMaps.toml.model.localhost.parent_path), deploymentDir);
+	} catch (err) {
+		if (spinner.isSpinning) spinner.fail();
+		logger.error(err);
+	} finally {
+		if (spinner.isSpinning) spinner.succeed();
 	}
 }
 

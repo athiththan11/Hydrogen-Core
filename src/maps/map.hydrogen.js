@@ -215,6 +215,18 @@ module.exports = {
 			apigateway_environments_environment: 'apim.gateway.environment[0]',
 		},
 	},
+	toml: {
+		model: {
+			localhost: {
+				parent_path: 'models/v3/deployments/localhost',
+				'api-devportal': 'models/v3/deployments/localhost/api-devportal.model.toml',
+				'api-key-manager': 'models/v3/deployments/localhost/api-key-manager.model.toml',
+				'api-publisher': 'models/v3/deployments/localhost/api-publisher.model.toml',
+				'gateway-worker': 'models/v3/deployments/localhost/gateway-worker.model.toml',
+				'traffic-manager': 'models/v3/deployments/localhost/traffic-manager.model.toml',
+			},
+		},
+	},
 	strings: {
 		jdbc_wso2am_db: 'jdbc/WSO2AM_DB',
 		jdbc_wso2um_db: 'jdbc/WSO2UM_DB',
