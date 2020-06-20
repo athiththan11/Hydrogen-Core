@@ -263,6 +263,9 @@ let distributedSchema = {
 				_sslHostname: {
 					type: 'string',
 				},
+				keyValidatorClientType: {
+					type: 'string',
+				},
 				enableThriftServer: {
 					type: 'string',
 				},
@@ -298,6 +301,7 @@ let distributedSchema = {
 				'_hostname',
 				'_tcpHostname',
 				'_sslHostname',
+				'keyValidatorClientType',
 				'enableThriftServer',
 				'enableDataPublisher',
 				'enableBlockCondition',
@@ -474,6 +478,9 @@ let publisherlayoutConfs = {
 		_sslHostname: {
 			type: 'string',
 		},
+		keyValidatorClientType: {
+			type: 'string',
+		},
 		enableThriftServer: {
 			type: 'string',
 		},
@@ -509,6 +516,7 @@ let publisherlayoutConfs = {
 		'_hostname',
 		'_tcpHostname',
 		'_sslHostname',
+		'keyValidatorClientType',
 		'enableThriftServer',
 		'enableDataPublisher',
 		'enableBlockCondition',

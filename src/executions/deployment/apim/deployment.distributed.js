@@ -138,8 +138,9 @@ async function configurePublisher(
 		_hostname: 'https://localhost',
 		_tcpHostname: 'tcp://localhost',
 		_sslHostname: 'ssl://localhost',
+		keyValidatorClientType: 'WSClient',
 		enableThriftServer: 'false',
-		enableDataPublisher: 'false',
+		enableDataPublisher: 'true',
 		enableBlockCondition: 'false',
 		enableJMSConnectionDetails: 'false',
 		displayURL: 'true',
@@ -156,12 +157,16 @@ async function configurePublisher(
 		await alterAuthManagerServerURL(publisherlayoutConfs, workingDir, publisherlayoutConfs.kmoffset);
 		await alterGatewayEnvironmentServerURL(publisherlayoutConfs, workingDir, publisherlayoutConfs.gwoffset);
 		await alterGatewayEnvironmentGatewayEndpoint(publisherlayoutConfs, workingDir, publisherlayoutConfs.gwoffset);
+
+		await alterAPIKeyValidatorServerURL(publisherlayoutConfs, workingDir, publisherlayoutConfs.kmoffset);
+		await alterAPIKeyValidatorKeyValidatorClientType(publisherlayoutConfs, workingDir);
 		await alterAPIKeyValidatorEnableThriftServer(publisherlayoutConfs, workingDir);
+
 		await alterAPIStoreDisplayURL(publisherlayoutConfs, workingDir);
 		await alterAPIStoreURL(publisherlayoutConfs, workingDir, publisherlayoutConfs.storeoffset);
 		await alterTrafficManagerReceiverURLGroup(publisherlayoutConfs, workingDir, publisherlayoutConfs.tmoffset);
 		await alterTrafficManagerAuthURLGroup(publisherlayoutConfs, workingDir, publisherlayoutConfs.tmoffset);
-		await alterDataPublisherEnabled(publisherlayoutConfs, workingDir);
+		// await alterDataPublisherEnabled(publisherlayoutConfs, workingDir);
 		await alterPolicyDeployerServiceURL(publisherlayoutConfs, workingDir, publisherlayoutConfs.gwoffset);
 		await alterBlockConditionEnabled(publisherlayoutConfs, workingDir);
 		await alterJMSConnectionDetailsEnabled(publisherlayoutConfs, workingDir);
@@ -254,37 +259,24 @@ async function configureDistributedGateway(
 		kmoffset: 4,
 		tmoffset: 0,
 		offset: 1,
-	},
-	options = {}
+	}
 ) {
 	if (process.env.HYDROGEN_DEBUG) logger.debug('Configuring Gateway for Distributed deployment layout');
 
 	try {
-		await alterAPIKeyValidatorServerURL(gatewaylayoutConfs, workingDir, gatewaylayoutConfs.kmoffset, options);
+		await alterAPIKeyValidatorServerURL(gatewaylayoutConfs, workingDir, gatewaylayoutConfs.kmoffset);
 
-		await alterAPIKeyValidatorKeyValidatorClientType(gatewaylayoutConfs, workingDir, options);
-		await alterAPIKeyValidatorEnableThriftServer(gatewaylayoutConfs, workingDir, options);
+		await alterAPIKeyValidatorKeyValidatorClientType(gatewaylayoutConfs, workingDir);
+		await alterAPIKeyValidatorEnableThriftServer(gatewaylayoutConfs, workingDir);
 
-		if (options.version === '2.6') {
-			await alterTrafficManagerReceiverURLGroup(
-				gatewaylayoutConfs,
-				workingDir,
-				gatewaylayoutConfs.tmoffset,
-				options
-			);
-			await alterTrafficManagerAuthURLGroup(gatewaylayoutConfs, workingDir, gatewaylayoutConfs.tmoffset, options);
-			await alterPolicyDeployerEnabled(gatewaylayoutConfs, workingDir, options);
-			await alterPolicyDeployerServiceURL(gatewaylayoutConfs, workingDir, gatewaylayoutConfs.tmoffset, options);
-			await addJMSConnectionDetailsServiceURL(
-				gatewaylayoutConfs,
-				workingDir,
-				gatewaylayoutConfs.tmoffset,
-				options
-			);
-			await alterJMSConnectionParametersTopicConnectionFactory(gatewaylayoutConfs, workingDir, options);
-		}
+		await alterTrafficManagerReceiverURLGroup(gatewaylayoutConfs, workingDir, gatewaylayoutConfs.tmoffset);
+		await alterTrafficManagerAuthURLGroup(gatewaylayoutConfs, workingDir, gatewaylayoutConfs.tmoffset);
+		await alterPolicyDeployerEnabled(gatewaylayoutConfs, workingDir);
+		await alterPolicyDeployerServiceURL(gatewaylayoutConfs, workingDir, gatewaylayoutConfs.tmoffset);
+		await addJMSConnectionDetailsServiceURL(gatewaylayoutConfs, workingDir, gatewaylayoutConfs.tmoffset);
+		await alterJMSConnectionParametersTopicConnectionFactory(gatewaylayoutConfs, workingDir);
 
-		await configurePortOffset(workingDir, gatewaylayoutConfs.offset, options);
+		await configurePortOffset(workingDir, gatewaylayoutConfs.offset);
 		await optimizeProfile(HydrogenConfigMaps.profiles.gateway, '', workingDir);
 	} catch (err) {
 		logger.error(err);
